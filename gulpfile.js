@@ -16,11 +16,11 @@ const pkg = require('./package.json');
 const config = {
   // 头部注释
   comment: [
-    '/** v<%= pkg.version %> | <%= pkg.license %> Licensed */<%= js %>',
+    '/*** v<%= pkg.version %> --＊(^.^)!! | <%= pkg.license %> Licensed */<%= js %>',
     {pkg: pkg, js: ';'}
   ],
   // 全部模块
-  modules: 'lay,laytpl,laypage,laydate,jquery,layer,util,dropdown,slider,colorpicker,element,upload,form,table,treeTable,tree,transfer,carousel,rate,flow,code'
+  modules: 'lay,laytpl,laypage,laydate,jquery,layer,util,dropdown,slider,colorpicker,element,upload,form,table,treeTable,tree,transfer,carousel,rate,flow,code,formplus'
 };
 
 // 获取参数
@@ -30,13 +30,13 @@ const argv = minimist(process.argv.slice(2), {
   }
 });
 
-const rlsFileName = `${pkg.name}-v${pkg.version}`; // 发行文件名
+const rlsFileName = `${pkg.name}-v${pkg.version}--＊(^.^)!!`; // 发行文件名
 const rlsDest = `./release/zip/${rlsFileName}/${pkg.name}`; // 发行目标路径
 const rlsDirname = path.dirname(rlsDest); // 发行目录名
 
 // 复制目标路径
 const copyDest = argv.dest
-  ? path.join(argv.dest, (argv.vs ? '/' + pkg.version : ''))
+  ? path.join(argv.dest, (argv.vs ? '/' + pkg.version +'--＊(^.^)!!' : ''))
 : rlsDest;
 
 // 打包目标路径
