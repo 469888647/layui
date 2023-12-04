@@ -1279,6 +1279,60 @@ layui.define(["jquery", "form"], function (exports) {
           });
         });
 
+        /**
+         * 新增文本域字数限制
+         *  首先判断这个文本域是否带有 属性 maxlength 这样可以限制它的输入字数
+         *
+         *  1. 获取最大限制字数
+         *  2. 创建一个变量 这个变量需要依托当前的属性值，直接放在视图对象下面
+         *  3. 创建一个属性，
+         *  4. 创建一个监视属性，在当前文本域录入的时候，更新上面的属性值
+         *  5. 利用伪标签读取属性值的特性将这个结果动态的展示出来
+         *
+         *  为了保证实时更新，建议不要添加lay-lazy属性。
+         */
+        if (formItem.getAttribute("maxlength") != undefined) {
+          // lay-affix="number" input的结构会发生改变,先定向渲染它,然后再进行事件绑定
+          if(formItem.getAttribute("lay-affix") == "number")
+            renderForever.call(layui.form, $(formItem));
+          // 1. 获取最大限制字数
+          let maxlength = formItem.getAttribute("maxlength");
+          // 2. 创建一个变量
+          let _tempName = formItem.name + "-limit";
+          formProxy.$set(formProxy.$data, _tempName, "0/" + maxlength);
+          // 4. 创建监视属性
+          formProxy.$watch(formItem.name, {
+            immediate: true,
+            deep: false,
+            handler: function (v) {
+              let length = v ? v.length : 0;
+              // 设置在父标签上面,因为输入框这类标签不支持:after
+              formItem.parentElement.setAttribute(
+                "dataMaxlength",
+                "" + length + "/" + maxlength
+              );
+            },
+          });
+        }
+
+        /**
+         * 新增输入框 lay-affix类型和number事件的监听
+         *  首先判断这个文本域是否带有 属性  lay-affix
+         *  然后在事件中获取值进行处理
+         */
+        if (
+          formItem.getAttribute("lay-affix") == "number" ||
+          formItem.getAttribute("lay-affix") == "clear"
+        ) {
+          layui.form.on(
+            "input-affix(" + util.getFormFilterName(formItem) + ")",
+            function (data) {
+              var elem = data.elem; // 获取输入框 DOM 对象
+              formProxy.getValue(formItem.name, elem.value);
+            }
+          );
+        }
+
         // 添加监视属性
         formProxy.$watch(formItem.name, function (v) {
           formItem.value = v;
