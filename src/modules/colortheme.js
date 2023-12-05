@@ -374,6 +374,220 @@ layui.define(["jquery", "util", "layer"],function (exports) {
   };
 
   /**
+   * @namespace 工具方法集合
+   * @static
+   */
+  let util = {
+
+    /**
+     * @function util~isArray 类型判断： 判断传入的参数是不是数组类型
+     * @param o {*} 传入的对象
+     * @returns {boolean} true for yes; false for no
+     */
+    isArray: function(o){
+      return Object.prototype.toString.call(o) === "[object Array]";
+    },
+
+    /**
+     * @function util~isArray 类型判断： 判断传入的参数是不是String类型
+     * @param o {*} 传入的对象
+     * @returns {boolean} true for yes; false for no
+     */
+    isString: function(o){
+      return Object.prototype.toString.call(o) === "[object String]";
+    },
+
+    /**
+     * @function util~isArray 类型判断： 判断传入的参数是不是Function类型
+     * @param o {*} 传入的对象
+     * @returns {boolean} true for yes; false for no
+     */
+    isFunction: function(o){
+      return Object.prototype.toString.call(o) === "[object Function]";
+    },
+
+    /**
+     * @function util~isArray 类型判断： 判断传入的参数是不是Date类型
+     * @param o {*} 传入的对象
+     * @returns {boolean} true for yes; false for no
+     */
+    isDate: function(o) {
+      return Object.prototype.toString.call(o) === "[object Date]";
+    },
+
+    /**
+     * @function util~isArray 类型判断： 判断传入的参数是不是Object类型
+     * @param o {*} 传入的对象
+     * @returns {boolean} true for yes; false for no
+     */
+    isObject: function(o){
+      return Object.prototype.toString.call(o) === "[object Object]";
+    },
+
+    /**
+     * @function util~isArray 类型判断： 判断传入的参数是不是RegExp类型
+     * @param o {*} 传入的对象
+     * @returns {boolean} true for yes; false for no
+     */
+    isRegExp: function(o){
+      return Object.prototype.toString.call(o) === "[object RegExp]";
+    },
+
+    /**
+     * @function util~each 遍历数组或对象
+     * @param {Object} o  传入数组或对象
+     * @param {Function} cb 回调函数
+     * @desc
+     *    <p style = "color: #16b777;text-indent: 10px;">遍历数组或对象</p>
+     *    <ul>
+     *      <li>这个方法类似于{@linkplain layui.each layui的遍历方法},都是对传入对象进行遍历,只是在回调函数的参数上有所区别
+     *        <ol>
+     *          <li>回调函数的第一个参数是遍历的值,即value</li>
+     *          <li>回调函数的第二个参数是遍历的下标或key,即key</li>
+     *          <li>回调函数的第三个参数是遍历的原始对象,即o</li>
+     *        </ol>
+     *      </li>
+     *      <li>这个方法会对传入的对象进行类型判断,优先使用数组的形式进行遍历</li>
+     *      <li>在以object的方式进行遍历时采用for ...  in...的形式,需要留意的是:遍历顺序不是从左到右的,数字key优先于字符串key</li>
+     *      <li>这个方法本身不会去修改原来传入的对象,也不会有新的对象返回</li>
+     *    </ul>
+     */
+    each: function(o, cb){
+      let key;
+      //优先处理数组结构
+      if (util.isArray(o)) {
+        for (key = 0; key < o.length; key++) {
+          cb && util.isFunction(cb) && cb(o[key], key, o);
+        }
+      } else {
+        /**
+         * for ...  in...
+         * 遍历顺序不是从左到右的,数字key优先于字符串key
+         * -- 来自知识星球球友的提醒
+         */
+        for (key in o) {
+          cb && util.isFunction(cb) && cb(o[key], key, o);
+        }
+      }
+    },
+
+    /**
+     * @function util~join 将数组拼接成一个字符串
+     * @param {Array} a 需要被遍历的数组
+     * @param {String} m 连接作用的标点符号
+     * @returns {String} 拼接起来的字符串结果
+     */
+    join: function(a, m){
+      if(!m) m = "";
+      var res = "";
+      util.each(a, function(v){
+        res += String(v) + m;
+      });
+      // 去掉末尾的标点
+      if (res != "" && m) res = res.substring(0, res.length - m.length);
+      return res;
+    },
+
+    /**
+     * @function util~map 数组转换
+     * @param {*} a 需要被遍历的数组或对象
+     * @param {Function} cb 回调函数
+     * @returns {Array} 一个新的数组
+     * @desc
+     *
+     *    <p style = "color: #16b777;text-indent: 10px;">数组转换,返回由回调函数结果的数组</p>
+     *    <ul>
+     *      <li>使用{@linkplain util~each 遍历方法}来遍历传入值,可以接收数组或object对象,其回调函数的参数与之一致</li>
+     *      <li>返回的是新的数组,本身不会修改传入的对象或数组</li>
+     *      <li>返回的数组里面的元素是遍历传入值时,执行回调函数的返回值</li>
+     *    </ul>
+     */
+    map: function(a, cb){
+      var res = [];
+      util.each(a, function (v, k) {
+        if (cb && util.isFunction(cb)) {
+          res.push(cb(v, k, a));
+        }
+      });
+      return res;
+    },
+
+    /**
+     * @function util~every 迭代数组
+     * @param {*} o   需要被迭代的数组或对象
+     * @param {Function} cb 回调函数
+     * @desc
+     *
+     *    <p style = "color: #16b777;text-indent: 10px;">遍历数组,直到回调函数返回false或遍历结束</p>
+     *    <ul>
+     *      <li>使用{@linkplain util~each 遍历方法}来遍历传入值,可以接收数组或object对象,其回调函数的参数与之一致</li>
+     *      <li>回调函数一旦返回false则遍历结束</li>
+     *      <li>这个方法本身不会去修改原来传入的对象,也不会有新的对象返回</li>
+     *    </ul>
+     */
+    every: function(o, cb) {
+      let key;
+      //优先处理数组结构
+      if (util.isArray(o)) {
+        for (key = 0; key < o.length; key++) {
+          if (cb && util.isFunction(cb)) {
+            if (cb(o[key], key, o) === false) break;
+          }
+        }
+      } else {
+        for (key in o) {
+          if (cb && util.isFunction(cb)) {
+            if (cb(o[key], key, o) === false) break;
+          }
+        }
+      }
+    },
+
+    /**
+     * @function util~every 数组过滤
+     *  数组过滤，返回回调为true的数组。 返回的是一个全新的数组
+     * @param {*} o   需要被过滤的数组或对象
+     * @param {Function} cb  回调函数
+     * @returns {Array} 一个新的数组
+     * @desc
+     *
+     *    <p style = "color: #16b777;text-indent: 10px;">数组过滤,返回回调函数执行为true的项</p>
+     *    <ul>
+     *      <li>使用{@linkplain util~each 遍历方法}来遍历传入值,可以接收数组或object对象,其回调函数的参数与之一致</li>
+     *      <li>返回的数组只包括执行回调函数为true的项</li>
+     *      <li>这个方法本身不会去修改原来传入的对象,返回的数组元素也是和原来的项相同(仅进行过滤,不改变项)</li>
+     *    </ul>
+     */
+    filter: function(o, cb){
+      var res = [];
+      util.each(o, function (v, k) {
+        if (cb && util.isFunction(cb)) {
+          if (cb(v, k, o)) res.push(v);
+        }
+      });
+      return res;
+    },
+
+    /**
+     * @function util~indexOf 返回特定值在数组的下标或object的key
+     * @param {*} a  需要被判断的数组或对象
+     * @param {*} v  待判断的值
+     * @returns {*}  数组下标或者key,如果没有检索到这个特定值,则返回 -1
+     */
+    indexOf: function(a, v){
+      let index = -1;
+      util.every(a, (a1, i) => {
+        if (a1 == v) {
+          index = i;
+          return false;
+        }
+      });
+      return index;
+    },
+  };
+
+
+  /**
    * 创建最后exports到layui中的对象
    */
   let handler = {
@@ -406,8 +620,8 @@ layui.define(["jquery", "util", "layer"],function (exports) {
     initConfig: function () {
       handler.themeConfig = handler.getConfig() || themeConfig;
       // 补全和替换成layui默认的颜色配置
-      layui.util.each(handler.themeConfig, (v) => {
-        layui.util.each(LAYUI_DEFAULT_COLOR, (value, key) => {
+      util.each(handler.themeConfig, (v) => {
+        util.each(LAYUI_DEFAULT_COLOR, (value, key) => {
           if (v[key] == undefined) v[key] = value;
         });
       });
@@ -426,7 +640,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
      */
     setTheme: function (key) {
       let _config = handler.themeConfig[key || handler.getTheme()];
-      layui.util.each(_config, (v, k) => {
+      util.each(_config, (v, k) => {
         // 遍历时 alias 属性不能用来设置css变量,简单判断下
         if (k != "alias") document.documentElement.style.setProperty(k, v);
       });
@@ -481,8 +695,8 @@ layui.define(["jquery", "util", "layer"],function (exports) {
         <div class="layui-card-header">配色方案</div>
         <div class="layui-card-body layui-framework-setTheme">
           <ul class="layui-framework-setTheme-color">
-          ${layui.util.join(
-            layui.util.map(
+          ${util.join(
+            util.map(
               handler.themeConfig,
               (v, k) => `
             <li class="layui-framework-setTheme-color-li${
@@ -592,8 +806,8 @@ layui.define(["jquery", "util", "layer"],function (exports) {
                 </div>
               </div>
             </div>
-            ${layui.util.join(
-              layui.util.map(
+            ${util.join(
+              util.map(
                 COLOR_OPTION,
                 (v, k) => `
             <blockquote class="layui-elem-quote">${v.desc}</blockquote>
@@ -640,7 +854,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
             layui.form.val("layui-framework-theme-form", selectConfig);
             layui.form.render(null, "layui-framework-theme-form");
             // 初始化各个颜色选择器
-            layui.util.each(COLOR_OPTION, (v, k) => {
+            util.each(COLOR_OPTION, (v, k) => {
               layui.colorpicker.render({
                 elem: "#theme-" + k,
                 color: "rgb(" + selectConfig[k] + ")",
