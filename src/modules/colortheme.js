@@ -1,3 +1,15 @@
+/**
+ * @function 主题设置
+ * @since v0.2.1
+ * @author Malphite
+ *
+ *  <p>在原有的css上面进行归并,将其中带颜色的css使用css变量表示出来(需要colortheme.css文件配合).在这里提供一些简单方法来改变这些css变量,从而达到主题设置的效果</p>
+ *  <p>方法:</p>
+ *  <ul>
+ *    <li>使用run方法开启配置:随着layui版本的迭代，这套样式也并不是尽善尽美的,这里提供一个run方法来开启,从而避免不必要的麻烦</li>
+ *    <li>使用popup方法弹出一个可视化的页面,方便管理与设置主题</li>
+ *  </ul>
+ */
 layui.define(["jquery", "util", "layer"],function (exports) {
 
   // 初始化jQuery
@@ -223,6 +235,34 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       name: "边框13",
       desc: "layer边框颜色02",
     },
+    "--lay-framework-menu-main-bgColor": {
+      name: "layout",
+      desc: "layout主题颜色,指的是菜单背景色",
+    },
+    "--lay-framework-logo-bgColor": {
+      name: "logo",
+      desc: "logo背景颜色",
+    },
+    "--lay-framework-header-main-bgColor": {
+      name: "快捷菜单",
+      desc: "快捷菜单背景颜色",
+    },
+    "--lay-framework-header-main-fontColor": {
+      name: "字体01",
+      desc: "快捷菜单文字颜色",
+    },
+    "--lay-framework-header-secondary-fontColor": {
+      name: "字体02",
+      desc: "快捷菜单文字次色",
+    },
+    "--lay-framework-header-more-color": {
+      name: "字体03",
+      desc: "用户下拉菜单文字颜色",
+    },
+    "--lay-framework-body-grey-bgColor": {
+      name: "hover背景",
+      desc: "菜单选项卡选中时的背景颜色",
+    },
   };
 
   /**
@@ -280,6 +320,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
     "--lay-framework-layer-img-fontColor": "113, 113, 113",
     "--lay-framework-layer-nomal-borderColor": "222, 222, 222",
     "--lay-framework-layer-secondary-borderColor": "211, 212, 211",
+
   };
 
   /**
@@ -288,10 +329,28 @@ layui.define(["jquery", "util", "layer"],function (exports) {
   const themeConfig = {
     default: {
       alias: "默认配色",
+      // "--lay-framework-main-bgColor": "0, 150, 136", //选中色
+
+      "--lay-framework-menu-main-bgColor": "32, 34, 42", //主题色
       "--lay-framework-main-bgColor": "0, 150, 136", //选中色
+      "--lay-framework-logo-bgColor": "32, 34, 42",
+      "--lay-framework-header-main-bgColor": "255, 255, 255",
+      "--lay-framework-header-main-fontColor": "51, 3, 0",
+      "--lay-framework-header-secondary-fontColor": "0, 0, 0",
+      "--lay-framework-header-more-color": "102, 6, 0",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
+
     },
     classicBlackHeader: {
       alias: "经典黑头",
+
+      "--lay-framework-menu-main-bgColor": "32, 34, 42",
+      "--lay-framework-logo-bgColor": "32, 34, 42",
+      "--lay-framework-header-main-bgColor": "57, 61, 73", //头部导航
+      "--lay-framework-header-main-fontColor": "248, 248, 248",
+      "--lay-framework-header-secondary-fontColor": "255, 255, 255",
+      "--lay-framework-header-more-color": "251, 251, 251",
+
       "--lay-framework-main-bgColor": "0, 150, 136",
       "--lay-framework-secondary-bgColor": "22, 186, 170",
       "--lay-framework-main-body-bgColor": "0, 0, 0",
@@ -338,38 +397,111 @@ layui.define(["jquery", "util", "layer"],function (exports) {
     },
     darkBlue: {
       alias: "藏蓝",
+      // "--lay-framework-main-bgColor": "59, 145, 255", //选中色
+      // "--lay-framework-secondary-bgColor": "30, 159, 255", // 主题次色
+
+      "--lay-framework-menu-main-bgColor": "3, 21, 42", //主题色
       "--lay-framework-main-bgColor": "59, 145, 255", //选中色
-      "--lay-framework-secondary-bgColor": "30, 159, 255", // 主题次色
+      "--lay-framework-secondary-bgColor": "30, 159, 255",// 主题次色
+      "--lay-framework-logo-bgColor": "3, 21, 42",
+      "--lay-framework-header-main-bgColor": "255, 255, 255",
+      "--lay-framework-header-main-fontColor": "51, 3, 0",
+      "--lay-framework-header-secondary-fontColor": "0, 0, 0",
+      "--lay-framework-header-more-color": "102, 6, 0",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
     },
     coffee: {
       alias: "咖啡",
+      // "--lay-framework-main-bgColor": "164, 133, 102", //选中色
+      // "--lay-framework-secondary-bgColor": "207, 175, 15", // 主题次色
+
+      "--lay-framework-menu-main-bgColor": "46, 36, 27", //主题色
       "--lay-framework-main-bgColor": "164, 133, 102", //选中色
-      "--lay-framework-secondary-bgColor": "207, 175, 15", // 主题次色
+      "--lay-framework-secondary-bgColor": "207, 175, 15",// 主题次色
+      "--lay-framework-logo-bgColor": "46, 36, 27",
+      "--lay-framework-header-main-bgColor": "255, 255, 255",
+      "--lay-framework-header-main-fontColor": "51, 3, 0",
+      "--lay-framework-header-secondary-fontColor": "0, 0, 0",
+      "--lay-framework-header-more-color": "102, 6, 0",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
     },
     purpleRed: {
       alias: "紫红",
+      // "--lay-framework-main-bgColor": "122, 77, 123", //选中色
+      // "--lay-framework-secondary-bgColor": "162, 51, 198", // 主题次色
+
+      "--lay-framework-menu-main-bgColor": "80, 49, 79", //主题色
       "--lay-framework-main-bgColor": "122, 77, 123", //选中色
-      "--lay-framework-secondary-bgColor": "162, 51, 198", // 主题次色
+      "--lay-framework-secondary-bgColor": "162, 51, 198",// 主题次色
+      "--lay-framework-logo-bgColor": "80, 49, 79",
+      "--lay-framework-header-main-bgColor": "80, 49, 79", //头部导航
+      "--lay-framework-header-main-fontColor": "248, 248, 248",
+      "--lay-framework-header-secondary-fontColor": "255, 255, 255",
+      "--lay-framework-header-more-color": "251, 251, 251",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
+
     },
     ocean: {
       alias: "海洋",
+      // "--lay-framework-main-bgColor": "30, 159, 255", //选中色
+      // "--lay-framework-secondary-bgColor": "59, 145, 255", // 主题次色
+
+      "--lay-framework-menu-main-bgColor": "52, 64, 88", //主题色
       "--lay-framework-main-bgColor": "30, 159, 255", //选中色
-      "--lay-framework-secondary-bgColor": "59, 145, 255", // 主题次色
+      "--lay-framework-secondary-bgColor": "59, 145, 255",// 主题次色
+      "--lay-framework-logo-bgColor": "0, 133, 232", // 标题
+      "--lay-framework-header-main-bgColor": "30, 159, 255", //头部导航
+      "--lay-framework-header-main-fontColor": "248, 248, 248",
+      "--lay-framework-header-secondary-fontColor": "255, 255, 255",
+      "--lay-framework-header-more-color": "251, 251, 251",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
+
     },
     green: {
       alias: "墨绿",
+      // "--lay-framework-main-bgColor": "95, 184, 120", //选中色
+      // "--lay-framework-secondary-bgColor": "0, 149, 135", // 主题次色
+
+      "--lay-framework-menu-main-bgColor": "58, 61, 73", //主题色
       "--lay-framework-main-bgColor": "95, 184, 120", //选中色
-      "--lay-framework-secondary-bgColor": "0, 149, 135", // 主题次色
+      "--lay-framework-secondary-bgColor": "0, 149, 135",// 主题次色
+      "--lay-framework-logo-bgColor": "34, 106, 98", // 标题
+      "--lay-framework-header-main-bgColor": "47, 150, 136",
+      "--lay-framework-header-main-fontColor": "248, 248, 248",
+      "--lay-framework-header-secondary-fontColor": "255, 255, 255",
+      "--lay-framework-header-more-color": "251, 251, 251",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
+
     },
     red: {
       alias: "橙色？",
+      // "--lay-framework-main-bgColor": "247, 132, 0", //选中色
+      // "--lay-framework-secondary-bgColor": "255, 184, 0", // 主题次色
+
+      "--lay-framework-menu-main-bgColor": "32, 34, 42", //主题色
       "--lay-framework-main-bgColor": "247, 132, 0", //选中色
-      "--lay-framework-secondary-bgColor": "255, 184, 0", // 主题次色
+      "--lay-framework-secondary-bgColor": "255, 184, 0",// 主题次色
+      "--lay-framework-logo-bgColor": "247, 132, 0", // 标题
+      "--lay-framework-header-main-bgColor": "255, 255, 255",
+      "--lay-framework-header-main-fontColor": "51, 3, 0",
+      "--lay-framework-header-secondary-fontColor": "0, 0, 0",
+      "--lay-framework-header-more-color": "102, 6, 0",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
     },
     fashionRed: {
       alias: "时尚红",
+      // "--lay-framework-main-bgColor": "170, 49, 48", //选中色
+      // "--lay-framework-secondary-bgColor": "255, 87, 34", // 主题次色
+
+      "--lay-framework-menu-main-bgColor": "40, 51, 62", //主题色
       "--lay-framework-main-bgColor": "170, 49, 48", //选中色
-      "--lay-framework-secondary-bgColor": "255, 87, 34", // 主题次色
+      "--lay-framework-secondary-bgColor": "255, 87, 34",// 主题次色
+      "--lay-framework-logo-bgColor": "40, 51, 62", // 标题
+      "--lay-framework-header-main-bgColor": "170, 49, 48", //头部导航
+      "--lay-framework-header-main-fontColor": "248, 248, 248",
+      "--lay-framework-header-secondary-fontColor": "255, 255, 255",
+      "--lay-framework-header-more-color": "251, 251, 251",
+      "--lay-framework-body-grey-bgColor": "246, 246, 246",
     },
   };
 
