@@ -20,7 +20,7 @@ const config = {
     {pkg: pkg, js: ';'}
   ],
   // 全部模块
-  modules: 'lay,laytpl,laypage,laydate,jquery,layer,util,dropdown,slider,colorpicker,element,upload,form,table,treeTable,tree,transfer,carousel,rate,flow,code,formplus'
+  modules: 'lay,laytpl,laypage,laydate,jquery,layer,util,dropdown,slider,colorpicker,element,upload,form,table,treeTable,tree,transfer,carousel,rate,flow,code,formplus,colortheme'
 };
 
 // 获取参数
