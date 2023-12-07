@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>layuiframework</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link href="./plugin/layui/css/layui.css" rel="stylesheet">
+        <link href="./css/frame.css" rel="stylesheet">
+    </head>
+    <body class="layui-layout-body">
+    <div id="lay-framework">
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header">
+                <div class="layui-logo layui-hide-xs layui-bg-black">
+                    <i class="layui-icon layui-icon-release"></i>
+                    <span class="layui-logo-span" >layui-framework</span>
+                </div>
+                <ul class="layui-nav layui-layout-left">
+                    <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                        <a href="javascript:;" lay-header-event="flexible" title="侧边伸缩">
+                            <i class="layui-icon layui-icon-shrink-right" id="lay-framework-flexible"></i>
+                        </a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="https://gitee.com/layui/layui" target="_blank" title="前台">
+                            <i class="layui-icon layui-icon-website"></i>
+                        </a>
+                    </li>
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;" lay-header-event="refresh" title="刷新">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </a>
+                    </li>
+                    <!-- 搜索按钮, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
+<!--                    <li class="layui-nav-item layui-hide-xs" lay-unselect>-->
+<!--                        <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search"-->
+<!--                               lay-header-event="serach" lay-action="template/search.html?keywords=">-->
+<!--                    </li>-->
+                </ul>
+                <!-- 头部区域 - 靠右（可配合layui 已有的水平导航） -->
+                <ul class="layui-nav layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect>
+                        <a lay-href="app/message/index.html" lay-header-event="message" lay-text="消息中心">
+                            <i class="layui-icon layui-icon-notice"></i>
+                            <!-- 如果有新消息，则显示小圆点 -->
+                            <span class="layui-badge-dot"></span>
+                        </a>
+                    </li>
+                    <!-- 主题按钮, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="javascript:;" lay-header-event="theme">
+                            <i class="layui-icon layui-icon-theme"></i>
+                        </a>
+                    </li>
+                    <!-- 全屏按钮, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="javascript:;" lay-header-event="fullscreen">
+                            <i class="layui-icon layui-icon-screen-full"></i>
+                        </a>
+                    </li>
+<!--                    <li class="layui-nav-item layui-hide-xs" lay-unselect>-->
+<!--                        <a href="javascript:;" lay-header-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>-->
+<!--                    </li>-->
+<!--                    <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>-->
+<!--                        <a href="javascript:;" lay-header-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>-->
+<!--                    </li>-->
+                </ul>
+            </div>
+            <!-- 左侧菜单 -->
+            <div class="layui-side layui-side-menu layui-bg-black" >
+                <div class="layui-side-scroll">
+                    <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                    <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="lay-framework-side-menu"
+                        lay-filter="lay-framework-side-menu">
+<!--                        <li class="layui-nav-item layui-nav-itemed">-->
+<!--                            <a href="javascript:;" lay-tips="主页" lay-direction="2" lay-page-key="0">-->
+<!--                                <i class="layui-icon layui-icon-home"></i>-->
+<!--                                <cite>主页</cite>-->
+<!--                            </a>-->
+<!--                        </li>-->
+                        <li class="layui-nav-item">
+                            <a href="javascript:;" lay-tips="formplus" lay-direction="2" lay-page-key="formplus">
+                                <i class="layui-icon layui-icon-file"></i>
+                                <cite>测试</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 页面标签 -->
+            <div class="lay-framework-pagetabs" id="lay-framework-tabs" >
+                <div class="layui-windows-group">
+                    <div class="layui-icon lay-framework-tabs-control layui-icon-prev" lay-header-event="rollPageLeft"></div>
+                    <div class="layui-icon lay-framework-tabs-control layui-icon-next" lay-header-event="rollPageRight"></div>
+                    <div class="lay-framework-tab">
+                        <ul class="lay-framework-tab-title" id="lay-framework-tab-title">
+<!--                            <li class="lay-framework-tab layui-this" lay-id="0" lay-page-key="0">-->
+<!--                                <i class="layui-icon layui-icon-home"></i>-->
+<!--                            </li>-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-body" id="lay-framework-tab-body" >
+                <!-- 内容主体区域 -->
+<!--                <div class="layadmin-tabsbody-item layui-this" lay-id="0">-->
+<!--                    <iframe src="./plugin/layuiframework/html/homepage1.html" frameborder="0" class="layadmin-iframe"></iframe>-->
+<!--                </div>-->
+            </div>
+            <div class="layadmin-body-shade" lay-header-event="flexible"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="./config.js"></script>
+    <script type="text/javascript" src="./js/util.js"></script>
+    <script type="text/javascript" src="./js/frame.js"></script>
+    </body>
+</html>

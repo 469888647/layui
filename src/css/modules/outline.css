@@ -1,0 +1,98 @@
+@charset "utf-8";
+
+.layui-outline-container .layui-outline-side {
+  position: absolute;
+  /*right: -210px;*/
+  right: 0px;
+  top: 32px;
+  bottom: 0;
+  width: 210px
+}
+
+/* TODO 点击出现的样式 */
+.layui-outline-container .layui-outline-bth{
+  position: fixed;
+  z-index: 776;
+}
+
+.layui-outline-container .layui-outline-side .layui-outline-side-fixed {
+  position: fixed;
+  z-index: 776;
+  width: 210px;
+  right: 0;
+}
+
+.layui-outline-side-fixed .layui-outline-dir {
+  position: relative
+}
+
+/* TODO 关闭按钮 */
+.layui-outline-side-fixed .layui-outline-side-close{
+  position: absolute;
+}
+
+/* TODO color */
+.layui-outline-side-fixed .layui-outline-dir:before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-left: 1px solid #eee;
+  content: ''
+}
+
+.layui-outline-side-fixed .layui-outline-ul {
+  position: relative;
+  max-height: calc(100vh - 210px);
+  padding-left: 1px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: all .3s
+}
+
+.layui-outline-side-fixed .layui-outline-ul:hover {
+  overflow: auto
+}
+
+/* TODO color */
+.layui-outline-side-fixed .layui-outline-ul li {
+  position: relative;
+  padding-left: 16px;
+  line-height: 28px;
+  color: rgba(0,0,0,.35)
+}
+
+.layui-outline-side-fixed .layui-outline-ul li[level="2"] {
+  padding-left: 32px
+}
+
+.layui-outline-side-fixed .layui-outline-ul li[level="3"] {
+  padding-left: 48px
+}
+
+.layui-outline-side-fixed .layui-outline-ul li a {
+  display: block
+}
+
+/* TODO color */
+.layui-outline-side-fixed .layui-outline-ul li a:hover,
+.layui-outline-side-fixed .layui-outline-ul li.layui-this a {
+  color: #5fb878
+}
+
+/* TODO color */
+.layui-outline-side-fixed .layui-outline-ul li.layui-this:before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid #5fb878
+}
+
+.layui-outline-side-fixed .layui-outline-ul li .layui-badge-dot {
+  top: -2px;
+  left: 3px
+}
+
+
