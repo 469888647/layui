@@ -25,6 +25,19 @@ layui.define(["jquery"], function (exports) {
     eventflag: false,
 
     /**
+     * 可配置的window
+     */
+    window: window,
+
+    /**
+     * 设置window
+     * @param win
+     */
+    setWindow: function(win){
+      handler.window = win;
+    },
+
+    /**
      * @inner 渲染调用方法
      */
     render: function(){
@@ -146,10 +159,13 @@ layui.define(["jquery"], function (exports) {
             </div>
         </div>
       `;
+      let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
       // 移除原来的dom
-      $body.find('.layui-outline-ul').remove();
+      // $body.find('.layui-outline-ul').remove();
+      fitBody.find('.layui-outline-ul').remove();
       // 添加新生成的dom
-      $body.append($(html));
+      // $body.append($(html));
+      fitBody.append($(html));
       // 添加监听事件
       if(!handler.eventflag) handler.addListener();
     },
@@ -195,8 +211,11 @@ layui.define(["jquery"], function (exports) {
      * @param index
      */
     doFix: function(index){
-      $body.find('.layui-outline-ul').find('.' + THIS).removeClass(THIS);
-      $body.find('.layui-outline-ul').find('[lay-id="'+index+'"]').addClass(THIS);
+      let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
+      fitBody.find('.layui-outline-ul').find('.' + THIS).removeClass(THIS);
+      fitBody.find('.layui-outline-ul').find('[lay-id="'+index+'"]').addClass(THIS);
+      // $body.find('.layui-outline-ul').find('.' + THIS).removeClass(THIS);
+      // $body.find('.layui-outline-ul').find('[lay-id="'+index+'"]').addClass(THIS);
       return false;
     },
 
@@ -206,13 +225,13 @@ layui.define(["jquery"], function (exports) {
     addListener: function(){
 
       // 添加屏幕滚动事件
-      window.addEventListener('scroll', function() {
+      handler.window.addEventListener('scroll', function() {
 
         if(handler.relationList && handler.relationList.length > 0){
           // 定义一个值,来判断那个区域最靠上方
           let minValue = 0;
           // 获取当前滚动位置
-          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          var scrollTop = handler.window.scrollTop === undefined ? handler.window.pageYOffset : handler.window.scrollTop || document.documentElement.scrollTop;
           handler.every(handler.relationList, function(option){
             let topFlag = scrollTop >= option.top - option.height/2;
             let bottomFlag = scrollTop <= option.top + option.height/2;
@@ -229,12 +248,18 @@ layui.define(["jquery"], function (exports) {
         }
       });
 
-      $body.find("." + OUTLINE + "-container").on('click', '*[_href]', function(){
+      // 判断,如果传入的handler.window并不是window只是普通的dom,需要考虑它当前的top值,否则定位不够准确
+      let _offsetTop = handler.window.getBoundingClientRect ? handler.window.getBoundingClientRect().top : 0;
+      let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
+
+      fitBody
+      // $body
+        .find("." + OUTLINE + "-container").on('click', '*[_href]', function(){
         let id = $(this).attr("_href");
         if(id && handler.relationList && handler.relationList.length > 0){
           handler.every(handler.relationList, function(option){
             if(option.id == id) {
-              window.scrollTo(null, option.top);
+              handler.window.scrollTo(null, option.top - _offsetTop);
               setTimeout(function (){
                 handler.doFix(option.index);
               });
