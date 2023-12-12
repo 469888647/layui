@@ -3,23 +3,74 @@
 .layui-outline-container .layui-outline-side {
   position: absolute;
   /*right: -210px;*/
-  right: 0px;
-  top: 32px;
+  right: 20px;
+  /*top: 32px;*/
   bottom: 0;
-  width: 210px
-}
-
-/* TODO 点击出现的样式 */
-.layui-outline-container .layui-outline-bth{
-  position: fixed;
-  z-index: 776;
+  width: 210px;
+  z-index: 99999999;
+  margin-top: 20px;
+  top: 52px;
+  transition: right 1s;
 }
 
 .layui-outline-container .layui-outline-side .layui-outline-side-fixed {
   position: fixed;
   z-index: 776;
   width: 210px;
-  right: 0;
+  right: 20px;
+}
+
+/* 正常情况下,点击按钮添加class之后就隐藏这个 */
+.layui-outline-container.layui-outline-retract .layui-outline-side {
+  right: -210px;
+}
+
+.layui-outline-container.layui-outline-retract .layui-outline-side .layui-outline-side-fixed {
+  right: -210px;
+}
+
+/* 正常情况下,这个按钮不显示 */
+.layui-outline-container .layui-outline-bth{
+  position: fixed;
+  z-index: 776;
+  top: 95px;
+  right: 20px;
+  display: none;
+}
+
+/* 正常情况下,点击按钮添加class之后就显示这个 */
+.layui-outline-container.layui-outline-retract .layui-outline-bth{
+  display: block;
+}
+
+@media screen and (max-width: 768px) {
+  /* 平板移动设备,outline隐藏 */
+  .layui-outline-container .layui-outline-side{
+    right: -210px;
+  }
+
+  .layui-outline-container .layui-outline-side .layui-outline-side-fixed {
+    right: -210px;
+  }
+
+  /* 平板移动设备,点击按钮添加class之后outline显示 */
+  .layui-outline-container.layui-outline-retract .layui-outline-side {
+    right: 20px;
+  }
+
+  .layui-outline-container.layui-outline-retract .layui-outline-side .layui-outline-side-fixed {
+    right: 20px;
+  }
+
+  /* 平板移动设备,按钮显示 */
+  .layui-outline-container .layui-outline-bth{
+    display: block;
+  }
+
+  /* 平板移动设备,点击按钮添加class之后按钮不显示 */
+  .layui-outline-container.layui-outline-retract .layui-outline-bth{
+    display: none;
+  }
 }
 
 .layui-outline-side-fixed .layui-outline-dir {
@@ -29,6 +80,13 @@
 /* TODO 关闭按钮 */
 .layui-outline-side-fixed .layui-outline-side-close{
   position: absolute;
+  top: -15px;
+  cursor: pointer;
+}
+
+/* TODO color */
+.layui-outline-side-fixed .layui-outline-side-close:hover{
+  color: #5fb878
 }
 
 /* TODO color */
@@ -48,6 +106,10 @@
   box-sizing: border-box;
   overflow: hidden;
   transition: all .3s
+}
+
+.layui-outline-side-fixed .layui-outline-ul li{
+  cursor: pointer;
 }
 
 .layui-outline-side-fixed .layui-outline-ul:hover {

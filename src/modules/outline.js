@@ -18,6 +18,9 @@ layui.define(["jquery"], function (exports) {
 
   let OUTLINE = "layui-outline";
 
+  // 收起的样式 retract
+  let RETRACT = "layui-outline-retract";
+
   let handler = {
     /**
      * @inner 是否绑定过全局事件
@@ -69,6 +72,9 @@ layui.define(["jquery"], function (exports) {
        */
       handler.relationList = [];
 
+      // 当前容器滚动的位置,方便二次渲染的时候确定位置
+      var scrollTop = handler.window.scrollTop === undefined ? handler.window.pageYOffset : handler.window.scrollTop || document.documentElement.scrollTop;
+
       let ulHtml = '';
 
       document.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(function (domElement){
@@ -108,7 +114,7 @@ layui.define(["jquery"], function (exports) {
         if(!_opt.level) _opt.level = parseInt(domElement.tagName.substr(1,2)) - baseLevel + 1;
         let rect = domElement.getBoundingClientRect();
         _opt.index = ++ intervalIndex;
-        _opt.top = rect.top;
+        _opt.top = rect.top + scrollTop;
         _opt.height = rect.height;
         // 缓存配置项
         handler.relationList.push(_opt);
@@ -148,7 +154,7 @@ layui.define(["jquery"], function (exports) {
        */
       let html = `
         <div class = "${OUTLINE}-container">
-            <button type="button" class="${OUTLINE}-bth layui-btn"><i class="layui-icon layui-icon-shrink-right"></i></button>
+            <button type="button" class="${OUTLINE}-bth layui-btn-sm layui-btn"><i class="layui-icon layui-icon-shrink-right"></i></button>
             <div class="${OUTLINE}-side">
                 <div class="${OUTLINE}-side-fixed">
                     <i class="${OUTLINE}-side-close layui-icon layui-icon-spread-left"></i>
@@ -162,7 +168,7 @@ layui.define(["jquery"], function (exports) {
       let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
       // 移除原来的dom
       // $body.find('.layui-outline-ul').remove();
-      fitBody.find('.layui-outline-ul').remove();
+      fitBody.find('.' + OUTLINE + '-container').remove();
       // 添加新生成的dom
       // $body.append($(html));
       fitBody.append($(html));
@@ -269,6 +275,24 @@ layui.define(["jquery"], function (exports) {
           })
         }
 
+      });
+
+      // 点击图标收起outline
+      fitBody.find("." + OUTLINE + "-container").on('click', '.layui-outline-side-close', function(){
+        if(fitBody.find("." + OUTLINE + "-container").hasClass(RETRACT)){
+          fitBody.find("." + OUTLINE + "-container").removeClass(RETRACT);
+        }else{
+          fitBody.find("." + OUTLINE + "-container").addClass(RETRACT);
+        }
+      });
+
+      // 点击按钮展开outline
+      fitBody.find("." + OUTLINE + "-container").on('click', '.layui-outline-bth', function(){
+        if(fitBody.find("." + OUTLINE + "-container").hasClass(RETRACT)){
+          fitBody.find("." + OUTLINE + "-container").removeClass(RETRACT);
+        }else{
+          fitBody.find("." + OUTLINE + "-container").addClass(RETRACT);
+        }
       });
     },
   };
