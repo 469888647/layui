@@ -21,9 +21,9 @@
 }
 
 /* 正常情况下,点击按钮添加class之后就隐藏这个 */
-.layui-outline-container.layui-outline-retract .layui-outline-side {
-  right: -210px;
-}
+/*.layui-outline-container.layui-outline-retract .layui-outline-side {*/
+/*  right: -210px;*/
+/*}*/
 
 .layui-outline-container.layui-outline-retract .layui-outline-side .layui-outline-side-fixed {
   right: -210px;
@@ -45,18 +45,18 @@
 
 @media screen and (max-width: 768px) {
   /* 平板移动设备,outline隐藏 */
-  .layui-outline-container .layui-outline-side{
-    right: -210px;
-  }
+  /*.layui-outline-container .layui-outline-side{*/
+  /*  right: -210px;*/
+  /*}*/
 
   .layui-outline-container .layui-outline-side .layui-outline-side-fixed {
     right: -210px;
   }
 
   /* 平板移动设备,点击按钮添加class之后outline显示 */
-  .layui-outline-container.layui-outline-retract .layui-outline-side {
-    right: 20px;
-  }
+  /*.layui-outline-container.layui-outline-retract .layui-outline-side {*/
+  /*  right: 20px;*/
+  /*}*/
 
   .layui-outline-container.layui-outline-retract .layui-outline-side .layui-outline-side-fixed {
     right: 20px;
