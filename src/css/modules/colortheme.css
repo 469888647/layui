@@ -27,7 +27,7 @@
   /* layui主题字体次色 05   255, 255, 255 #ffffff (白色字体应该比较显眼)   */
   --lay-framework-main-highlight-fontColor: 255, 255, 255;
   /* layui主题底色          0, 0, 0 #000000 (黑色打底,在多处用作字体边框和背景色,以及阴影的颜色)   */
-  --lay-framework-dark-bgColor: 0, 0, 0; 
+  --lay-framework-dark-bgColor: 0, 0, 0;
   /* layui主题背景颜色 02   250, 250, 250 #fafafa   部分标题如label的背景色   */
   --lay-framework-main-title-bgColor: 250, 250, 250;
   /* layui主题字体次色 06   95, 95, 95 #5F5F5F   灰色的字体一般是表单或者表格里面的文字 */
@@ -48,9 +48,9 @@
   --lay-framework-main-h-fontColor: 58, 58, 58;
   /* 下面的颜色用处很少,一般建议是特殊处理为好 */
   /* layui主题字体颜色09       1, 170, 237 #01AAED     table里面的link的字体颜色 */
-  --lay-framework-table-link-fontColor: 1, 170, 237;  
+  --lay-framework-table-link-fontColor: 1, 170, 237;
   /* layui主题字体颜色10       115, 115, 131 #737383     flow-more的字体颜色 */
-  --lay-framework-flow-more-fontColor: 115, 115, 131;   
+  --lay-framework-flow-more-fontColor: 115, 115, 131;
   /* layui主题背景颜色 06   219, 251, 240 #dbfbf0     table-checked背景颜色   */
   --lay-framework-table-checked-bgColor: 219, 251, 240;
   /* layui主题背景颜色 07   171, 248, 221 #abf8dd    table-checked-hover背景颜色   */
@@ -64,25 +64,25 @@
   /* layui主题边框颜色08       240, 240, 240 #f0f0f0     color-picker边框颜色 */
   --lay-framework-color-picker-borderColor: 240, 240, 240;
   /* layui主题背景颜色10      47, 54, 60 #2f363c        nav背景颜色 */
-  --lay-framework-main-nav-bgColor: 47, 54, 60; 
+  --lay-framework-main-nav-bgColor: 47, 54, 60;
   /* layui主题背景颜色11      159, 159, 159 #9f9f9f     fixbar背景颜色 */
-  --lay-framework-main-fixbar-bgColor: 159, 159, 159; 
+  --lay-framework-main-fixbar-bgColor: 159, 159, 159;
   /* layui主题背景颜色12      217, 217, 217 #d9d9d9     util-face背景颜色 */
-  --lay-framework-util-face-bgColor: 217, 217, 217;  
+  --lay-framework-util-face-bgColor: 217, 217, 217;
   /* layui主题边框颜色9       232, 232, 232 #e8e8e8     util-face边框颜色 */
-  --lay-framework-util-face-borderColor: 232, 232, 232;    
+  --lay-framework-util-face-borderColor: 232, 232, 232;
   /* layui主题背景颜色13      255, 249, 236 #fff9ec     util-face-hover背景颜色 */
-  --lay-framework-util-face-hover-bgColor: 255, 249, 236;   
+  --lay-framework-util-face-hover-bgColor: 255, 249, 236;
   /* layui主题边框颜色10       235, 115, 80 #eb7350     util-face-hover边框颜色 */
-  --lay-framework-util-face-hover-borderColor: 235, 115, 80; 
+  --lay-framework-util-face-hover-borderColor: 235, 115, 80;
   /* layui主题字体颜色11      255, 184, 0 #ffb800       rate的字体颜色 */
-  --lay-framework-rate-fontColor: 255, 184, 0;    
+  --lay-framework-rate-fontColor: 255, 184, 0;
   /* layui主题字体颜色12      85, 85, 85 #555555        tree的字体颜色 */
-  --lay-framework-tree-fontColor: 85, 85, 85;    
+  --lay-framework-tree-fontColor: 85, 85, 85;
   /* layui主题边框颜色11      201, 201, 201 #c9c9c9     laydate的footer-span边框颜色 */
-  --lay-framework-footer-span-borderColor: 201, 201, 201; 
+  --lay-framework-footer-span-borderColor: 201, 201, 201;
   /* layui主题背景颜色14      0, 247, 222 #00f7de       laydate选中时间段背景颜色 */
-  --lay-framework-laydate-selected-bgColor: 0, 247, 222; 
+  --lay-framework-laydate-selected-bgColor: 0, 247, 222;
   /* layui主题字体颜色13      246, 246, 246 #f6f6f6     laydate-header的字体颜色 */
   --lay-framework-laydate-header-fontColor: 246, 246, 246;
   /* layui主题背景颜色15      242, 242, 242 #f2f2f2       laydate grid-selected背景颜色 */
@@ -427,6 +427,11 @@ hr {
 .layui-form-switch>div,
 .layui-breadcrumb a {
   color: rgba(var(--lay-framework-main-secondary-fontColor), 1) !important;
+}
+
+/** 修改,防止上面 .layui-form-switch>div 对当前样式的覆盖 */
+.layui-form-onswitch>div {
+  color: rgba(var(--lay-framework-main-highlight-fontColor), 1) !important;
 }
 
 .layui-form-select dl dt,
@@ -1006,7 +1011,7 @@ body .layui-table-tips .layui-layer-content {
 .layui-layer-setwin .layui-layer-maxmin:after,
 .layui-layer-tab .layui-layer-title span.layui-this,
 .layui-layer-btn a{
-  background-color:rgba(var(--lay-framework-main-body-bgColor), 1);  
+  background-color:rgba(var(--lay-framework-main-body-bgColor), 1);
 }
 
 .layui-layer-setwin .layui-layer-close2,
@@ -1017,10 +1022,10 @@ body .layui-table-tips .layui-layer-content {
 .layui-layer-imgbar,
 .layui-layer-imgtit *,
 .layui-layer-imgtit a:hover{
-  color: rgba(var(--lay-framework-main-highlight-fontColor), 1); 
+  color: rgba(var(--lay-framework-main-highlight-fontColor), 1);
 }
 
-.layui-layer{ 
+.layui-layer{
   box-shadow: 1px 1px 50px rgba(var(--lay-framework-dark-bgColor), .3);
 }
 
@@ -1029,15 +1034,15 @@ body .layui-table-tips .layui-layer-content {
 }
 
 .layui-layer-border{
-  border-color: rgba(var(--lay-framework-dark-bgColor), .1); 
+  border-color: rgba(var(--lay-framework-dark-bgColor), .1);
 }
 
 .layui-layer-setwin span{
-  color: rgba(var(--lay-framework-dark-bgColor), 1); 
+  color: rgba(var(--lay-framework-dark-bgColor), 1);
 }
 
 .layui-layer-rim{
-  border-color:rgba(var(--lay-framework-dark-bgColor), .3); 
+  border-color:rgba(var(--lay-framework-dark-bgColor), .3);
 }
 
 .layui-layer-hui{
@@ -1049,7 +1054,7 @@ body .layui-table-tips .layui-layer-content {
 }
 
 .layui-layer-tips .layui-layer-content{
-  box-shadow: 1px 1px 3px rgba(var(--lay-framework-dark-bgColor), .2); 
+  box-shadow: 1px 1px 3px rgba(var(--lay-framework-dark-bgColor), .2);
 }
 
 .layui-layer-tips i.layui-layer-TipsT, .layui-layer-tips i.layui-layer-TipsB{
@@ -1065,16 +1070,16 @@ body .layui-table-tips .layui-layer-content {
 }
 
 .layui-layer-imgbar{
-  background-color: rgba(var(--lay-framework-dark-bgColor), .35) 
+  background-color: rgba(var(--lay-framework-dark-bgColor), .35)
 }
 
 .layui-layer-title,
 .layui-layer-btn a{
-  color:rgba(var(--lay-framework-main-body-fontColor), 1); 
+  color:rgba(var(--lay-framework-main-body-fontColor), 1);
 }
 
 .layui-layer-title{
-  border-bottom-color:rgba(var(--lay-framework-color-picker-borderColor), 1); 
+  border-bottom-color:rgba(var(--lay-framework-color-picker-borderColor), 1);
 }
 
 .layui-layer-setwin .layui-layer-min:hover:before,
@@ -1106,27 +1111,27 @@ body .layui-table-tips .layui-layer-content {
 }
 
 .layui-layer-tab .layui-layer-title span.layui-this{
-  border-left-color: rgba(var(--lay-framework-main-nomal-borderColor), 1); 
+  border-left-color: rgba(var(--lay-framework-main-nomal-borderColor), 1);
   border-right-color: rgba(var(--lay-framework-main-nomal-borderColor), 1);
 }
 
 .layui-layer-loading-2:before,
 .layui-layer-loading-2:after{
-  border-color: rgba(var(--lay-framework-main-disabled-borderColor), 1); 
+  border-color: rgba(var(--lay-framework-main-disabled-borderColor), 1);
 }
 
 .layui-layer-imgprev:hover,
 .layui-layer-imgnext:hover,
 .layui-layer-loading-icon{
-  color:  rgba(var(--lay-framework-layer-hover-fontColor), 1); 
+  color:  rgba(var(--lay-framework-layer-hover-fontColor), 1);
 }
 
 .layui-layer-setwin .layui-layer-close2{
-   background-color: rgba(var(--lay-framework-layer-close-bgColor), 1); 
+   background-color: rgba(var(--lay-framework-layer-close-bgColor), 1);
 }
 
 .layui-layer-setwin .layui-layer-close2:hover{
-  background-color: rgba(var(--lay-framework-layer-close-hover-bgColor), 1); 
+  background-color: rgba(var(--lay-framework-layer-close-hover-bgColor), 1);
 }
 
 .layui-layer-imgprev, .layui-layer-imgnext{
