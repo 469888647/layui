@@ -272,6 +272,30 @@ body .layui-util-face .layui-layer-content,
 .layui-elem-quote {
   border-left-color: rgba(var(--lay-framework-main-bgColor), 1);
 }
+
+.layui-badge-rim,
+.layui-border,
+.layui-colla-content,
+.layui-colla-item,
+.layui-collapse,
+.layui-elem-field,
+.layui-form-pane
+.layui-form-item[pane],
+.layui-form-pane
+.layui-form-label,
+.layui-input,
+.layui-input-split,
+.layui-panel,
+.layui-quote-nm,
+.layui-select,
+.layui-tab-bar,
+.layui-tab-card,
+.layui-tab-title,
+.layui-tab-title .layui-this:after,
+.layui-textarea{
+  border-left-color: rgba(var(--lay-framework-main-nomal-fontColor), 1);
+}
+
 .layui-menu .layui-menu-item-checked:after {
   border-right-color: rgba(var(--lay-framework-main-bgColor), 1);
 }
@@ -614,6 +638,16 @@ body .layui-util-face .layui-layer-content,
 .laydate-theme-molv .layui-laydate-header {
   background-color: rgba(var(--lay-framework-secondary-bgColor), 1);
 }
+
+/* 百搭 */
+.layui-btn-normal{background-color: #1e9fff;}
+/* 暖色 */
+.layui-btn-warm{background-color: #ffb800;}
+/* 警告 */
+.layui-btn-danger{background-color: #ff5722;}
+/* 选中 */
+.layui-btn-checked{background-color: #16b777;}
+
 
 .layui-laypage select:focus {
   border-color: rgba(var(--lay-framework-secondary-bgColor), 1) !important;

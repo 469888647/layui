@@ -16,7 +16,7 @@
   };
 
   var Layui = function(){
-    this.v = '2.9.1'; // Layui 版本号
+    this.v = '2.9.3'; // Layui 版本号
   };
 
   // 识别预先可能定义的指定全局对象
@@ -817,16 +817,6 @@
       }
     }
   };
-
-  /**
-   * @property  当前的layui版本是一个调试版本
-   * @type {boolean} true for yes
-   * @since  v2.9.0-rc.1
-   * @desc
-   *
-   *   <p> 指定在本版本进行部分功能的调试,不代表实际版本的功能也一致</p>
-   */
-  Layui.prototype.debugger = true;
 
   // exports layui
   win.layui = new Layui();

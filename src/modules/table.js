@@ -82,7 +82,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
   var resolveTplStr = function(templet){
     try{ 
       return lay(templet).html();
-    }catch{
+    }catch(err){
       return templet;
     }
   }
@@ -558,7 +558,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     layui.each(options.cols, function(i1, item1) {
       layui.each(item1, function(i2, item2) {
         var key = [index, i1, i2].join('-');
-        var val = item2.width ? ['width: ', item2.width, 'px'].join('') : '';
+        var val = ['width: ', (item2.width || options.cellMinWidth), 'px'].join('');
         text.push('.laytable-cell-'+ key +'{'+ val +'}');
       });
     });
@@ -2967,6 +2967,9 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
 
               // 插入内容
               vals.push(content);
+            }else if(item3.field && item3.type !== 'normal'){
+              // https://gitee.com/layui/layui/issues/I8PHCR
+              if(i1 == 0) fieldsIsHide[item3.field] = true;
             }
           });
         }

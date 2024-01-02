@@ -9,13 +9,60 @@ toc: true
 
 <h2 id="2.9.x" lay-toc="{title: '2.9.x'}"></h2>
 
-<h2 id="2.9.1" class="ws-anchor">
-  2.9.1
+<h2 id="v2.9.3" class="ws-anchor">
+  v2.9.3
   <!-- <span class="layui-badge-rim" style="color: #16b777;">稳定版</span> -->
-  <span class="layui-badge-rim">2023-12-11</span>
+  <span class="layui-badge-rim">2023-12-31</span>
+</h2>
+
+2023 收官。
+
+- #### form
+  - 优化 `input` 组件圆角时后缀存在方框的问题 #1467 @bxjt123
+  - 优化 `select` 搜索面板打开逻辑，以适配文字直接粘贴触发搜索的情况 #1498 @Sight-wcg
+- #### table
+  - 修复非常规列设置 `field` 表头选项时，导出 excel 出现合计行错位的问题 #1522 @Sight-wcg
+- #### treeTable
+  - 修复 `treeTable.updateNode()` 更新已打开的节点时，未重新渲染表单元素的问题 #1468 @Sight-wcg
+- #### laydate
+  - 修复 开启 `rangeLinked` 时，选择同一日期，某些情况时间会反选的问题 #1517 @Sight-wcg
+- #### upload
+  - 加强 `data` 选项的函数写法，支持获取文件相关数据 #1494 @Sight-wcg
+- #### transfer
+  - 新增 `dblclick` 回调函数选项 #1491 @Sight-wcg
+- #### 移动端的适配
+  - 修复 `rate,carousel` 一些小问题 #1469 @Sight-wcg
+
+### 下载： [layui-v2.9.3.zip](https://gitee.com/layui/layui/attach_files/1633409/download)
+
+---
+
+<h2 id="v2.9.2" class="ws-anchor">
+  v2.9.2
+  <!-- <span class="layui-badge-rim" style="color: #16b777;">稳定版</span> -->
+  <span class="layui-badge-rim">2023-12-18</span>
 </h2>
 
 `2.9.x` 是对 `2.8.18` 的进一步完善，旨在打造一个可长期用于生产环境的稳定版本。对 `2.8.x` 向下兼容，可覆盖升级。
+
+- #### 移动端的改进
+  - 新增 `slider,layer,carousel,laydate,rate,colorpicker` 手势操作支持 #1446 @Sight-wcg
+  - 新增 `lay` 模块中针对手势操作的多个基础方法 #1446 @Sight-wcg
+- #### table
+  - 修复 IE 下的报错问题 #1453 @Sight-wcg
+- #### form
+  - 修复 `select` 在 IE10+ 中的兼容性问题 #1452 @Sight-wcg
+- #### dropdown
+  - 增强 `delay` 选项，支持设置 显示/隐藏 的延迟时间 #1454 @Sight-wcg
+
+### 下载： [layui-v2.9.2.zip](https://gitee.com/layui/layui/attach_files/1615568/download)
+
+---
+
+<h2 id="2.9.1" class="ws-anchor">
+  2.9.1
+  <span class="layui-badge-rim">2023-12-11</span>
+</h2>
 
 - #### table
   - 增强 `height` 选项，支持函数 #1437  @Sight-wcg
