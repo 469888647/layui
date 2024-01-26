@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layuiAdmin 控制台主页一</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../plugin/layui/css/layui.css" media="all">
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <!-- <div id="ID-tree-demo"></div> -->
+        <div class="layui-form" lay-filter = "mylayuiform">
+            <div class="layui-inline">
+              <label class="layui-form-label">下拉树:</label>
+              <div class="layui-input-inline">
+                <div class="layui-unselect layui-form-select" >
+                  <div class="layui-select-title">
+                    <input class="layui-input" autocomplete="false" placeholder="请选择" name = "name" lay-options = "{'id':'mytree','checkbox':true,'url':'../json/selecttree.json','customName': { 'title':'menuName' },'showCheckbox': true }" lay-filter = "selectTree-demo01" />
+                    <!-- <input class="layui-input" autocomplete="false" placeholder="请选择" name = "name" lay-options = "{'checkbox':true,'data':[],'id':'mytree','customName': { 'title':'menuName' },'showCheckbox': true }" lay-filter = "selectTree-demo01" /> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../js/util.js"></script>
+    <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="../js/treeorder.js"></script>
+    <script type="text/javascript" src="../js/formplus.js"></script>
+    <script>
+
+var treeInst;
+
+        layui.use(['formplus','treeorder'], function(){
+          layui.form.val('mylayuiform', {name: '113,114'});
+          window.parent.formProxy = layui.form.render(null, null, true);
+          layui.form.on('selectTree(selectTree-demo01)', function(obj){
+              console.log(obj);
+              var finalFlag = !obj.value.children || obj.value.children.length == 0;
+              return finalFlag;
+          });
+          // $.get('../json/selecttree.json', {}, function(res){
+          //     let data = res.data;
+          //     var treeInst = layui.formplus.$tree['mytree'];
+          //     treeInst.reload({
+          //       data: data
+          //     });
+          //     layui.form.render(null, null, true);
+          // });
+
+
+            // $.get('../json/selecttree.json', {}, function(res){
+            //     let data = res.data;
+
+            //     treeInst = layui.tree.render({
+            //         elem: '#ID-tree-demo',
+            //         data: data,
+            //         customName: {
+            //             title: 'menuName',
+            //         },
+            //         showCheckbox: true,  // 是否显示复选框
+            //         // onlyIconControl: true,  // 是否仅允许节点左侧图标控制展开收缩
+            //         id: 'demo-id-1',
+            //         // isJump: true, // 是否允许点击节点时弹出新窗口跳转
+            //         // click: function(obj){
+            //         //     var data = obj.data;  //获取当前点击的节点数据
+            //         //     layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(data));
+            //         // }
+            //     }, true);
+
+
+            // });
+
+        });
+
+    </script>
+</body>
+
+</html>

@@ -39,5 +39,10 @@ const LAYER_CONFIG = {
     url: './html/formplusDemo.html',
     area: ["750px", "280px"],
   },
+  formplus: {
+    name: 'test1',
+    url: './html/treetest.html',
+    area: ["750px", "280px"],
+  },
 };
 

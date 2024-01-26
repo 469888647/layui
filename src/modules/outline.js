@@ -21,6 +21,9 @@ layui.define(["jquery"], function (exports) {
   // 收起的样式 retract
   let RETRACT = "layui-outline-retract";
 
+  // 默认添加上id
+  let ID_INDEX = 0;
+
   let handler = {
     /**
      * @inner 是否绑定过全局事件
@@ -109,7 +112,11 @@ layui.define(["jquery"], function (exports) {
         }
         if(!_opt.level && !baseLevel) baseLevel = parseInt(domElement.tagName.substr(1,2));
         // 最后取dom上面的信息
-        if(!_opt.id) _opt.id = domElement.getAttribute("id");
+        if(!_opt.id){
+          if(_opt.anchor)
+            domElement.setAttribute("id", "layui-outline-id-" + ID_INDEX ++);
+          _opt.id = domElement.getAttribute("id");
+        }
         if(!_opt.title) _opt.title = domElement.getAttribute("title") ? domElement.getAttribute("title") : domElement.textContent;
         if(!_opt.level) _opt.level = parseInt(domElement.tagName.substr(1,2)) - baseLevel + 1;
         let rect = domElement.getBoundingClientRect();

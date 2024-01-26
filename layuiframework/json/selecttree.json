@@ -1,0 +1,33 @@
+{
+  "code": 200,
+  "message": "请求成功",
+  "data": [
+    {
+      "id": 1,
+      "menuName": "系统管理",
+      "spread": true,
+      "parentid": 0
+    },
+    {
+      "id": 113,
+      "menuName": "系统日志",
+      "spread": true,
+      "parentid": 0
+    },
+    {
+      "id": 114,
+      "menuName": "用户管理",
+      "spread": true,
+      "parentid": 0
+    },
+    {
+      "id": 115,
+      "menuName": "角色管理",
+      "spread": true,
+      "parentid": 0
+    }
+
+  ],
+  "state": 0,
+  "handle": null
+}
