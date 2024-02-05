@@ -1284,6 +1284,7 @@ layui.define(["jquery", "form"], function (exports) {
         var othis = $(formItem);
         var oparent = othis.parent();
         var oroot = othis.parent().parent();
+        // 判断是否拥有下拉树的结构
         var selectTreeFlag = oparent.hasClass("layui-select-title") && oroot.hasClass("layui-form-select");
         let eventKey =
           formItem.getAttribute(constant.LAYUI_LAZY) != null
@@ -1294,6 +1295,7 @@ layui.define(["jquery", "form"], function (exports) {
         util.each(eventKey.split(" "), (v) => {
           formItem.addEventListener(v, function () {
             if(selectTreeFlag){
+              // 下拉树有单选和多选的形式,多选使用数组储存
               formProxy.getValue(formItem.name, this.value.split ? this.value.split(',') : this.value);
             }else{
               formProxy.getValue(formItem.name, this.value);
@@ -1429,7 +1431,7 @@ layui.define(["jquery", "form"], function (exports) {
          * 但是传入的dom必须是一个确定的dom才行
          * @param dom
          */
-        var doFixValue = function(dom){
+        var doFixValue = formRenderer.doFixValue = function(dom){
           var $this = $(dom);
           // 获取值,并以这个值为准查找出匹配的文字 newValue
           var oldValue = $this.find('.layui-select-tree-value').val();
@@ -1440,13 +1442,16 @@ layui.define(["jquery", "form"], function (exports) {
           if(treeInst){
             var values = [];
             if(treeInst.mutiple){
+              // 多选就拆分字符串
               values = oldValue.split(",");
               var newValue = '';
+              // 在树里面找到对应的名称,并拼接结果
               layui.each(values, function(key, value){
                 var node = $this.find('[data-id="'+value+'"] .layui-tree-txt').get(0);
                 var _newValue = node ? node.textContent : '';
                 newValue += _newValue + ',';
               });
+              // 去掉最后的逗号
               if(newValue) newValue = newValue.substr(0, newValue.length - 1);
               // 设置匹配的文字 newValue
               $this.find('.layui-select-tree-title').val(newValue);
@@ -1457,6 +1462,7 @@ layui.define(["jquery", "form"], function (exports) {
               // 设置匹配的文字 newValue
               $this.find('.layui-select-tree-title').val(newValue);
             }
+            //  树匹配上新的values值
             treeInst.search(null, values);
             // TODO 设置选中的样式
             selectedOption(treeInst, values);
@@ -1482,9 +1488,9 @@ layui.define(["jquery", "form"], function (exports) {
 
         /**
          * @method 缓存or取出树的实例
-         * @param id
-         * @param treeInst
-         * @returns {*}
+         * @param id  树的id
+         * @param treeInst 树的实例
+         * @returns {*} 树的实例
          */
         var cacheSelectTree = function(id, treeInst){
           if(!formRenderer.$tree) formRenderer.$tree = {};
@@ -1502,6 +1508,7 @@ layui.define(["jquery", "form"], function (exports) {
           }
         });
 
+        // 当前环境是设置了lay-options 但是没有laydate的可能被判断为下拉树 - 下面还要查看结构
         let optionsAttr = formItem.getAttribute("lay-options");
         if(optionsAttr != undefined){
           var CLASS = 'layui-form-select';
@@ -1570,6 +1577,7 @@ layui.define(["jquery", "form"], function (exports) {
             if(!options.customName.id) options.customName.id = 'id';
             if(!options.customName.title) options.customName.title = 'title';
             if(options.showCheckbox == true){
+              // 多选则重新赋值
               if(formProxy.$data[name]){
                 formProxy.$set(formProxy.$data, name, formProxy.$data[name].split(','));
               }else{

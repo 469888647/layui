@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layuiAdmin 控制台主页一</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../plugin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/animate.css" media="all">
+    <link rel="stylesheet" href="../css/tile.css" media="all">
+</head>
+
+<body>
+    <div class="layui-fluid">
+      <div class="layui-card">
+        <div class="layui-card-header">快捷菜单</div>
+        <div class="layui-card-body" style="height: 400px;">
+          <div class="layui-layer-tiles layui-windows-desk-scroll"></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../js/util.js"></script>
+    <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="../js/tile.js"></script>
+    <script>
+            let data = [{
+              id: 1,
+              name: "layui",
+              source: [
+                {
+                  id: "layui",
+                  name: "layui官网",
+                  x: 0,
+                  y: 0,
+                  w: 2,
+                  h: 2,
+                  img: "../image/icon-1.png",
+                  cb: function () {
+                    window.open("https://gitee.com/layui/layui", "_target");
+                  },
+                },
+                {
+                  id: "Layuivue",
+                  name: "Layuivue",
+                  x: 2,
+                  y: 0,
+                  w: 1,
+                  h: 1,
+                  color: "#FFFFFF",
+                  img: "../image/logo-png.a3bc5caf.png",
+                  cb: function () {
+                    window.open("http://www.layui-vue.com/zh-CN/index", "_target");
+                  },
+                },
+                {
+                  id: "layuiAdmin",
+                  name: "layuiAdmin",
+                  x: 2,
+                  y: 1,
+                  w: 1,
+                  h: 1,
+                  color: "#1E9FFF",
+                  cb: function () {
+                    handler.parentLayui.frame.setTop("post");
+                    window.open("https://dev.layuion.com/themes/layuiadmin/", "_target");
+                  },
+                },
+                {
+                  id: "layuiAdmin2",
+                  name: "layuiAdmin2",
+                  x: 2,
+                  y: 1,
+                  w: 1,
+                  h: 1,
+                  color: "#1E9FFF",
+                  cb: function () {
+                    handler.parentLayui.frame.setTop("post");
+                    window.open("https://dev.layuion.com/themes/layuiadmin/", "_target");
+                  },
+                },
+              ],
+            },
+          ];
+          var container = $(".layui-layer-tiles");
+          var mytile = layui
+            .tile(container, { data: data })
+            .setAnimate(
+              [
+                "flip",
+                "bounceIn",
+                "flash",
+                "pulse",
+                "rubberBand",
+                "shake",
+                "headShake",
+                "swing",
+              ],
+              0.5
+            );
+    </script>
+</body>
+
+</html>

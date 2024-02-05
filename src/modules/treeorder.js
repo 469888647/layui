@@ -1,11 +1,26 @@
+/**
+ * @function 树排序
+ * @since v0.0.1
+ * @author Malphite
+ * @desc
+ *  本身的tree组件不会对外开发它的数据源,这限制了对其扩展功能
+ *  <p>在原有的{@link layui.tree.render} 树渲染方法的前提下,通过处理树的数据源,实现排序与搜索的方法</p>
+ *  <p>简单原理:</p>
+ *  <ul>
+ *    <li>缓存传入的数据源,将处理后的数据源传入进行渲染,通过控制传入的的数据来实现功能</li>
+ *    <li>对返回的tree实例进行改装,实现后期通过这个实例来调用新的方法</li>
+ *  </ul>
+ *
+ */
 ("use strict");
 layui.define(["jquery", "tree"], function (exports) {
 
   /**
-   * 记录下原始的render方法
+   * 记录下原始的树的render方法
    */
   const renderForever = layui.tree.render;
 
+  // 生成记录树实例的id
   let INTERVAL_ID = 0;
 
   /**
@@ -268,266 +283,42 @@ layui.define(["jquery", "tree"], function (exports) {
       }
       return res;
     },
-
-    /**
-     * @function util~getFormFilterName 获取表单元素的lay-filter属性值
-     * @param {HTMLElement} formItem  表单元素
-     * @returns {String} 表单元素的{@linkplain constant~LAYUI_FILTER lay-filter 属性值}
-     * @description
-     *    <p style = "color: #16b777;text-indent: 10px;">获取表单元素的lay-filter属性值</p>
-     *    <ul>
-     *      <li>该方法是返回指定的表单元素上面的{@linkplain constant~LAYUI_FILTER lay-filter 属性值}</li>
-     *      <li>如果该属性指已经被指定,则直接返回</li>
-     *      <li>如果该属性没有被指定则根据当前元素的name属性,按照下面的规则生成被返回 `layui-formplus-{@name}` </li>
-     *      <li>生成的属性会设置在表单元素上面,在该方法不会移除</li>
-     *      <li>该方法基于下面几点
-     *        <ol>
-     *          <li>layui表单里面的事件绑定需要加入lay-filter来精确绑定,所以需要获取到该属性方便后面使用这个属性对表单元素进行绑定</li>
-     *          <li>依据w3cschool关于表单的name属性的描述:设置了name属性才能保证表单的正确传值,所以这里认为有效的表单元素都应该标注自己的name属性</li>
-     *          <li>如果元素暂未指定lay-filter属性就使用它的name的属性值根据固定格式生成一个来返回,从而保证后面处理的正确开展</li>
-     *        </ol>
-     *      </li>
-     *    <ul>
-     */
-    getFormFilterName(formItem) {
-      let filter = formItem.getAttribute(constant.LAYUI_FILTER);
-      if (filter) return filter;
-      filter = "layui-formplus-" + formItem.name;
-      formItem.setAttribute(constant.LAYUI_FILTER, filter);
-      return filter;
-    },
-
-    /**
-     * @function util~getFormName 获取当前layui表单对象的name,就是它的lay-filter属性值，如果没有就生成一个
-     * @param {HTMLElement} item  layui表单对象
-     * @return {String} layui表单对象的{@linkplain constant~LAYUI_FILTER lay-filter 属性值}
-     */
-    getFormName: function (item) {
-      let name = item.getAttribute(constant.LAYUI_FILTER);
-      if (!name) {
-        name = "layui-formplus" + constant.INTERNAL_INDEX++;
-        item.setAttribute(constant.LAYUI_FILTER, name);
-      }
-      return name;
-    },
-
-    /**
-     * @function util~getFormByName 通过name获取formProxy实例对象
-     * @param {String} name lay-filter 属性值
-     * @return {*} formProxy实例对象
-     * @desc
-     *
-     *    <p style = "color: #16b777;text-indent: 10px;">通过layui表单对象的{@linkplain constant~LAYUI_FILTER lay-filter 属性值}获取formProxy实例对象</p>
-     *    <p>设计思路如下:</p>
-     *    <ol>
-     *      <li>layui表单对象的{@linkplain constant~LAYUI_FILTER lay-filter 属性值}作为layui表单的重要指标,同一页面应该具有唯一性</li>
-     *      <li>使用该模块对layui表单对象创建的formProxy实例对象,会缓存起来,避免重复创建浪费资源</li>
-     *      <li>通过判断layui表单对象 {@linkplain document#contains 是否还存在于DOM树上}来移除对应的缓存</li>
-     *    </ol>
-     */
-    getFormByName: function (name) {
-      let res = null;
-      util.every(layui.form.$children, (c) => {
-        // 移除已经失效的
-        if (!document.contains(c.$ele)) {
-          c.$destroy();
-          if (layui.form.$children.indexOf(c) >= 0)
-            layui.form.$children.splice(layui.form.$children.indexOf(c), 1);
-          return;
-        }
-        if (c.$name == name) {
-          res = c;
-          return false;
-        }
-        return true;
-      });
-      return res;
-    },
-
-    /**
-     * @function util~findChildren 深遍历children节点执行回调
-     * @param {Array} children 待遍历的数组
-     * @param {Function} cb 调用的回调函数,回调函数的参数为遍历出的value
-     */
-    findChildren: function (children, cb) {
-      if (children.length == 0) return;
-      util.each(children, (child) => {
-        cb && cb(child);
-        util.findChildren(child.children, cb);
-      });
-    },
-
-    /**
-     * @function util~findChildren 冒泡执行回调函数
-     * @param {String} s XXX.YYY.ZZZ 格式的属性key
-     * @param {Function} fn 回调函数
-     * @this formProxy实例对象
-     * @desc
-     *
-     *    <p style = "color: #16b777;text-indent: 10px;">对传入的属性key(eg. XXX.YYY.ZZZ),按照下面的顺序执行回调函数:</p>
-     *    <ol>
-     *      <li>XXX.YYY.ZZZ</li>
-     *      <li>XXX.YYY</li>
-     *      <li>XXX</li>
-     *    </ol>
-     */
-    bubble(s, fn) {
-      if (util.isString(s)) {
-        let res = s;
-        do {
-          let k = res.lastIndexOf(constant.separator);
-          if (k >= 0) res = res.substring(0, k);
-          util.isFunction(fn) && fn.call(this, res, s);
-        } while (res.indexOf(constant.separator) > 0);
-      }
-    },
-
-    /**
-     * @function util~getValue 通过属性key获取formProxy实例对象中对应的值
-     * @this formProxy实例对象
-     * @param {String} k XXX.YYY.ZZZ 格式的属性key
-     * @param {*} v 设置的新值
-     * @returns {*} formProxy实例对象中对应的值
-     * @desc
-     *    <ol>
-     *      <li>通过属性key获取formProxy实例对象中对应的值</li>
-     *      <li>如果第二个参数传入了一个新值,则设置为新值</li>
-     *      <li>这种设置并没有特殊处理,所以只能设置字符串或者数字等简单值</li>
-     *    </ol>
-     */
-    getValue(k, v) {
-      let [currentContext, flag, parent, key] = [this, true];
-      util.every(k.split(constant.separator), (v1) => {
-        let r = currentContext[v1];
-        parent = currentContext;
-        key = v1;
-        // 数组特殊处理
-        if (/\[\d+\]/.test(v1))
-          r =
-            currentContext[
-              v1.substring(0, v1.indexOf(constant.ARRAY_SEPARATOR_PREFIX))
-              ][
-              v1.substring(
-                v1.indexOf(constant.ARRAY_SEPARATOR_PREFIX) + 1,
-                v1.indexOf(constant.ARRAY_SEPARATOR_SUFFIX)
-              )
-              ];
-        if (r === undefined) {
-          flag = false;
-          return false;
-        }
-        currentContext = r;
-        return true;
-      });
-      // 赋值
-      if (flag && v !== undefined) {
-        parent[key] = v;
-        return v;
-      }
-      return flag ? currentContext : null;
-    },
-    /**
-     * @function util~observe 监视某个数据
-     * @this  formProxy实例对象
-     * @param {*} o  一个配置项
-     * @return {*} 已经被封装监视的对象
-     * @desc
-     *    <p style = "color: #16b777;text-indent: 10px;">将一个对象转化处理成被当前模块监视的对象,其传入的参数包含下面几项</p>
-     *    <ol>
-     *      <li>target: 准备监视的数据</li>
-     *      <li>key: 当前target对象的唯一标志字符串,举例为'a.b.c[d]' </li>
-     *    </ol>
-     *    <p style = "color: #16b777;text-indent: 10px;">此方法仅做前置的参数处理,是方法{@linkplain util~doObserve 监视对象}的前置方法</p>
-     */
-    observe(o) {
-      let self = this;
-      // 数组对象特殊处理
-      if (util.isArray(o.target)) {
-        o.target.__self__ = self;
-        o.target.__key__ = o.key;
-        o.target.__proto__ = arrayMethods;
-        util.each(o.target, (v, k) => {
-          v = util.doObserve.call(self, {
-            target: o.target,
-            value: v,
-            name: k,
-            key: o.key ? o.key : k,
-          });
-        });
-        return o.target;
-      }
-      if (!o.target || !util.isObject(o.target)) return o.target;
-      // 普通对象的处理
-      util.each(o.target, (v, k) => {
-        util.doObserve.call(self, {
-          target: o.target,
-          value: v,
-          name: k,
-          key: o.key,
-        });
-      });
-      return o.target;
-    },
-    /**
-     * @function util~doObserve 监视某个数据
-     * @this  formProxy实例对象
-     * @param {*} o 一个配置项
-     * @desc
-     *    <p style = "color: #16b777;text-indent: 10px;">当前模块监视的某个对象,其传入的参数包含下面几项</p>
-     *    <ol>
-     *      <li>target: 属性被添加的目标</li>
-     *      <li>value: 待添加的属性值</li>
-     *      <li>name: 待添加的属性对应目标的key</li>
-     *      <li>key: 当前属性的唯一标志字符串,举例为'a.b.c[d]' </li>
-     *    </ol>
-     */
-    doObserve(o) {
-      // 根据传入的属性name，生成全新的索引值
-      let self = this,
-        fKey = o.key ? o.key + constant.separator + o.name : o.name;
-      // 创建代理对象,将待监听的对象也创建为响应式数据
-      let _proxy = util.observe.call(self, {
-        target: o.value,
-        key: fKey,
-      });
-      // 创建事件描述对象
-      self.dispatcher.add(fKey);
-      Object.defineProperty(o.target, o.name, {
-        configurable: true,
-        enumerable: true,
-        get() {
-          self.dispatcher &&
-          self.dispatcher.get.call(self, fKey, _proxy, o.name);
-          return _proxy;
-        },
-        set(value) {
-          if (value === _proxy) return;
-          let oldValue = _proxy;
-          self.dispatcher.before.call(self, fKey, value, oldValue, o.name);
-          _proxy = util.observe.call(self, {
-            target: value,
-            key: fKey,
-          });
-          self.dispatcher.after.call(self, fKey, value, oldValue, o.name);
-        },
-      });
-    },
   };
 
+  /**
+   * @namespace wrapper 处理方法
+   */
   let wrapper = {
+
+    /**
+     * @function wrapper~listen 初始化方法
+     * @desc
+     *    <p style = "color: #16b777;text-indent: 10px;">初始化方法</p>
+     *    <ul>
+     *      <li>从传入的配置参数中提取 id, title, children, parent的配置信息,并保存起来,后面解析数据源的时候使用</li>
+     *      <li>从传入的配置参数中实例 id,如果没有就自动生成一个id</li>
+     *      <li>{@linkplain wrapper.setSource 解析并缓存数据源}, 以树id为key, 将数据源缓存起来</li>
+     *      <li>将包装后的配置参数传入,返回tree实例</li>
+     *      <li>修改这个tree实例的search与reload方法,并返回这个实例</li>
+     *    </ul>
+     */
     listen: function(){
 
       layui.tree.render = function(options, deploy = false){
         if (!deploy) return renderForever.call(layui.tree, options);
+        // 读取配置key
         let customName = options.customName ? options.customName : {};
         wrapper.parentidKey = customName.parentid || layui.cache.parentidKey || 'parentid';
         wrapper.childrenKey = customName.children || layui.cache.childrenKey || 'children';
         wrapper.idKey = customName.id || layui.cache.idKey || 'id';
         wrapper.titleKey = customName.title || layui.cache.titleKey || 'title';
+        // 获取tree的id
         let treeId = options.id || wrapper.getIntervalId();
+        // 处理并缓存数据源
         let data = wrapper.setSource(treeId, options.data);
         options.id = treeId;
         options.data = data;
+        // 执行渲染,并返回tree实例
         let res = renderForever.call(layui.tree, options);
         res.search = wrapper.searchData;
         let _reload = res.reload;
@@ -541,6 +332,12 @@ layui.define(["jquery", "tree"], function (exports) {
 
     },
 
+    /**
+     * @function wrapper~setSource 处理并缓存数据源
+     * @param id   tree的id
+     * @param data 传入的数据源
+     * @returns {解析后的数据}
+     */
     setSource: function(id, data){
       let _data = wrapper.baseDataFilter(data);
       wrapper.setData(id, _data);
@@ -548,14 +345,14 @@ layui.define(["jquery", "tree"], function (exports) {
     },
 
     /**
-     * 初始化数据
+     * @function wrapper~initData 初始化缓存数据
      */
     initData: function(){
       if(!wrapper.cache) wrapper.cache = {};
     },
 
     /**
-     * 缓存数据
+     * @function wrapper~setData 缓存数据
      */
     setData: function(id, data){
       if(!wrapper.cache) wrapper.initData();
@@ -563,7 +360,7 @@ layui.define(["jquery", "tree"], function (exports) {
     },
 
     /**
-     * 取出缓存的数据
+     * @function wrapper~getData 取出缓存的数据
      */
     getData: function(id){
       if(!wrapper.cache) wrapper.initData();
@@ -573,7 +370,7 @@ layui.define(["jquery", "tree"], function (exports) {
     getIntervalId: () => 'layui-treeorder-' + INTERVAL_ID ++,
 
     /**
-     * @method 对配置项里面的数据源进行处理
+     * @function wrapper~baseDataFilter 处理数据源
      * @param {*} data 传入的数据源
      * @returns 解析后的数据
      * @desc
@@ -585,7 +382,8 @@ layui.define(["jquery", "tree"], function (exports) {
     },
 
     /**
-     * @method 解析配置项里面的数据源
+     * @function wrapper~parseData 将数据源处理tree组件支持的形式
+     * @param {*} list 传入数据源
      * @desc
      *    判断源数据中第一项是否带有parentid属性,如果有就解析并覆盖
      */
@@ -596,7 +394,7 @@ layui.define(["jquery", "tree"], function (exports) {
     },
 
     /**
-     * @method 实现解析配置项里面的数据源
+     * @function wrapper~doParseData 实现解析配置项里面的数据源
      * @param {*} list  数据源列表
      * @desc
      *    解析数据源列表,这个列表是根据id和parentid将父子节点联系上的,比较符合数据库保存的风格;
@@ -616,7 +414,7 @@ layui.define(["jquery", "tree"], function (exports) {
     },
 
     /**
-     * @method 解析顶层节点数据源信息
+     * @function wrapper~createTopTreeNode 解析顶层节点数据源信息
      * @param {*} value
      */
     createTopTreeNode: function(value){
@@ -635,7 +433,7 @@ layui.define(["jquery", "tree"], function (exports) {
     },
 
     /**
-     * @method 解析普通节点数据源信息
+     * @function wrapper~createSubTreeNode 解析普通节点数据源信息
      * @param {*} value
      */
     createSubTreeNode: function(value){
@@ -666,9 +464,7 @@ layui.define(["jquery", "tree"], function (exports) {
     },
 
     /**
-     * @method 解析配置项里面的数据源
-     * @desc
-     *    判断源数据中第一项是否带有parentid属性,如果有就解析并覆盖
+     * @function wrapper~searchData 对数据源进行排序处理
      */
     searchData: function(searchContent, values = []){
       let that = this;
