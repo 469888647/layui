@@ -1,0 +1,121 @@
+<!--
+    修改 图表信息 前端html骨架:
+    > Author: Malphite
+    > Date: 2023-09-23
+    前端页面统一使用layui.layer.open的方式进行弹出层的展示，所以这里仅包括html的div片段
+
+ -->
+<meta charset="UTF-8">
+<div id="ChartUpdate" style=" padding: 15px;">
+    <div class="layui-form layui-form-pane" lay-filter="ChartUpdate-form" >
+        <div class="layui-form-item" style="margin: 0;">
+            <div class="layui-inline">
+                <label class="layui-form-label">分析目标:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="goal"  id="ChartUpdate-goal" placeholder="请输入分析目标"   />
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">图表名称:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="name"  id="ChartUpdate-name" placeholder="请输入图表名称"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin: 0;">
+            <div class="layui-inline">
+                <label class="layui-form-label">图表数据:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="chartdata"  id="ChartUpdate-chartdata" placeholder="请输入图表数据"   />
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">生成的图表数据:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="genchart"  id="ChartUpdate-genchart" placeholder="请输入生成的图表数据"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin: 0;">
+            <div class="layui-inline">
+                <label class="layui-form-label">生成的分析结论:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="genresult"  id="ChartUpdate-genresult" placeholder="请输入生成的分析结论"   />
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">执行信息:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="execmessage"  id="ChartUpdate-execmessage" placeholder="请输入执行信息"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin: 0;">
+            <div class="layui-inline">
+                <label class="layui-form-label">创建用户账号:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="userid"  id="ChartUpdate-userid" placeholder="请输入创建用户账号"   />
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">创建时间:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="createtime"  id="ChartUpdate-createtime" placeholder="请输入创建时间"   readonly autocomplete="off"  />
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin: 0;">
+            <div class="layui-inline">
+                <label class="layui-form-label">更新时间:</label>
+                <div class="layui-input-inline" >
+                    <input type="text" class="layui-input" name="updatetime"  id="ChartUpdate-updatetime" placeholder="请输入更新时间"   readonly autocomplete="off"  />
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">图表类型:</label>
+                <div class="layui-input-inline" >
+                    <select name="charttype" lay-search lay-filter="ChartUpdate-charttype"  id="ChartUpdate-charttype"   >
+                        <option value="" selected = "selected">请选择图表类型</option>
+                        <option value="k" >k线图</option>
+                        <option value="h" >直方图</option>
+                        <option value="p" >饼状图</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin: 0;">
+            <div class="layui-inline">
+                <label class="layui-form-label">状态:</label>
+                <div class="layui-input-inline" >
+                    <select name="status" lay-search lay-filter="ChartUpdate-status"  id="ChartUpdate-status"   >
+                        <option value="" selected = "selected">请选择状态</option>
+                        <option value="wait" >等待</option>
+                        <option value="running" >执行中</option>
+                        <option value="succeed" >成功</option>
+                        <option value="failed" >失败</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">是否删除:</label>
+                <div class="layui-input-inline" >
+                    <select name="isdelete" lay-search lay-filter="ChartUpdate-isdelete"  id="ChartUpdate-isdelete"   >
+                        <option value="" selected = "selected">请选择是否删除</option>
+                        <option value="0" >否</option>
+                        <option value="1" >是</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin: 0; text-align: center">
+            <div class="layui-inline">
+                <button class="layui-btn" type="button" lay-submit lay-filter="ChartUpdate-submit" title="确认修改">
+                    <i class="layui-icon layui-icon-add-circle-fine"></i>确认修改
+                </button>
+                <button class="layui-btn" type="button" id="ChartUpdate-close" title="关闭页面">
+                    <i class="layui-icon layui-icon-close"></i>关闭页面
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

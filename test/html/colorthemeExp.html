@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>colortheme使用示例</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+        <!--  大致起完美适配的作用,试开发者不管像素比,只需按照css像素编写代码即可     -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <!--    请勿在项目正式环境中引用该 layui.css 地址     -->
+       <!--  <link href="//cdn.staticfile.org/layui/2.8.17/css/layui.css" rel="stylesheet"> -->
+        <link href="../plugin/layui/css/layui.css" rel="stylesheet">
+        <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+        <!-- <link href="../plugin/layuiframework/css/colortheme.css" rel="stylesheet"> -->
+        <style>
+            .layui-outline-container .layui-outline-bth,
+            .layui-outline-container .layui-outline-side{
+                z-index: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <!-- 大屏时占大半屏幕(右侧为outline留位置),小屏时占全部屏幕 -->
+            <div class="layui-col-xs12 layui-col-md10">
+                <h3>colortheme颜色主题</h3>
+                <blockquote class="layui-elem-quote">切换layui的颜色主题,提案PR #1410</blockquote>
+                <h4>写在前面</h4>
+                <div class="layui-card">
+                    <div class="layui-card-header">注意事项</div>
+                    <div class="layui-card-body">
+                        <ul style="padding-left: 15px; text-indent: 15px; padding-bottom: 5px;">
+                            <li>
+                                <p> * colortheme仅对2.8版本的layui.css中的颜色进行归类,并使用css变量实现颜色主题的切换;仅对相同的颜色进行合并定义,在颜色的归纳上并不算系统</p>
+                                <hr class="layui-border-orange">
+                            </li>
+                            <li>
+                                <p> * colortheme是将layui.css中的颜色重新使用css变量进行定义</p>
+                                <ol style="padding-left: 15px; text-indent: 15px; padding-bottom: 5px;">
+                                    <li> 1、 对于颜色的样式会有重复</li>
+                                    <li> 2、 没有把握颜色的权重,因此会引起颜色样式的问题;对于这个问题是发现一个改正一个</li>
+                                    <li> 3、 这个功能是基于layuiAdmin的主题设置,提供了一些方法,需要自己去实现自定义的功能</li>
+                                    <li> 4、 由于上面的各种问题,colortheme功能需要手动开启,在引入css和js文件之后,调用layui.colortheme.run()开启功能</li>
+                                    <hr class="layui-border-red">
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <h4>方法</h4>
+                <blockquote class="layui-elem-quote">
+                    <p>在开启colortheme功能后,会去缓存里面获取主题信息,没有就设置成默认的主题</p>
+                    <p>colortheme功能使用layui.data操作缓存,缓存的key可以通过:layui.config({themeKey:'XXX'});layui.config({themeConfigKey:'XXX'});来进行修改,用来区分不同网站的key,防止混淆</p>
+                    <hr class="layui-border-red">
+                </blockquote>
+                <div class="layui-card">
+                    <div class="layui-card-header">方法介绍</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col>
+                                <col width="100">
+                                <col width="100">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>方法名</th>
+                                    <th>描述</th>
+                                    <th>参数</th>
+                                    <th>返回值</th>
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>getTheme</td>
+                                    <td>获取主题色的key(就是themeKey对应的缓存)</td>
+                                    <td>-</td>
+                                    <td>当前的themeKey对应的缓存</td>
+                                </tr>
+                                <tr>
+                                    <td>setTheme</td>
+                                    <td>设置主题 - 参数是指定一个themeKey(没有参数就去缓存中的)</td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>getConfig</td>
+                                    <td>获取主题配色方案(就是themeConfigKey对应的缓存)</td>
+                                    <td>-</td>
+                                    <td>主题配色方案对象</td>
+                                </tr>
+                                <tr>
+                                    <td>setConfig</td>
+                                    <td>自定义配色方案(name:方案中文名称;cnname:方案英文名称;config:方案的颜色配置)</td>
+                                    <td>name, cnname, config</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>popup</td>
+                                    <td>弹出一个右侧的抽屉层,这个是内置的可视化配置界面,是模拟的layuiAdmin的主题设置</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <h4>自定义主题</h4>
+                <blockquote class="layui-elem-quote">
+                    <p>当前默认有:default(默认配色);classicBlackHeader(经典黑头);darkBlue(藏蓝);coffee(咖啡);purpleRed(紫红);ocean(海洋);green(墨绿);fashionRed(时尚红);这些样式,设置时传入的key就是英文名,括号里面的是中文名</p>
+                    <p>可以自定义主题,需要传入英文名、中文名、和配置项,传入的英文名和原有的重复就是修改原来的主题设置。配置项就是一个key-value的对象,值是颜色的rgb值,可以使用下面的方式,使用layui的颜色选择组件来选择</p>
+                </blockquote>
+                <pre>
+layui.colorpicker.render({
+    elem: "#theme",
+    format: "rgb",
+    done: function (color) {
+      // 选择颜色后将值反填到输入框中,因为最后上传的是表单中输入框里面的信息
+      $("#form").val(color.substring(4, color.length - 1));
+    },
+});
+                </pre>
+                <div class="layui-card">
+                    <div class="layui-card-header">自定义主题参数</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="320">
+                                <col>
+                                <col width="100">
+                                <col width="100">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>key</th>
+                                    <th>描述</th>
+                                    <th>默认值</th>
+                                    <th>名称</th>
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>--lay-framework-menu-main-bgColor</td>
+                                    <td>layout主题颜色,指的是菜单背景色(layuiframework特有)</td>
+                                    <td>32, 34, 42</td>
+                                    <td>layout</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-logo-bgColor</td>
+                                    <td>logo背景颜色(layuiframework特有)</td>
+                                    <td>32, 34, 42</td>
+                                    <td>logo</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-header-main-bgColor</td>
+                                    <td>快捷菜单背景颜色(layuiframework特有)</td>
+                                    <td>255, 255, 255</td>
+                                    <td>快捷菜单</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-header-main-fontColor</td>
+                                    <td>快捷菜单文字颜色(layuiframework特有)</td>
+                                    <td>51, 3, 0</td>
+                                    <td>字体01</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-header-secondary-fontColor</td>
+                                    <td>快捷菜单文字次色(layuiframework特有)</td>
+                                    <td>0, 0, 0</td>
+                                    <td>字体02</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-header-more-color</td>
+                                    <td>用户下拉菜单文字颜色(layuiframework特有)</td>
+                                    <td>102, 6, 0</td>
+                                    <td>字体03</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-body-grey-bgColor</td>
+                                    <td>菜单选项卡选中时的背景颜色(layuiframework特有)</td>
+                                    <td>246, 246, 246</td>
+                                    <td>hover背景</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-bgColor</td>
+                                    <td>layui主题颜色(清新绿).广泛用于多个样式中</td>
+                                    <td>22, 183, 119</td>
+                                    <td>主色</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-secondary-bgColor</td>
+                                    <td>layui主题次色(蓝绿色).与主题色相辅相承</td>
+                                    <td>22, 186, 170</td>
+                                    <td>辅色</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-body-bgColor</td>
+                                    <td>layui普通背景颜色,白色.用于一般页面的背景颜色少数情况作为边框色</td>
+                                    <td>255, 255, 255</td>
+                                    <td>背景</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-body-fontColor</td>
+                                    <td>layui普通字体颜色,用于大多数区域的字体颜色</td>
+                                    <td>51, 51, 51</td>
+                                    <td>字体</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-nomal-borderColor</td>
+                                    <td>layui主题边框色01,这个颜色广泛用于背景色文字和边框的颜色当中</td>
+                                    <td>238, 238, 238</td>
+                                    <td>边框</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-nomal-fontColor</td>
+                                    <td>layui主题字体颜色01,这个颜色广泛用于背景色文字和边框的颜色当中</td>
+                                    <td>238, 238, 238</td>
+                                    <td>字体01</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-nomal-bgColor</td>
+                                    <td>layui主题背景颜色01,这个颜色广泛用于背景色文字和边框的颜色当中</td>
+                                    <td>238, 238, 238</td>
+                                    <td>背景01</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-secondary-fontColor</td>
+                                    <td>layui主题字体颜色02(许多场合的字体颜色,也做为部分三角的边框色)</td>
+                                    <td>153, 153, 153</td>
+                                    <td>字体02</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-hover-fontColor</td>
+                                    <td>layui主题字体颜色03(许多场合的字体颜色,layui-table-tips-c的背景色)</td>
+                                    <td>119, 119, 119</td>
+                                    <td>字体hover</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-disabled-fontColor</td>
+                                    <td>layui主题字体颜色04(许多场合的字体颜色,disabled场景里面会用到)</td>
+                                    <td>210, 210, 210</td>
+                                    <td>字体disabled</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-disabled-borderColor</td>
+                                    <td>layui主题边框颜色02(颜色同上,disabled场景里面会用到)</td>
+                                    <td>210, 210, 210</td>
+                                    <td>边框disabled</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-highlight-fontColor</td>
+                                    <td>layui主题字体颜色05(亮色,白色字体应该比较显眼)</td>
+                                    <td>255, 255, 255</td>
+                                    <td>字体高亮</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-dark-bgColor</td>
+                                    <td>layui主题暗色(黑色打底,在多处用作字体边框和背景色,以及阴影的颜色)</td>
+                                    <td>0, 0, 0</td>
+                                    <td>主题暗色</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-title-bgColor</td>
+                                    <td>layui主题标题色(部分标题如label的背景色)</td>
+                                    <td>250, 250, 250</td>
+                                    <td>标题</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-form-fontColor</td>
+                                    <td>layui主题字体颜色06(表单或者表格里面的文字颜色)</td>
+                                    <td>95, 95, 95</td>
+                                    <td>字体06</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-hover-bgColor</td>
+                                    <td>layui主题背景颜色03(hover或者选中时的背景色)</td>
+                                    <td>248, 248, 248</td>
+                                    <td>背景hover</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-disabled-bgColor</td>
+                                    <td>layui主题背景颜色04(disabled场景里面会用到的背景色)</td>
+                                    <td>251, 251, 251</td>
+                                    <td>背景disabled</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-dangerColor</td>
+                                    <td>layui主题危险颜色(危险,一般是指红色)</td>
+                                    <td>255, 87, 34</td>
+                                    <td>危险</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-checkbox-fontColor</td>
+                                    <td>layui主题字体颜色07(单选多选里面的部分文字颜色)</td>
+                                    <td>194, 194, 194</td>
+                                    <td>选项文字</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-secondary-borderColor</td>
+                                    <td>layui主题边框颜色03(部分边框颜色)</td>
+                                    <td>226, 226, 226</td>
+                                    <td>边框03</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-six-borderColor</td>
+                                    <td>layui主题边框颜色04(layui的树边框颜色)</td>
+                                    <td>192, 196, 204</td>
+                                    <td>树边框</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-main-h-fontColor</td>
+                                    <td>layui主题字体颜色08(h1到h6标签的字体颜色)</td>
+                                    <td>58, 58, 58</td>
+                                    <td>HX文字</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-table-link-fontColor</td>
+                                    <td>layui主题字体颜色09(table里面的link的字体颜色)</td>
+                                    <td>1, 170, 237</td>
+                                    <td>table-link</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-flow-more-fontColor</td>
+                                    <td>layui主题字体颜色10(flow-more的字体颜色)</td>
+                                    <td>115, 115, 131</td>
+                                    <td>flow-more</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-table-checked-bgColor</td>
+                                    <td>layui主题背景颜色06(table-checked背景颜色)</td>
+                                    <td>219, 251, 240</td>
+                                    <td>table-checked</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-table-checked-hover-bgColor</td>
+                                    <td>layui主题背景颜色07(table-checked-hover背景颜色)</td>
+                                    <td>171, 248, 221</td>
+                                    <td>背景07</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-table-tool-bgColor</td>
+                                    <td>layui主题背景颜色08(table-tool背景颜色)</td>
+                                    <td>204, 204, 204</td>
+                                    <td>背景08</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-table-sort-borderColor</td>
+                                    <td>layui主题边框颜色07(table-sort边框颜色)</td>
+                                    <td>178, 178, 178</td>
+                                    <td>边框07</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-color-picker-bgColor</td>
+                                    <td>layui主题背景颜色09(color-picker阴影颜色)</td>
+                                    <td>136, 136, 136</td>
+                                    <td>背景09</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-color-picker-borderColor</td>
+                                    <td>layui主题边框颜色08(color-picker边框颜色)</td>
+                                    <td>240, 240, 240</td>
+                                    <td>边框08</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-main-nav-bgColor</td>
+                                    <td>layui主题背景颜色10(nav背景颜色)</td>
+                                    <td>47, 54, 60</td>
+                                    <td>nav背景</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-main-fixbar-bgColor</td>
+                                    <td>layui主题背景颜色11(fixbar背景颜色)</td>
+                                    <td>159, 159, 159</td>
+                                    <td>fixbar背景</td>
+                                </tr>   
+                                <tr>
+                                    <td>--lay-framework-util-face-bgColor</td>
+                                    <td>layui主题背景颜色12(util-face背景颜色)</td>
+                                    <td>217, 217, 217</td>
+                                    <td>背景12</td>
+                                </tr>   
+                                <tr>
+                                    <td>--lay-framework-util-face-borderColor</td>
+                                    <td>layui主题边框颜色09(util-face边框颜色)</td>
+                                    <td>232, 232, 232</td>
+                                    <td>边框09</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-util-face-hover-bgColor</td>
+                                    <td>layui主题背景颜色13(util-face-hover背景颜色)</td>
+                                    <td>255, 249, 236</td>
+                                    <td>背景13</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-util-face-hover-borderColor</td>
+                                    <td>layui主题边框颜色10(util-face-hover边框颜色)</td>
+                                    <td>235, 115, 80</td>
+                                    <td>边框10</td>
+                                </tr>  
+                                <tr>
+                                    <td>--lay-framework-rate-fontColor</td>
+                                    <td>layui主题字体颜色11(rate的字体颜色)</td>
+                                    <td>255, 184, 0</td>
+                                    <td>rate字体</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-tree-fontColor</td>
+                                    <td>layui主题字体颜色12(tree的字体颜色)</td>
+                                    <td>85, 85, 85</td>
+                                    <td>tree字体</td>
+                                </tr>  
+                                <tr>
+                                    <td>--lay-framework-footer-span-borderColor</td>
+                                    <td>layui主题边框颜色11(laydate的footer-span边框颜色)</td>
+                                    <td>201, 201, 201</td>
+                                    <td>边框11</td>
+                                </tr>  
+                                <tr>
+                                    <td>--lay-framework-laydate-selected-bgColor</td>
+                                    <td>layui主题背景颜色14(laydate选中时间段背景颜色)</td>
+                                    <td>0, 247, 222</td>
+                                    <td>背景14</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-laydate-header-fontColor</td>
+                                    <td>layui主题字体颜色13(laydate-header的字体颜色)</td>
+                                    <td>246, 246, 246</td>
+                                    <td>字体13</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-laydate-grid-selected-bgColor</td>
+                                    <td>layui主题背景颜色15(laydate中grid-selected背景颜色 )</td>
+                                    <td>242, 242, 242</td>
+                                    <td>背景15</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-layer-hover-bgColor</td>
+                                    <td>layer主题背景颜色1</td>
+                                    <td>45, 147, 202</td>
+                                    <td>背景16</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-layer-nomal-bgColor</td>
+                                    <td>layer主题背景颜色2</td>
+                                    <td>30, 159, 255</td>
+                                    <td>背景17</td>
+                                </tr>  
+                                <tr>
+                                    <td>--lay-framework-layer-secondary-bgColor</td>
+                                    <td>layer主题背景颜色3</td>
+                                    <td>46, 45, 60</td>
+                                    <td>背景18</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-layer-close-bgColor</td>
+                                    <td>layer主题背景颜色4</td>
+                                    <td>120, 120, 120</td>
+                                    <td>背景19</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-layer-close-hover-bgColor</td>
+                                    <td>layer主题背景颜色5</td>
+                                    <td>56, 136, 246</td>
+                                    <td>背景20</td>
+                                </tr>  
+                                <tr>
+                                    <td>--lay-framework-layer-hover-fontColor</td>
+                                    <td>layer字体颜色01</td>
+                                    <td>149, 149, 149</td>
+                                    <td>layer-hover</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-layer-img-fontColor</td>
+                                    <td>layer字体颜色02</td>
+                                    <td>113, 113, 113</td>
+                                    <td>layer-image</td>
+                                </tr> 
+                                <tr>
+                                    <td>--lay-framework-layer-nomal-borderColor</td>
+                                    <td>layer边框颜色01</td>
+                                    <td>222, 222, 222</td>
+                                    <td>边框12</td>
+                                </tr>
+                                <tr>
+                                    <td>--lay-framework-layer-secondary-borderColor</td>
+                                    <td>layer边框颜色02</td>
+                                    <td>211, 212, 211</td>
+                                    <td>边框13</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <h4>切换主题</h4>
+                <div class = "layui-tab" lay-pre-code="切换主题" lay-options="{title: 'HTML', encode: 'true'}" >
+                    <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">切换主题</div>
+        <div class="layui-card-body">
+            <button class="layui-btn" id="layui-colortheme-demo3">点击弹出切换页面</button>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use('colortheme', function(){
+            // 启用颜色主题
+            layui.colortheme.run();
+            // 添加点击事件监听
+            $('#layui-colortheme-demo3').on('click', function(){
+                layui.colortheme.popup();
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                    </pre>
+                </div>
+                <h4>其它</h4>
+                <blockquote class="layui-elem-quote">
+                    <p>类似于layuiframework,colortheme的使用一般是要控制整个系统的,但是当前能影响的只是当前页面。所以这个功能也需要自己去实现</p>
+                    <p>下面是layuiframework中实现多个iframe之前联动主题的方式(iframe需要先引用并启用colortheme功能)</p>
+                    <hr class="layui-border-red">
+                </blockquote>
+                <pre>
+// 主题监听事件修改,就是修改当前的colortheme修改主题的方法,在修改完之后也要去查找各个iframe页面去调用他们的方法来修改主题
+// touchLayuiMoudle 方法是确定这个页面里面的layui.colortheme加载成功之后再调用方法
+const setTheme = layui.colortheme.setTheme;
+const setConfig = layui.colortheme.setConfig;
+layui.colortheme.setTheme = function(key){
+    setTheme(key);
+    // 修改首页
+    var iframe = $bodyGroup.find('[lay-id="0"]').find("." + ELEM_IFRAME_CLASS).get(0);
+    handler.touchLayuiMoudle(function () {
+        return (
+            iframe &&
+            iframe.contentWindow &&
+            iframe.contentWindow.layui &&
+            iframe.contentWindow.layui.colortheme
+        );
+    }, function(){
+        iframe.contentWindow.layui.colortheme.setTheme(key)
+    });
+
+    // 修改普通页面
+    _lodash.each(handler.cache.cache, (v, k) => {
+        let _iframe = $bodyGroup.find('[lay-id="'+ v.value +'"]').find("." + ELEM_IFRAME_CLASS).get(0);
+        handler.touchLayuiMoudle(function () {
+            return (
+                _iframe &&
+                _iframe.contentWindow &&
+                _iframe.contentWindow.layui &&
+                _iframe.contentWindow.layui.colortheme
+            );
+        }, function(){
+            _iframe.contentWindow.layui.colortheme.setTheme(key)
+        });
+    });
+};
+
+layui.colortheme.setConfig = function(name, cnname, config){
+    setConfig(name, cnname, config);
+    // 修改首页
+    var iframe = $bodyGroup.find('[lay-id="0"]').find("." + ELEM_IFRAME_CLASS).get(0);
+    handler.touchLayuiMoudle(function () {
+        return (
+            iframe &&
+            iframe.contentWindow &&
+            iframe.contentWindow.layui &&
+            iframe.contentWindow.layui.colortheme
+        );
+    }, function(){
+        iframe.contentWindow.layui.colortheme.setConfig(name, cnname, config)
+    });
+
+    // 修改普通页面
+    _lodash.each(handler.cache.cache, (v, k) => {
+        let _iframe = $bodyGroup.find('[lay-id="'+ v.value +'"]').find("." + ELEM_IFRAME_CLASS).get(0);
+        handler.touchLayuiMoudle(function () {
+            return (
+                _iframe &&
+                _iframe.contentWindow &&
+                _iframe.contentWindow.layui &&
+                _iframe.contentWindow.layui.colortheme
+            );
+        }, function(){
+            _iframe.contentWindow.layui.colortheme.setConfig(name, cnname, config)
+        });
+    });
+};
+                </pre>
+            </div>
+        </div>
+     <!--    请勿在项目正式环境中引用该 layui.js 地址     -->
+    <!-- <script type="text/javascript" src="//cdn.staticfile.org/layui/2.8.17/layui.js"></script> -->
+    <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="../config.js"></script>
+    <script type="text/javascript" src="../plugin/layuiframework/js/util.js"></script>
+    <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+    <!-- <script type="text/javascript" src="../plugin/layuiframework/js/colortheme.js"></script> -->
+    <script type="text/javascript" src="../plugin/lay/example.js"></script>
+    <script type="text/javascript">
+        layui.example.render();
+        layui.outline.render();
+    </script>
+    </body>
+</html>
+
+

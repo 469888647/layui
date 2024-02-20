@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>formPlus使用示例</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+        <!--  大致起完美适配的作用,试开发者不管像素比,只需按照css像素编写代码即可     -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <!--    请勿在项目正式环境中引用该 layui.css 地址     -->
+       <!--  <link href="//cdn.staticfile.org/layui/2.8.17/css/layui.css" rel="stylesheet"> -->
+        <link href="../plugin/layui/css/layui.css" rel="stylesheet">
+        <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+        <!-- <link href="../plugin/layuiframework/css/colortheme.css" rel="stylesheet"> -->
+        <style>
+            .layui-outline-side-fixed .layui-outline-ul li[level="4"]{
+                padding-left: 56px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <!-- 大屏时占大半屏幕(右侧为outline留位置),小屏时占全部屏幕 -->
+            <div class="layui-col-xs12 layui-col-md10">
+                <h3>form功能扩展</h3>
+                <blockquote class="layui-elem-quote">对原始功能进行扩展,提案PR #1410</blockquote>
+                <h4>写在前面</h4>
+                <div class="layui-card">
+                    <div class="layui-card-header">注意事项</div>
+                    <div class="layui-card-body">
+                        <ul style="padding-left: 15px; text-indent: 15px; padding-bottom: 5px;">
+                            <li>
+                                <p> * 在formplus中添加了许多渲染的任务,为了不影响原有的调用,所以需要传入第三个参数为true来区分是否使用这个模块里面的方法进行渲染</p>
+                                <hr class="layui-border-orange">
+                            </li>
+                            <li>
+                                <p> * 在调用layui.form.render(null, filter, deploy)后会返回一个formProxy对象,在接下来的表单赋值和表单事件绑定中可以也建议使用这个对象来进行操作</p>
+                                <ol style="padding-left: 15px; text-indent: 15px; padding-bottom: 5px;">
+                                    <li> 1、 表单赋值比如layui.from.val()虽然可以给表单元素赋值,但是js的方式直接赋值是不能触发内部事件的,造成信息不对称,会引起一些bug的出现。可以先调用方法将表单初始化,然后再调用render方法渲染表单;也可以使用fromProxy.XX = XXX(其中XX是name属性值,XXX是需要赋给的表单值)来对表单元素赋值。</li>
+                                    <li> 2、 formplus会覆盖掉layui.form.on添加的表单触发事件,所以使用了这个模块渲染表单就只能使用fromProxy来对表单进行事件绑定,详细见事件监听</li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <h4>方法</h4>
+                <blockquote class="layui-elem-quote">
+                    <p>调用layui.form.render(type, filter, deploy)将第三个参数设置为true就可以使用下面的功能了</p>
+                </blockquote>
+                <h5>文本域字数限制</h5>
+                <blockquote class="layui-elem-quote">
+                    一般的,通过在文本框和文本域上面设置maxlength就可以限制最大输入字数,通过改功能渲染之后会出现html伪标签的提示
+                </blockquote>
+                <div class = "layui-tab" lay-pre-code="文本域字数限制" lay-options="{title: 'HTML', encode: 'true'}" >
+                    <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">字数提示</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="formplus-form-demo3" >
+                <div class="layui-form-item">
+                    <label class="layui-form-label">长输入框</label>
+                    <div class="layui-input-block" >
+                        <input type="text" name="title" maxlength="50" autocomplete="off" placeholder="请输入" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">输入框</label>
+                        <div class="layui-input-inline" >
+                            <input type="text" name="name" maxlength="15" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">文本域</label>
+                    <div class="layui-input-block" >
+                        <textarea placeholder="请输入内容" name="remark" maxlength="150" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="formplus-bth-demo3">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use('formplus', function(){
+            var formproxy = layui.form.render(null, 'formplus-form-demo3', true);
+            // 表单事件监听 - 提交事件
+            layui.form.on('submit(formplus-bth-demo3)', function(obj){
+                var field = obj.field;
+                layui.layer.msg(JSON.stringify(field), {icon: 6});
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                    </pre>
+                </div>
+                <h5>日期选择</h5>
+                <blockquote class="layui-elem-quote">
+                    <p>一般的,laydate是一个全新的模块来渲染时间日期选择框,这里将通过调用laydate的render方法,使得在渲染表单时将时间选择框一起渲染</p>
+                    <ul>
+                        <li>在文本框上面标注laydate属性即可,还可以通过lay-options属性来配置时间渲染时的可选配置项</li>
+                        <li>这种方式仅使用与简单的单个时间选择框,对于有联动的多选择框可以先渲染时间选择框,再渲染表单</li>
+                        <li>为了防止重复渲染带来的影响,这里会有简单的校验方式,随着版本的更替这些方式也需要升级</li>
+                    </ul>
+                </blockquote>
+                <div class = "layui-tab" lay-pre-code="日期选择" lay-options="{title: 'HTML', encode: 'true'}" >
+                    <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">日期选择</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="formplus-form-demo4">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">提前渲染</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="date1" id="formplus-form-demo4-date" autocomplete="off" readonly="" class="layui-input" >
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">普通日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="date2" laydate autocomplete="off" readonly="" class="layui-input" >
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">参数设置</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="date3" laydate lay-options = '{"format":"yyyy-MM-dd HH:mm:ss","type":"datetime"}' autocomplete="off" readonly="" class="layui-input" >
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="formplus-bth-demo4">提交</button>
+                    <button class="layui-btn" id="formplus-bth-demo4-change">修改第一个时间</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use(['jquery', 'laydate','formplus'], function(){
+            // jquery的初始化
+            if (!window.$) window.$ = layui.$;
+            // 提前渲染时间控件
+            layui.laydate.render({
+                elem: "#formplus-form-demo4-date",
+            });
+            // 表单渲染
+            var formproxy = layui.form.render(null, 'formplus-form-demo4', true);
+            // 表单事件监听 - 提交事件
+            layui.form.on('submit(formplus-bth-demo4)', function(obj){
+                var field = obj.field;
+                layui.layer.msg(JSON.stringify(field), {icon: 6});
+            });
+            // 表单事件监听 - 普通点击事件
+            $('#formplus-bth-demo4-change').on('click', function(){
+                // 通过formproxy修改表单
+                formproxy.date1 = '2023-10-01';
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                    </pre>
+                </div>
+                <h5>表单赋值</h5>
+                <blockquote class="layui-elem-quote">
+                    通过上面的实例,可以通过formproxy对表单进行修改,表单元素的name属性值就是key,赋给的值就是value
+                </blockquote>
+                <h5>表单事件</h5>
+                <blockquote class="layui-elem-quote">
+                    使用formproxy可以对表单元素添加监听事件
+                    <ul>
+                        <li>添加的事件与原有的layui.form.on事件互斥,即使用formplus的表单只能使用formproxy添加监听事件</li>
+                        <li>事件的监听是以name属性值作为key开展的,同一name允许添加多个事件</li>
+                    </ul>
+                </blockquote>
+                <div class = "layui-tab" lay-pre-code="表单事件" lay-options="{title: 'HTML', encode: 'true'}" >
+                    <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">事件监听</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="formplus-form-demo2">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">选择框</label>
+                    <div class="layui-input-inline">
+                        <select name="interest" lay-search="" lay-filter="aihao">
+                            <option value=""></option>
+                            <option value="0" selected="selected">写作</option>
+                            <option value="1">阅读</option>
+                            <option value="2">游戏</option>
+                            <option value="3">音乐</option>
+                            <option value="4">旅行</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">单选框</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="sex1" value="男" title="男" lay-filter="layui-form-vform-sex1" checked="checked">
+                        <input type="radio" name="sex1" value="女" title="女" lay-filter="layui-form-vform-sex1">
+                        <input type="radio" name="sex1" value="禁" title="禁用" disabled="" lay-filter="layui-form-vform-sex1">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">文本域</label>
+                    <div class="layui-input-block">
+                        <!-- lay-lazy在文本框和文本域中出现时,这个表单元素的监听事件由input改为blur -->
+                        <textarea placeholder="请输入内容" lay-lazy name="remark" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="formplus-bth-demo2">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use(['jquery', 'laydate','formplus'], function(){
+            // 表单渲染
+            var formproxy = layui.form.render(null, 'formplus-form-demo2', true);
+            // 表单事件监听 - 提交事件
+            layui.form.on('submit(formplus-bth-demo2)', function(obj){
+                var field = obj.field;
+                layui.layer.msg(JSON.stringify(field), {icon: 6});
+            });
+            // 表单事件监听 - 使用formproxy添加表单监听事件
+            formproxy.$watch('interest', function(value, oldValue){
+                layui.layer.msg('选择框 - 旧值:{' + oldValue + '}, 新值: {' + value + '}', {icon: 6});
+            });
+            formproxy.$watch('sex1', function(value, oldValue){
+                layui.layer.msg('单选框 - 旧值:{' + oldValue + '}, 新值: {' + value + '}', {icon: 6});
+            });
+            formproxy.$watch('remark', function(value, oldValue){
+                layui.layer.msg('文本域 - 旧值:{' + oldValue + '}, 新值: {' + value + '}', {icon: 6});
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                    </pre>
+                </div>
+                <h5>下拉树</h5>
+                <blockquote class="layui-elem-quote">
+                    提案PR #1420
+                </blockquote>
+                <blockquote class="layui-elem-quote">
+                    使用formproxy可以将特定的表单元素转化为下拉树
+                    <ul>
+                        <li>在表单元素输入框中添加lay-options属性就有可能被解析成下拉树</li>
+                        <li>要求表单元素是下面特定的格式, 将这个代码块根据自己的方式放在layuiform里面</li>
+                        <li>通过name属性获取下拉树的值,通过*name获取页面上展示的名称</li>
+                    </ul>
+                </blockquote>
+                <pre>
+&lt;div class=&quot;layui-unselect layui-form-select&quot;&gt;
+    &lt;div class=&quot;layui-select-title&quot;  &gt;
+        &lt;input type=&quot;text&quot; autocomplete=&quot;false&quot; placeholder=&quot;placeholder&quot; name=&quot;name&quot; class=&quot;layui-input&quot; lay-options=&quot;{}&quot; lay-filter=&quot;filter&quot; /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                </pre>
+                <blockquote class="layui-elem-quote">
+                    lay-options参数详情:支持下面这些参数,此外还支持layui.tree的参数,可以通过这个方式控制最后tree的属性
+                </blockquote>
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col>
+                        <col width="100">
+                        <col width="100">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>属性名</th>
+                            <th>描述</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr> 
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>树的id,通过这个id后面可以获取树实例,没有也会随机生成,但是还是建议自己定义一个作为区分</td>
+                            <td>string</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>data</td>
+                            <td>树的数据,与上面的url二选一,这里可以先空着填[],后面还有方法赋值</td>
+                            <td>array/object</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>url</td>
+                            <td>异步获取树的数据的地址</td>
+                            <td>string</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>showCheckbox</td>
+                            <td>需要和layui.tree里面的这个属性区分,这里仅判断是否为多选</td>
+                            <td>boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>checkbox</td>
+                            <td>多选模式下,是否阻止选择后就关闭下拉框</td>
+                            <td>boolean</td>
+                            <td>false</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h6>简单测试</h6>
+                <div class = "layui-tab" lay-pre-code="下拉树-简单测试" lay-options="{title: 'HTML', encode: 'true'}" >
+                    <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">下拉树-简单测试</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="formplus-form-demo15">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">异步获取信息</label>
+                        <div class="layui-input-block">
+                            <div class="layui-unselect layui-form-select">
+                                <div class="layui-select-title"  >
+                                    <input type="text" class="layui-input" autocomplete="false" placeholder="请选择" name = "name" lay-options = "{'url':'../plugin/json/selecttree.json','customName': { 'title':'cityName' }}" lay-filter = "selectTree-demo01" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">渲染后设置树</label>
+                        <div class="layui-input-block">
+                            <div class="layui-unselect layui-form-select">
+                                <div class="layui-select-title"  >
+                                    <input type="text" class="layui-input" autocomplete="false" placeholder="请选择" name = "name2" lay-options = "{'id':'mytree','checkbox':true,'data':[],'customName': { 'title':'cityName' },'showCheckbox': true }" lay-filter = "selectTree-demo02" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="formplus-bth-demo15">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use(['jquery', 'laydate','formplus'], function(){
+            // jquery的初始化
+            if (!window.$) window.$ = layui.$;
+            // 表单渲染
+            var formproxy = layui.form.render(null, 'formplus-form-demo15', true);
+            // 表单事件监听 - 提交事件
+            layui.form.on('submit(formplus-bth-demo15)', function(obj){
+                var field = obj.field;
+                layui.layer.msg(JSON.stringify(field), {icon: 6});
+            });
+            // 设置树的数据
+            $.get('../plugin/json/selecttree.json', {}, function(res){
+                let data = res.data;
+                // 通过树的id获取树实例
+                var treeInst = layui.formplus.$tree['mytree'];
+                // 对树树实例的data属性重新进行赋值
+                treeInst.reload({
+                    data: data
+                });
+                // 重新渲染表单,参数最后面的true不要省去了
+                layui.form.render(null, 'formplus-form-demo15', true);
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                    </pre>
+                </div>
+                <blockquote class="layui-elem-quote">
+                    通过上面的实例不难看出,这里对于树的点击事件没有限制,如果要达到更多的自定义效果就需要使用到下面的监听事件了
+                </blockquote>
+                <h6>事件</h6>
+                <blockquote class="layui-elem-quote">
+                    下拉树的监听事件与下拉框类似,用法就是将select换成了selectTree: layui.form.on('selectTree(lay-filter)', function(obj){ ... })
+                </blockquote>
+                <div class = "layui-tab" lay-pre-code="下拉树-事件" lay-options="{title: 'HTML', encode: 'true'}" >
+                    <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">下拉树-事件</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="formplus-form-demo16">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">简单事件</label>
+                        <div class="layui-input-block">
+                            <div class="layui-unselect layui-form-select">
+                                <div class="layui-select-title"  >
+                                    <input type="text" class="layui-input" autocomplete="false" placeholder="请选择" name = "name" lay-options = "{'url':'../plugin/json/selecttree.json','customName': { 'title':'cityName' },'showCheckbox': true,'checkbox':true}" lay-filter = "selectTree-demo03" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">进阶事件</label>
+                        <div class="layui-input-block">
+                            <div class="layui-unselect layui-form-select">
+                                <div class="layui-select-title"  >
+                                    <input type="text" class="layui-input" autocomplete="false" placeholder="请选择" name = "name2" lay-options = "{'url':'../plugin/json/selecttree.json','customName': { 'title':'cityName' },'showCheckbox': true,'checkbox':true}" lay-filter = "selectTree-demo04" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="formplus-bth-demo16">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use(['jquery', 'laydate','formplus'], function(){
+            // jquery的初始化
+            if (!window.$) window.$ = layui.$;
+            // 表单渲染
+            var formproxy = layui.form.render(null, 'formplus-form-demo16', true);
+            // 表单事件监听 - 提交事件
+            layui.form.on('submit(formplus-bth-demo16)', function(obj){
+                var field = obj.field;
+                layui.layer.msg(JSON.stringify(field), {icon: 6});
+            });
+            // 设置下拉树的点击事件
+            // 简单事件,我们可以通过函数的返回值控制该节点是选中true还是不选中false,
+            layui.form.on('selectTree(selectTree-demo03)', function(obj){
+                // 仅没有子节点的节点才被选中
+                var finalFlag = !obj.value.children || obj.value.children.length == 0;
+                return finalFlag;
+            });
+
+            // 查找树下面所有的无子节点的节点id
+            function findAllNodeId(childrens, ids = []){
+                layui.each(childrens, function(key, value){
+                    if(!value.children || value.children.length == 0){
+                        ids.push(value.id);
+                    } else {
+                        findAllNodeId(value.children, ids);
+                    }
+                });
+                return ids;
+            }
+
+            // 判断v值在数组a中的位置
+            function indexOf(a, v){
+                let index = -1;
+                layui.each(a, function(i, a1){
+                  if (a1 == v) {
+                    index = i;
+                  }
+                });
+                return index;
+            }
+
+            // 进阶事件,我们可以在这函数里面做更多的事情
+            // 这里实现点击父节点选中或不选中下面的所有子节点
+            layui.form.on('selectTree(selectTree-demo04)', function(obj){
+                // 仅没有子节点的节点才被选中
+                var finalFlag = !obj.value.children || obj.value.children.length == 0;
+                if(finalFlag) return true;
+                // 获取它下面所有的无子节点的节点
+                var ids = findAllNodeId(obj.value.children);
+                // 获取当前的树对应的值
+                var values = formproxy.$data['name2'];
+                // 第一次判断,是否是全选,是就移除所有节点,否则添加所有节点
+                // flag true 非全选  false 全选
+                var flag = false;
+                layui.each(ids, function(key, value){
+                    if(indexOf(values, value) == -1) flag = true;
+                });
+                // 修改当前表单的值
+                // 有一个问题 values 在push和splice没有改变到值,这里先使用formproxy.$data['name2']替代
+                layui.each(ids, function(key, value){
+                    if(indexOf(formproxy.$data['name2'], value) == -1){
+                        // 不在取值范围内,如果不是全选就加入选上
+                        if(flag) formproxy.$data['name2'].push(value);
+                    } else {
+                        // 在取值范围内,如果是全选就删除取消
+                        if(!flag) formproxy.$data['name2'].splice(indexOf(formproxy.$data['name2'],value), 1);
+                    }
+                });
+                // 这个方法不行,这个方式只能刷新下拉框收起的下拉树(如果是收起了,也不用这个方法,会自动刷新的)
+                // layui.form.render(null, 'formplus-form-demo16', true);
+                // 这个下拉树是允许连续选择的,所以调用下面的方法吧
+                layui.formplus.doFixValue(obj.othis);
+                return finalFlag;
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                    </pre>
+                </div>
+            </div>
+        </div>
+     <!--    请勿在项目正式环境中引用该 layui.js 地址     -->
+    <!-- <script type="text/javascript" src="//cdn.staticfile.org/layui/2.8.17/layui.js"></script> -->
+    <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="../config.js"></script>
+    <script type="text/javascript" src="../plugin/layuiframework/js/util.js"></script>
+    <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+    <!-- <script type="text/javascript" src="../plugin/layuiframework/js/colortheme.js"></script> -->
+    <script type="text/javascript" src="../plugin/lay/example.js"></script>
+    <script type="text/javascript">
+        layui.example.render();
+        layui.outline.render();
+    </script>
+    </body>
+</html>
+
+

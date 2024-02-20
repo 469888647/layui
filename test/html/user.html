@@ -1,0 +1,81 @@
+<!--
+    用户 表格展示html骨架:
+    > Author: Malphite
+    > Date: 2023-09-23
+ -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>用户表单展示</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+        <!--  大致起完美适配的作用,试开发者不管像素比,只需按照css像素编写代码即可     -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <!--    请勿在项目正式环境中引用该 layui.css 地址     -->
+        <!--  <link href="//cdn.staticfile.org/layui/2.8.17/css/layui.css" rel="stylesheet"> -->
+        <link href="../plugin/layui/css/layui.css" rel="stylesheet">
+        <link href="../plugin/layuiframework/css/colortheme.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="User" style=" padding: 15px;">
+        <div class="layui-form layui-form-pane" lay-filter="User-form" >
+            <div class="layui-form-item" style="margin: 0;" lay-filter="User-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">账号:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" autocomplete="off" class="layui-input" name="name"
+                                   id = "User-name" lay-filter="User-name" placeholder="请输入账号" />
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">时间:</label>
+                        <div class="layui-input-inline" >
+                            <input type="text" autocomplete="off" readonly class="layui-input" name="startTime"
+                                   id = "User-startTime"   lay-filter="User-startTime" placeholder="请选择" />
+                        </div>
+                        <div class="layui-form-mid">-</div>
+                        <div class="layui-input-inline" >
+                            <input type="text" autocomplete="off" readonly class="layui-input" name="endTime"
+                                   id = "User-endTime"   lay-filter="User-endTime" placeholder="请选择" />
+                        </div>
+                    </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" type="button" lay-submit lay-filter="User-submit" >
+                        <i class="layui-icon layui-icon-search"></i>查询
+                    </button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" type="button" id = "User-add">
+                        <i class="layui-icon layui-icon-add-circle-fine"></i>添加
+                    </button>
+                </div>
+                <div class="layui-inline" style="display: none;">
+                    <button class="layui-btn" type="button" lay-submit lay-filter="User-export" >
+                        <i class="layui-icon layui-icon-download-circle"></i>导出
+                    </button>
+                </div>
+                <div class="layui-inline" style="display: none;">
+                    <button class="layui-btn" type="button" id = "User-import">
+                        <i class="layui-icon layui-icon-upload-drag"></i>导入
+                    </button>
+                </div>
+            </div>
+            <table class="layui-table" id="User-table" lay-filter="User-table" style="margin: 0;"> </table>
+        </div>
+        <script  type="text/html" id="User-table-toolbar">
+            <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-sm" lay-event="updateRecord">编辑</a>
+                <a class="layui-btn layui-btn-sm" lay-event="deleteByPid">删除</a>
+            </div>
+        </script>
+    </div>
+     <!--    请勿在项目正式环境中引用该 layui.js 地址     -->
+    <!-- <script type="text/javascript" src="//cdn.staticfile.org/layui/2.8.17/layui.js"></script> -->
+    <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="../config.js"></script>
+    <script type="text/javascript" src="../plugin/layuiframework/js/util.js"></script>
+    <script type="text/javascript" src="../plugin/layuiframework/js/colortheme.js"></script>
+    <script type="text/javascript" src="../js/user.js"></script>
+    </body>
+</html>
+

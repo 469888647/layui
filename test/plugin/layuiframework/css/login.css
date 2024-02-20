@@ -1,0 +1,143 @@
+.layui-windows-desk-login {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 560px;
+  height: 350px;
+  z-index: 999;
+  display: none;
+}
+
+.layui-windows-desk-login.layui-windows-desk-logging-in{
+  display: block;
+}
+
+.layui-windows-desk-login .body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(2px);
+  background-image:linear-gradient(-45deg, rgba(var(--lay-framework-main-bgColor), .2), 0, rgba(var(--lay-framework-main-bgColor), .2), 10%, rgba(var(--lay-framework-main-bgColor), .6), 40%, rgba(var(--lay-framework-main-bgColor), .6), 70%, rgba(var(--lay-framework-main-bgColor), .2), 95%, rgba(var(--lay-framework-main-bgColor), .2));
+  transform: rotateX(90deg);
+  /* transition: all .3s; */
+  animation-fill-mode: forwards;
+}
+
+.layui-windows-desk-login.layui-windows-desk-logging-in .body{
+  animation: animation-body .8s linear;
+  animation-fill-mode: forwards;
+}
+
+
+.layui-windows-desk-login .layui-form {
+  width: 380px;
+  margin-left: 150px;
+  margin-top: 80px;
+}
+
+.layui-windows-desk-login .frame {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 25px;
+  left: 25px;
+  box-shadow: 2px 2px 8px 3px rgba(var(--lay-framework-main-body-bgColor), .5) inset, 0 5px 5px 2px rgba(var(--lay-framework-main-bgColor), .3);
+}
+
+.layui-windows-desk-login .icon {
+  position: absolute;
+  z-index: 10;
+  width: 18px;
+  height: 18px;
+  color: rgba(var(--lay-framework-main-body-bgColor), 1);
+  font-weight: bold;
+  transform-origin: center;
+  transform: scale(5);
+  left: 70px;
+  top: 120px;
+  animation-fill-mode: forwards;
+}
+
+.layui-windows-desk-login.layui-windows-desk-logging-in .icon{
+  animation: animation-icon .2s linear;
+  animation-delay: .5s;
+  animation-fill-mode: forwards;
+}
+
+#layui-form-item-username .layui-input-display{
+  position: relative;
+  line-height: 38px;
+  text-indent: 11px;
+  height: 38px;
+  color: rgba(var(--lay-framework-main-body-bgColor), 1);
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#layui-form-item-username .layui-input-wrap .layui-input{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#layui-form-item-username .layui-input-wrap .layui-input::placeholder {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+#layui-form-item-username.layui-input-hover .layui-input-display{
+  display: none;
+}
+
+#layui-form-item-username .layui-input-wrap{
+  height: 38px;
+  display: none;
+}
+
+#layui-form-item-username.layui-input-hover .layui-input-wrap{
+  display: block;
+}
+
+.layui-windows-desk-login .body img{
+  cursor: pointer;
+  width: 148px;
+  height: 38px;
+}
+
+@keyframes animation-icon {
+  0% {
+      top: 120px;
+  }
+
+  100% {
+      top: 70px;
+  }
+}
+
+@keyframes animation-body {
+  0% {
+      transform: rotateX(90deg);
+  }
+
+  100% {
+      transform: rotateX(0deg);
+  }
+}
+
+.layui-layer.layui-layer-windows .layui-form-textarea-item .layui-form-label{
+  height: 100px;
+  line-height: 90px
+}
+
+.layui-layer.layui-layer-windows .layui-form-textarea-item .layui-input-inline .layui-textarea{
+  width: 510px;
+}
+
+.layui-layer.layui-layer-windows .layui-page-content{
+  padding: 15px;
+}

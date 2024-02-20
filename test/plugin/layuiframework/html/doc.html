@@ -1,0 +1,307 @@
+<meta charset="UTF-8">
+<style>
+    .ws-dir-ul {
+        max-height: 530px;
+        position: fixed;
+        top: 0;
+        right: 25px;
+        bottom: 0;
+        margin: auto;
+        overflow: auto;
+        background-color: #fff;
+        padding-top: 10px;
+        padding-right: 20px;
+        border-left: 1px solid #eee;
+    }
+
+    .ws-dir-ul:hover {
+        overflow: auto
+    }
+
+    .ws-dir-ul li {
+        position: relative;
+        padding-left: 16px;
+        line-height: 28px;
+        color: rgba(0, 0, 0, .35)
+    }
+
+    .ws-dir-ul li[level="2"] {
+        padding-left: 20px
+    }
+
+    .ws-dir-ul li[level="3"] {
+        padding-left: 48px
+    }
+
+    .ws-dir-ul li a {
+        display: block
+    }
+
+    .ws-dir-ul li a:hover,
+    .ws-dir-ul li.layui-this a {
+        color: #5fb878
+    }
+
+    .ws-dir-ul li.layui-this:before {
+        content: '';
+        position: absolute;
+        left: -1px;
+        top: 0;
+        bottom: 0;
+        border-left: 1px solid #5fb878
+    }
+</style>
+<div id = "doc1" class="doc1" style="padding: 5px;padding-right: 120px;">
+    <h2>根据数据库生成layui项目</h2>
+    <blockquote class="layui-elem-quote">
+        <li> 一、将项目拉取到本地后使用IntelliJ IDEA打开工程(idea用2021.2.1进行的测试) </li>
+        <li> 二、运行逆向工程主方法,输入需要映射的表名 </li>
+        <li> 三、运行springboot工程主方法,打开后台服务 </li>
+        <li> 四、运行nginx,打开前台服务 </li>
+        <li> 五、访问服务http://localhost/8089/ </li>
+    </blockquote>
+    <blockquote id="ready" title="准备使用" class="layui-elem-quote">
+        <h2>eg0:准备使用</h2> 首先需要做好准备工作
+        <li> 一、使用git命令将项目拉取到本地 </li>
+        <li> 二、给电脑安装jdk1.8+,并配好环境变量 </li>
+        <li> 三、解压maven(maven用3.6.3进行的测试),创建好maven仓库,优化maven配置(加阿里镜像加速等) </li>
+        <li> 四、准备数据库(数据库用mysql进行的测试),创建好数据库并创建好对应的表 </li>
+        <li> 五、给电脑安装IntelliJ IDEA,并打开之前拉取的项目 </li>
+        <li> 六、点击IDEA里面的maven里面的刷新按钮,下载依赖 
+            <ul style="margin-left: 15px;">
+                <li> 1. spring - web </li>
+                <li> 2. lombok </li>
+                <li> 3. mybatis - plus </li>
+                <li> 4. freemarker </li>
+                <li> 5. swagger </li>
+                <li> 6. spring - validation </li>
+                <li> 7. easyexcel </li>
+                <li> 8. mybatis - pagehelper </li>
+                <li> 9. spring - aop </li>
+                <li> 10. mysql - driver </li>
+                <li> 11. druid </li>
+            </ul>
+        </li>
+    </blockquote>
+    <blockquote id="start" title="开始使用" class="layui-elem-quote">
+        <h2>eg1:开始使用</h2> 直接调用方法生成代码
+    </blockquote>
+    <div class="layui-tab" lay-filter="test-doc1" id = "test-doc1" style="height:220px">
+        <div class="layui-tab-title">
+            <li lay-id="preview" class="layui-this">开始使用</li>
+            <li lay-id="code" class="">＜/＞</li>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div id="test1">
+                    <li> 一、配置数据源 </li>
+                    <li> 二、文件路径 </li>
+                    <li> 三、其它配置 </li>
+                    <li> 四、生成代码(java文件路径是:org.ymf.LayuiGeneratorFactory 进行的测试) </li>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <pre class="layui-code" lay-options="{title: 'JAVA', encode: 'true'}">
+                    public static void main(String[] args) {
+                        /**
+                         * 配置数据源
+                         */
+                        DataSourceConfig dsc = new DataSourceConfig();
+                        dsc.setUrl("jdbc:mysql://localhost:3306/test");
+                        // mysql-connector-java 5.x及之前版本中的驱动类名
+                        dsc.setDriverName("com.mysql.jdbc.Driver");
+                        // mysql-connector-java 6.x及后续版本中的驱动类名
+                        // dsc.setDriverName("com.mysql.cj.jdbc.Driver");
+                        dsc.setUsername("root");
+                        dsc.setPassword("hadoop");
+                        dsc.setDbType(DbType.MYSQL);
+                        /**
+                         * 配置生成的文件路径
+                         * （Java文件路径）
+                         *
+                         * /web
+                         *   - config.js     前端配置文件
+                         *   - table.json    临时文件
+                         *   - index.js      首页js文件
+                         *   - index.html    首页html文件
+                         *   /html           存放html文件
+                         *   /js             存放js文件
+                         */
+                        PackageConfig pc = new PackageConfig();
+                        pc.setParent("org.ymf");
+                        pc.setEntity("entity");
+                        pc.setMapper("mapper");
+                        pc.setService("service");
+                        pc.setController("controller");
+                        // TODO 作者名称
+                        String author = "Malphite";
+                        // 注释  设置 false 可以省略大量注释
+                        LayuiGlobalConfig.FUUL_COMMENT = false;
+                        // 调用方法生成代码，这个方法从mybatisplus逆向copy过来的
+                        MybatisGenerator.build(dsc, pc, author);
+                    }
+                </pre>
+            </div>
+        </div>
+    </div>
+    <blockquote id="spring" title="启动项目" class="layui-elem-quote">
+        <h2>eg2:启动项目</h2> 创建springboot项目启动类,执行main方法启动后台项目(这个类应该在上面指定的路径里面,这样才能保证spring能自动的扫到创建的代码)。
+    </blockquote>
+    <div class="layui-tab" lay-filter="test-doc2" style="height:260px">
+        <div class="layui-tab-title">
+            <li lay-id="preview" class="layui-this">启动项目</li>
+            <li lay-id="code" class="">＜/＞</li>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div id="test1">
+                    执行启动类(java文件路径是:org.ymf.LayuiGeneratorApplication 进行的测试)里面的main方法就可以启动springboot项目。如果没有特别配置,端口是默认的8080端口
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <pre class="layui-code" lay-options="{title: 'HTML', encode: 'true'}">
+                    @SpringBootApplication
+                    public class LayuiGeneratorApplication {
+                        public static void main(String[] args) {
+                            SpringApplication.run(LayuiGeneratorApplication.class, args);
+                        }
+                    }
+                </pre>
+            </div>
+        </div>
+    </div>
+    <blockquote id="nginx" title="启动nginx" class="layui-elem-quote">
+        <h2>eg3:启动nginx</h2> 启动前端的页面服务
+    </blockquote>
+    <div class="layui-tab" lay-filter="test-doc3" id = "test-doc3"  style="height:260px">
+        <div class="layui-tab-title">
+            <li lay-id="preview" class="layui-this">扩展信息</li>
+            <li lay-id="code" class="">＜/＞</li>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div id="test1">
+                    <li>一、解压nginx文件(将文件解压到与逆向工程同一个文件夹下面,使他们同级 进行的测试)</li>
+                    <li>二、修改nginx配置文件(将端口设置为8089,,将主页映射成index.html 进行的测试 )</li>
+                    <li>三、点击nginx.exe文件打开nginx服务</li>
+                    <li>四、修改配置后都需要重启nginx才能生效</li>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <pre class="layui-code" lay-options="{title: 'CONF', encode: 'true'}">
+                    ########### nginx配置测试 #################
+                    worker_processes  1;  
+                    events {
+                        accept_mutex on;                
+                        multi_accept on;                
+                        #use epoll;                     
+                        worker_connections  1024;       
+                    }
+                    http {
+                        include       mime.types;       
+                        default_type  application/octet-stream;     
+                        client_max_body_size 200m;
+                        sendfile        on;                     
+                        #sendfile_max_chunk 100k;               
+                        #tcp_nopush     on;
+                        keepalive_timeout  65;                  
+                        server {
+                            #keepalive_requests 120; 
+                            listen       8089;       
+                            server_name  localhost;  
+                            client_max_body_size 200m;
+                            location / { 
+                                root   ../LayuiGenerator/web;  
+                                index  index.html index.htm;   
+                            }
+                            location ^~/layui/ {
+                                client_max_body_size 200m;
+                                add_header 'Access-Control-Allow-Origin' '*';
+                                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                                add_header 'Access-Control-Allow-Headers' '*';
+                                add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+                                if ($request_method = 'OPTIONS') {
+                                    add_header 'Access-Control-Max-Age' 1728000;
+                                    add_header 'Content-Type' 'text/plain; charset=utf-8';
+                                    add_header 'Content-Length' 0;
+                                    add_header 'Access-Control-Allow-Origin' $http_origin;
+                                    add_header 'Access-Control-Allow-Credentials' 'true';
+                                    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                                    add_header 'Access-Control-Allow-Headers' '*';
+                                    return 204;
+                                }
+                                proxy_hide_header "Access-Control-Allow-Origin";  
+                                proxy_hide_header "Access-Control-Allow-Credentials";
+                                proxy_hide_header "Access-Control-Allow-Headers";
+                                proxy_set_header   Host $host;
+                                proxy_set_header   X-Real-IP $remote_addr;
+                                proxy_set_header   X-Real-Port $remote_port;
+                                proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+                                proxy_pass   http://localhost:8080/;
+                            }
+                            error_page   500 502 503 504  /50x.html;
+                            location = /50x.html {
+                                root   html;
+                            }
+                        }
+                    }
+                    
+                </pre>
+            </div>
+        </div>
+    </div>
+    <blockquote id="visit" title="访问服务" class="layui-elem-quote">
+        <h2>eg4:访问服务</h2>在 Google Chrome 里面访问http://localhost:8089 就可以查看页面了
+    </blockquote>
+    <blockquote id="principle" title="项目分析" class="layui-elem-quote">
+        <h2>eg5:项目分析</h2>使用mybatis-plus逆向工程的原理,连接数据库里面的表格,获取每一列的具体属性和信息。通过freemarker模板,将信息传入然后在指定的文件路径上面生成代码文件。在mybatis-plus逆向工程基础上新增了
+        <li> 增、删、改、查、excel导入、excel导出的后台服务 </li>
+        <li> 创建前端参数对象(vo对象) </li>
+        <li> spring-advice用来统一返回信息 </li>
+        <li> 前端layui的html和js的模板 </li>
+        <li> 首页与配置信息 </li>
+        <li> 创建table.json文件,用于缓存表格信息(保存所有经手的表格信息-基础信息) </li>
+    </blockquote>
+    <blockquote id="param" title="参数设置" class="layui-elem-quote">
+        <h2>eg4:参数设置</h2>参数设置放在了数据库表上面的列注释上面。一般的建议给列加上注释。
+        <li> XXX(verify)  这一列指定为非空,在添加和修改的页面上会添加非空判断  </li>
+        <li> XXX(time)  这一列指定为时间类型,在页面上会使用laydate转化成时间控件  </li>
+        <li> XXX(k1.v1;k2.v2;k3.v3)  这一列指定为特殊列,在表格中会根据k的值转成对应的v值,在添加和修改时会转化成下拉选择框  </li>
+        <li> XXX(radio:k1.v1;k2.v2;k3.v3)  这一列指定为特殊列,在表格中会根据k的值转成对应的v值,在添加和修改时会转化成单选框  </li>
+    </blockquote>
+    <blockquote id="end" title="总结" class="layui-elem-quote">
+        <h2>总结</h2>
+        <li>1.了解了mybatis-plus逆向工程的原理</li>
+        <li>2.了解了freemarker模板引擎的使用</li>
+        <li>3.对layui表格表单进行了巩固</li>
+    </blockquote>
+    <blockquote id="security" title="登录设置" class="layui-elem-quote">
+        <h2>eg5:登录设置</h2>新增springsecurity + jwt的登录实现前后端分离登录。
+        <li> 在pom.xml中添加了相关的库  </li>
+        <li> 在stereotype.security包下面添加了一些公共配置  </li>
+        <li> 在码生成后会在自定义路径生成一个security文件夹,文件夹里面是可修改的配置  
+            <ul style="margin-left: 10px;text-indent: 15px;">
+                <li>KeyPair: 加密使用RSA加密(有一个公共类 RSAUtils),公钥和私钥在代码生成时随机分配在KeyPair中</li>
+                <li>WebUser: 重写AbstractUser自定义自己的用户配置类,需要重写三个方法以便security登录时调用</li>
+                <li>WebSecurityConfig: springsecurity的装配类,可以根据需要进行修改。需要在里面修改AbstractUserGetter的实现类,以便通过用户名类获取用户信息进行登录。还可以自定义UserDetailsService可以灵活的配置springsecurity里面的用户信息</li>
+            </ul>
+        </li>
+        <li> 另外在KeyPair中的main方法运行可以获取密码加密后的信息和需要入库的信息</li>
+        <li> 前端仿照layui也简单实现了一下登录页</li>
+    </blockquote>
+    <blockquote id="es" title="聚合搜索" class="layui-elem-quote">
+        <h2>eg6:聚合搜索</h2>新增elasticsearch实现聚合搜索。
+        <li> 在pom.xml中添加了相关的库  </li>
+        <li> 使用es的版本为7.17.9  </li>
+        <li> 通过配置uris,用户名,密码,同步策略在项目中穿插接入es的代码</li>
+        <li> 列举了下面几种es与数据库的数据同步策略 
+            <ul style="margin-left: 10px;text-indent: 15px;">
+                <li>CANAL: (默认)使用canal进行同步,这种方式不会额外生成代码,canal需要自己去实现</li>
+                <li>SCHEDULED_TASK: 使用定时任务进行同步,将会在task包下面生成全量更新和定时更新的任务,建议全量更新手动实现一次,以确保spring的动态mapper可以生效</li>
+                <li>DOUBLE_WRITE: 数据库与es进行双写,将会在impl类里面的更新操作时加上es的更新操作。excel批量导入需要自己实现同步。建议全量更新手动实现一次,以确保spring的动态mapper可以生效</li>
+                <li>LOGSTASH_PIPES: 使用logstash-7.17.9进行数据同步,将会在resources下面的logstash文件夹下面生成conf文件。在task包下面生成全量更新任务,建议全量更新手动实现一次,以确保spring的动态mapper可以生效</li>
+            </ul>
+        </li>
+        <li> 前端也简单实现了一下聚合搜索页,在首页双击shift打开搜索</li>
+    </blockquote>
+</div>

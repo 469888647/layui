@@ -1,0 +1,108 @@
+<!--
+    首页html骨架:
+ -->
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>layui测试</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+        <!--  大致起完美适配的作用,试开发者不管像素比,只需按照css像素编写代码即可     -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link href="../plugin/layui/css/layui.css" rel="stylesheet">
+    </head>
+    <body class="layui-layout-body">
+        <div style="position: absolute;width: 100%;height: 100%;">
+            <input type = "file" id = "upload" />
+            <div id = "canvas" style = "width:500px;height: 400px;"></div>
+        </div>
+        <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+        <script type="text/javascript" src="../plugin/echarts-4.9.1.min.js"></script>
+        <script type="text/javascript" src="../plugin/echarts-gl.min.js"></script>
+        <script type="text/javascript" src="../plugin/layuiframework/js/music.js"></script>
+        <script type="text/javascript">
+            var uploadBtn = document.getElementById('upload');
+            uploadBtn.onchange = function(){
+                if (uploadBtn.files.length !== 0) {
+                    var file = uploadBtn.files[0];
+                    try {
+                        layui.music.loadFile(file, function(buffer){
+                        layui.music.playBuffer(buffer);
+                    });
+                    } catch (error) {
+                        layui.layer.msg(error)
+                    }
+                    uploadBtn.value='';
+                };
+            };
+
+            // setTimeout(function(){
+            //     try {
+            //     layui.music.loadUrl('../plugin/json/1.mp3', function(buffer){
+            //         layui.music.playBuffer(buffer);
+            //     });
+            // } catch (error) {
+            //     layui.layer.msg(error,{icon: 5})
+            // }
+            // },300);
+
+            var option = {
+                tooltip: {},
+                visualMap: {
+                    show: false,
+                    min: 0.1,
+                    max: 4,
+                    inRange: {
+                        color: ['#010103', '#2f490c', '#b0b70f', '#fdff44', '#fff']
+                    }
+                },
+                xAxis3D: {
+                    type: 'value'
+                },
+                yAxis3D: {
+                    type: 'value'
+                },
+                zAxis3D: {
+                    type: 'value',
+                    min: -6,
+                    max: 6
+                },
+                grid3D: {
+                    show: false,
+                    environment: '#000',
+                    viewControl: {
+                        distance: 100
+                    },
+                    postEffect: {
+                        enable: true,
+                        FXAA: {
+                            enable: true
+                        }
+                    },
+                    light: {
+                        main: {
+                            shadow: true,
+                            intensity: 10,
+                            quality: 'high'
+                        },
+                    }
+                },
+                series: [{
+                    type: 'bar3D',
+                    silent: true,
+                    shading: 'lambert',
+                    data: [],
+                    barSize: 1,
+                    lineStyle: {
+                        width: 4
+                    },
+                    // animation: false,
+                    animationDurationUpdate: 60
+                }]
+            };
+            var myChart = echarts.init($('#canvas').get(0));
+            myChart.setOption(option, true, false);
+        </script>
+    </body>
+</html>
