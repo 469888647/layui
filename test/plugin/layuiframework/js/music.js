@@ -175,10 +175,10 @@ layui.define(function (exports) {
       handler.duration = buffer.duration;
       handler.STOP_STATE = handler.play.STOP_NOMAL_STATE;
       handler.bufferedSourceNode.buffer = handler.buffer;
-      // handler.bufferedSourceNode.loop = true;
+      handler.bufferedSourceNode.loop = true;
 
       // 倍速播放
-      handler.bufferedSourceNode.playbackRate.value = 1;
+      handler.bufferedSourceNode.playbackRate.value = 1.2;
 
       handler.bufferedSourceNode.onended = function(){
         handler.analyingIndex && handler.cancelAnimationFrame(handler.analyingIndex);
@@ -186,6 +186,11 @@ layui.define(function (exports) {
         // handler.STOP_STATE == handler.play.STOP_NOMAL_STATE && audio.trigger('playend');
         handler.bufferedSourceNode = null;
       }
+
+      handler.bufferedSourceNode.loopEnd = function(){
+        handler.startTime =  handler.getContext().currentTime;
+      }
+
       // ＴＯＤＯ连接目的地
       handler.connectAnalyser(handler.bufferedSourceNode);
 
