@@ -187,9 +187,9 @@ layui.define(function (exports) {
         handler.bufferedSourceNode = null;
       }
 
-      handler.bufferedSourceNode.loopEnd = function(){
-        handler.startTime =  handler.getContext().currentTime;
-      }
+      // handler.bufferedSourceNode.loopEnd = function(){
+      //   handler.startTime =  handler.getContext().currentTime;
+      // }
 
       // ＴＯＤＯ连接目的地
       handler.connectAnalyser(handler.bufferedSourceNode);
