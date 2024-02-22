@@ -4,7 +4,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-
         <title>layui测试</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -12,8 +11,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <link href="./plugin/layui/css/layui.css" rel="stylesheet">
         <link href="./plugin/layuiframework/css/frame.css" rel="stylesheet">
-        <link href="./plugin/layuiframework/css/login.css" rel="stylesheet">
-        <link href="./plugin/layuiframework/css/search.css" rel="stylesheet">
     </head>
     <body class="layui-layout-body">
     <div id="lay-framework">
@@ -22,7 +19,7 @@
                 <!-- 标题放在了这里 -->
                 <div class="layui-logo layui-hide-xs layui-bg-black">
                     <i class="layui-icon layui-icon-release"></i>
-                    <span class="layui-logo-span" version = "beta 1.7.1">layui-framework</span>
+                    <span class="layui-logo-span">layui-framework</span>
                 </div>
                 <!-- 头部区域（可配合layui 已有的水平导航） -->
                 <ul class="layui-nav layui-layout-left">
@@ -31,9 +28,9 @@
                             <i class="layui-icon layui-icon-shrink-right" id="lay-framework-flexible"></i>
                         </a>
                     </li>
-                    <!-- 跳转layui的gitee, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
+                    <!-- 跳转gitee, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
                     <li class="layui-nav-item layui-hide-xs" lay-unselect>
-                        <a href="https://gitee.com/layui/layui" target="_blank" title="前台">
+                        <a href="https://gitee.com/giteetcj/layui/tree/layuiframework" target="_blank" title="前台">
                             <i class="layui-icon layui-icon-website"></i>
                         </a>
                     </li>
@@ -42,44 +39,19 @@
                             <i class="layui-icon layui-icon-refresh-3"></i>
                         </a>
                     </li>
-                    <!-- 搜索按钮, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
-                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
-                        <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search"
-                               lay-header-event="serach" lay-action="template/search.html?keywords=">
-                    </li>
                 </ul>
                 <!-- 头部区域 - 靠右（可配合layui 已有的水平导航） -->
                 <ul class="layui-nav layui-layout-right">
                     <li class="layui-nav-item" lay-unselect>
-                        <a lay-href="app/message/index.html" lay-header-event="message" lay-text="消息中心">
-                            <i class="layui-icon layui-icon-notice"></i>
-
-                            <!-- 如果有新消息，则显示小圆点 -->
-                            <span class="layui-badge-dot"></span>
-                        </a>
-                    </li>
-                    <!-- 主题按钮, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
-                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
                         <a href="javascript:;" lay-header-event="theme">
                             <i class="layui-icon layui-icon-theme"></i>
                         </a>
                     </li>
-                    <!-- 全屏按钮, layui-hide-xs 意味者如果屏幕宽度过小 <765px 这项菜单会隐藏 -->
-                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <li class="layui-nav-item" lay-unselect>
                         <a href="javascript:;" lay-header-event="fullscreen">
                             <i class="layui-icon layui-icon-screen-full"></i>
                         </a>
                     </li>
-                    <li class="layui-nav-item" lay-unselect>
-                        <a href="javascript:;">
-                            <!-- 用户名,这个在登录之后会替换成真实用户名 -->
-                            <cite id = "layui-login-text">XXXX</cite>
-                        </a>
-                        <dl class="layui-nav-child">
-                            <dd lay-header-event="logout" style="text-align: center;"><a>退出</a></dd>
-                        </dl>
-                    </li>
-
                     <li class="layui-nav-item layui-hide-xs" lay-unselect>
                         <a href="javascript:;" lay-header-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>
                     </li>
@@ -101,58 +73,25 @@
                             </a>
                         </li>
                         <li class="layui-nav-item">
-                            <a href="javascript:;" lay-tips="图表信息" lay-direction="2">
-                                <i class="layui-icon layui-icon-file"></i>
-                                <cite>图表信息</cite>
+                            <a href="javascript:;" lay-tips="表单扩展" lay-direction="2" lay-page-key="formPlusExp">
+                                <i class="layui-icon layui-icon-form"></i>
+                                <cite><span>表单扩展</span><span class="layui-font-12 layui-font-gray">formplus</span></cite>
                             </a>
-                            <dl class="layui-nav-child">
-                                <dd data-name="Chart">
-                                    <a href="javascript:;" lay-page-key="chart">图表信息基础信息</a>
-                                </dd>
-                                <dd data-name="Chart">
-                                    <a href="javascript:;" lay-page-key="chartPlus">图表信息编辑信息</a>
-                                </dd>
-                            </dl>
                         </li>
                         <li class="layui-nav-item">
-                            <a href="javascript:;" lay-tips="用户" lay-direction="2">
-                                <i class="layui-icon layui-icon-file"></i>
-                                <cite>用户</cite>
+                            <a href="javascript:;" lay-tips="颜色主题" lay-direction="2" lay-page-key="colorthemeExp">
+                                <i class="layui-icon layui-icon-theme"></i>
+                                <cite><span>颜色主题</span><span class="layui-font-12 layui-font-gray">colortheme</span></cite>
                             </a>
-                            <dl class="layui-nav-child">
-                                <dd data-name="User">
-                                    <a href="javascript:;" lay-page-key="user">用户基础信息</a>
-                                </dd>
-                                <dd data-name="User">
-                                    <a href="javascript:;" lay-page-key="userPlus">用户编辑信息</a>
-                                </dd>
-                            </dl>
                         </li>
+                        <!-- layui-icon-cols tree -->
+                        <!-- layui-icon-headset music -->
+                        <!-- layui-icon-app tile -->
                         <li class="layui-nav-item">
-                            <a href="javascript:;" lay-tips="发展与提高" lay-direction="2">
+                            <a href="javascript:;" lay-tips="测试功能" lay-direction="2">
                                 <i class="layui-icon layui-icon-release"></i>
-                                <cite>发展与提高</cite>
+                                <cite>测试功能</cite>
                             </a>
-                            <dl class="layui-nav-child">
-                                <dd data-name="formPlusExp">
-                                    <a href="javascript:;" lay-page-key="formPlusExp">表单增强</a>
-                                </dd>
-                            </dl>
-                            <dl class="layui-nav-child">
-                                <dd data-name="colorthemeExp">
-                                    <a href="javascript:;" lay-page-key="colorthemeExp">颜色主题</a>
-                                </dd>
-                            </dl>
-                            <dl class="layui-nav-child">
-                                <dd data-name="formplus">
-                                    <a href="javascript:;" lay-page-key="tabledemo">表格测试</a>
-                                </dd>
-                            </dl>
-                            <dl class="layui-nav-child">
-                                <dd data-name="selectTree">
-                                    <a href="javascript:;" lay-page-key="selectTree">下拉树</a>
-                                </dd>
-                            </dl>
                             <dl class="layui-nav-child">
                                 <dd data-name="selectTree">
                                     <a href="javascript:;" lay-page-key="test">音乐</a>
@@ -188,7 +127,6 @@
         </div>
     </div>
     <script type="text/javascript" src="./plugin/layui/layui.js"></script>
-    <script type="text/javascript" src="./plugin/jsencrypt.min.js"></script>
     <script type="text/javascript" src="./plugin/layuiframework/js/util.js"></script>
     <script type="text/javascript" src="./config.js"></script>
     <script type="text/javascript" src="./plugin/layuiframework/js/frame.js"></script>

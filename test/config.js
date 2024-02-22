@@ -24,6 +24,10 @@ const LAYER_CONFIG = {
         name: '颜色主题示例',
         url: './html/colorthemeExp.html',
     },
+    tileExp: {
+        name: '快捷菜单示例',
+        url: './html/tileExp.html',
+    },
     test: {
         name: 'music测试',
         url: './html/test.html',

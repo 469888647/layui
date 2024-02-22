@@ -1160,7 +1160,7 @@ layui.define(["jquery", "form"], function (exports) {
           util.each(fieldElems, (formItem) => {
             if (formItem instanceof HTMLElement) {
               // lay-ignore标注后不会对这个进行美化,这里就放弃渲染它
-              if (formItem.getAttribute("lay-ignore") === null) {
+              if (formItem.getAttribute("lay-ignore") === null && formItem.getAttribute("lay-formplus-ignore") === null) {
                 // 获取元素的name属性，作为它的key
                 let _name = formItem.name;
                 // 由于表单可能由layui渲染过了，生成了一些干扰表单元素， 有点干扰，这里尽量避免干扰, 没得name属性的不进行渲染
@@ -1239,6 +1239,52 @@ layui.define(["jquery", "form"], function (exports) {
       formRenderer.renderers.push(MyRenderers.select);
       return formRenderer.renderers;
     },
+
+    /**
+     * @function formRenderer~val 表单赋值/取值
+     * @param {*} filter 表单的filter属性
+     * @param {*} value 赋值内容
+     * @returns obj 表单信息
+     */
+    val: function(filter, value){
+      if(!filter) return null;
+      if(!value) return layui.form.val(filter);
+      let _formProxy = layui.form.render(null, filter, true);
+      if(!_formProxy) return;
+      // 赋值
+      layui.each(value, function (k, v){
+        _formProxy.$data[k] = v;
+      });
+      return layui.form.val(filter);
+    },
+
+    /**
+     * @function formRenderer~getValue formplus表单取值
+     * @param {*} filter 表单的filter属性
+     * @param {*} key 需要取值表单元素的name属性值
+     * @returns obj 表单元素的值
+     */
+    getValue(filter, key) {
+      if(!filter) return null;
+      let _formProxy = layui.form.render(null, filter, true);
+      if(!_formProxy) return null;
+      return _formProxy.$data[key] || null;
+    },
+
+    /**
+     * @function formRenderer~on 表单事件绑定
+     * @param {*} filter 表单的filter属性
+     * @param {*} key 需要绑定change事件的表单元素的name属性值
+     * @param {*} fn 回调函数
+     */
+    on: function(filter, key, fn){
+      if(!filter) return null;
+      let _formProxy = layui.form.render(null, filter, true);
+      if(!_formProxy) return;
+      // 监听事件
+      _formProxy.$watch(key, fn);
+    },
+
   };
 
   /**
@@ -1477,7 +1523,7 @@ layui.define(["jquery", "form"], function (exports) {
         var selectedOption = function(inst, values){
           if(!util.isArray(values)) values = [values];
           layui.each(values, function(key, value){
-            inst.config.elem.find('[data-id="'+value+'"]').find('.layui-tree-txt').addClass(TREE_SELECTED_CSS);
+            inst.config.elem.find('[data-id="'+value+'"]').find('.layui-tree-txt').eq(0).addClass(TREE_SELECTED_CSS);
           });
           // includes 好像数字 123 和字符串 '123' 不能匹配
           // inst.config.elem.find('[data-id]').each(function(e){

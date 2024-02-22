@@ -48,6 +48,7 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
   const SIDE_SHRINK = "layadmin-side-shrink";
   // layui-this
   const THIS = "layui-this";
+  const SIDE_NAV_ITEMD = "layui-nav-itemed";
   /**
    * iframe的class名称
    */
@@ -552,6 +553,8 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
      *  - 如果是一个对象(数据),就出现在run方法的回调里面
      */
     setTop: function (key, data) {
+      // 添加适应菜单位置
+      handler.setMenustatus(key); 
       if ("0" === key) return handler.doFixedHomePage();
       if (!key) return;
       // 不再是固定首页状态
@@ -586,9 +589,60 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
         .find('[lay-id="' + id + '"]')
         .addClass(THIS)
         .siblings("." + THIS)
-        .removeClass(THIS);
+        .removeClass(THIS); 
       // 标签页自动适应位置
       handler.rollPageAuto(id);  
+    },
+    setMenustatus: function(key){
+      let list = $('#lay-framework-side-menu').children('li');
+      list.each(function(index1, item1){
+        var othis1 = $(item1);
+        var data1 = {
+          list: othis1.children('.layui-nav-child'),
+          a: othis1.children('*[lay-page-key]')
+        };
+        var listChildren1 = data1.list.children('dd');
+        var matched1 = key === data1.a.attr('lay-page-key');
+
+        listChildren1.each(function(index2, item2){
+          var othis2 = $(item2)
+          ,data2 = {
+            list: othis2.children('.layui-nav-child'),
+            a: othis2.children('*[lay-page-key]')
+          }
+          ,listChildren2 = data2.list.children('dd')
+          ,matched2 = key === data2.a.attr('lay-page-key');
+          
+          listChildren2.each(function(index3, item3){
+            var othis3 = $(item3)
+            ,data3 = {
+              list: othis3.children('.layui-nav-child'),
+              a: othis3.children('*[lay-page-key]')
+            }
+            ,matched3 = key === data3.a.attr('lay-page-key');
+            
+            if(matched3){
+              var selected = data3.list[0] ? SIDE_NAV_ITEMD : THIS;
+              othis3.addClass(selected).siblings().removeClass(selected); //标记选择器
+              return false;
+            }
+            
+          });
+
+          if(matched2){
+            var selected = data2.list[0] ? SIDE_NAV_ITEMD : THIS;
+            othis2.addClass(selected).siblings().removeClass(selected); //标记选择器
+            return false
+          }
+          
+        });
+
+        if(matched1){
+          var selected = data1.list[0] ? SIDE_NAV_ITEMD : THIS;
+          othis1.addClass(selected).siblings().removeClass(selected); //标记选择器
+          return false
+        }
+      });
     },
     /**
      * 打开并添加iframe页面
@@ -1034,8 +1088,6 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
   };
   // 调用添加事件
   handler.addListener();
-  // 初始化搜索栏
-  layui.search && layui.search.run();
   // 主题监听事件修改
   const setTheme = layui.colortheme.setTheme;
   const setConfig = layui.colortheme.setConfig;
@@ -1100,5 +1152,49 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
           });
       });
   };
+
+  // 获取地址信息
+
+  function GetUrlParms(){
+    var args = {};
+    var code = decodeURIComponent(location.search);
+    var query = code.substring(1);
+    var pairs = query.split("&");
+    Array.prototype.forEach.call(pairs, function (arg) {
+      var pos = arg.indexOf('=');
+      if (pos == -1) return true;
+      var name = arg.substring(0, pos);
+      var value = arg.substring(pos + 1);
+      args[name] = unescape(value);
+    });
+    return args;
+  }
+
+  var urlParams = GetUrlParms();
+  if(urlParams.fun){
+    handler.setTop(urlParams.fun);
+    if(urlParams.location){
+      let id = handler.cache.touch(urlParams.fun);
+      let iframe = $bodyGroup
+        .find('[lay-id="' + id + '"]')
+        .find("." + ELEM_IFRAME_CLASS)
+        .get(0);
+      handler.touchLayuiMoudle(function () {
+        return (
+          iframe &&
+          iframe.contentWindow &&
+          iframe.contentWindow.layui &&
+          iframe.contentWindow.layui.outline
+        );
+      },function(){
+        setTimeout(function(){
+          iframe.contentWindow.layui.outline.location(urlParams.location);
+        }, 300);
+      });
+    }
+  }
+
+  layui.colortheme.run();
+
   exports("frame", handler);
 });

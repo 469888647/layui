@@ -11,6 +11,7 @@
         <link href="../plugin/layui/css/layui.css" rel="stylesheet">
         <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
         <!-- <link href="../plugin/layuiframework/css/colortheme.css" rel="stylesheet"> -->
+        <link href="../plugin/layuiframework/css/index.css" rel="stylesheet">
         <style>
             .layui-outline-container .layui-outline-bth,
             .layui-outline-container .layui-outline-side{
@@ -22,107 +23,21 @@
         <div class="layui-fluid">
             <!-- 大屏时占大半屏幕(右侧为outline留位置),小屏时占全部屏幕 -->
             <div class="layui-col-xs12 layui-col-md10">
-                <h3>colortheme颜色主题</h3>
-                <blockquote class="layui-elem-quote">切换layui的颜色主题,提案PR #1410</blockquote>
-                <h4>写在前面</h4>
-                <div class="layui-card">
-                    <div class="layui-card-header">注意事项</div>
-                    <div class="layui-card-body">
-                        <ul style="padding-left: 15px; text-indent: 15px; padding-bottom: 5px;">
-                            <li>
-                                <p> * colortheme仅对2.8版本的layui.css中的颜色进行归类,并使用css变量实现颜色主题的切换;仅对相同的颜色进行合并定义,在颜色的归纳上并不算系统</p>
-                                <hr class="layui-border-orange">
-                            </li>
-                            <li>
-                                <p> * colortheme是将layui.css中的颜色重新使用css变量进行定义</p>
-                                <ol style="padding-left: 15px; text-indent: 15px; padding-bottom: 5px;">
-                                    <li> 1、 对于颜色的样式会有重复</li>
-                                    <li> 2、 没有把握颜色的权重,因此会引起颜色样式的问题;对于这个问题是发现一个改正一个</li>
-                                    <li> 3、 这个功能是基于layuiAdmin的主题设置,提供了一些方法,需要自己去实现自定义的功能</li>
-                                    <li> 4、 由于上面的各种问题,colortheme功能需要手动开启,在引入css和js文件之后,调用layui.colortheme.run()开启功能</li>
-                                    <hr class="layui-border-red">
-                                </ol>
-                            </li>
+                <div class = "ws-content">
+                    <div class = "layui-text ws-text">
+                        <h1 lay-ignore >颜色主题</h1>
+                        <blockquote class="layui-elem-quote">
+                            <p>颜色主题<code>colortheme</code>是对2.8版本的layui.css中的颜色进行归类。使用css变量实现颜色主题的切换;仅对相同的颜色进行合并定义。PR #1410</p>
+                        </blockquote>
+                        <ul>
+                            <li> 1、 合并颜色的样式会有重复,没有计较颜色的权重,对于样式冲突问题会持续完善。</li>
+                            <li> 2、 这个可视化配置功能是参照layuiAdmin的主题设置</li>
+                            <li> 3、 <code>colortheme</code>功能需要手动开启,在引入css和js文件之后,调用<code>layui.colortheme.run()</code>开启功能</li>
+                            <hr class="layui-border-red">
                         </ul>
-                    </div>
-                </div>
-                <h4>方法</h4>
-                <blockquote class="layui-elem-quote">
-                    <p>在开启colortheme功能后,会去缓存里面获取主题信息,没有就设置成默认的主题</p>
-                    <p>colortheme功能使用layui.data操作缓存,缓存的key可以通过:layui.config({themeKey:'XXX'});layui.config({themeConfigKey:'XXX'});来进行修改,用来区分不同网站的key,防止混淆</p>
-                    <hr class="layui-border-red">
-                </blockquote>
-                <div class="layui-card">
-                    <div class="layui-card-header">方法介绍</div>
-                    <div class="layui-card-body">
-                        <table class="layui-table">
-                            <colgroup>
-                                <col width="150">
-                                <col>
-                                <col width="100">
-                                <col width="100">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>方法名</th>
-                                    <th>描述</th>
-                                    <th>参数</th>
-                                    <th>返回值</th>
-                                </tr> 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>getTheme</td>
-                                    <td>获取主题色的key(就是themeKey对应的缓存)</td>
-                                    <td>-</td>
-                                    <td>当前的themeKey对应的缓存</td>
-                                </tr>
-                                <tr>
-                                    <td>setTheme</td>
-                                    <td>设置主题 - 参数是指定一个themeKey(没有参数就去缓存中的)</td>
-                                    <td>string</td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>getConfig</td>
-                                    <td>获取主题配色方案(就是themeConfigKey对应的缓存)</td>
-                                    <td>-</td>
-                                    <td>主题配色方案对象</td>
-                                </tr>
-                                <tr>
-                                    <td>setConfig</td>
-                                    <td>自定义配色方案(name:方案中文名称;cnname:方案英文名称;config:方案的颜色配置)</td>
-                                    <td>name, cnname, config</td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>popup</td>
-                                    <td>弹出一个右侧的抽屉层,这个是内置的可视化配置界面,是模拟的layuiAdmin的主题设置</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <h4>自定义主题</h4>
-                <blockquote class="layui-elem-quote">
-                    <p>当前默认有:default(默认配色);classicBlackHeader(经典黑头);darkBlue(藏蓝);coffee(咖啡);purpleRed(紫红);ocean(海洋);green(墨绿);fashionRed(时尚红);这些样式,设置时传入的key就是英文名,括号里面的是中文名</p>
-                    <p>可以自定义主题,需要传入英文名、中文名、和配置项,传入的英文名和原有的重复就是修改原来的主题设置。配置项就是一个key-value的对象,值是颜色的rgb值,可以使用下面的方式,使用layui的颜色选择组件来选择</p>
-                </blockquote>
-                <pre>
-layui.colorpicker.render({
-    elem: "#theme",
-    format: "rgb",
-    done: function (color) {
-      // 选择颜色后将值反填到输入框中,因为最后上传的是表单中输入框里面的信息
-      $("#form").val(color.substring(4, color.length - 1));
-    },
-});
-                </pre>
-                <div class="layui-card">
-                    <div class="layui-card-header">自定义主题参数</div>
-                    <div class="layui-card-body">
+                        <h2>属性与方法</h2>
+                        <h3>layui颜色主题css变量定义</h3>
+                        <p><code>colortheme</code>参考了layuiAdmin的主题设置,因此有针对layuiAdmin的几个css变量</p>
                         <table class="layui-table">
                             <colgroup>
                                 <col width="320">
@@ -489,11 +404,58 @@ layui.colorpicker.render({
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-                <h4>切换主题</h4>
-                <div class = "layui-tab" lay-pre-code="切换主题" lay-options="{title: 'HTML', encode: 'true'}" >
-                    <pre>
+                        <h3>内置主题</h3>
+                        <blockquote class="layui-elem-quote">
+                            <p>当前默认有:default(默认配色);classicBlackHeader(经典黑头);darkBlue(藏蓝);coffee(咖啡);purpleRed(紫红);ocean(海洋);green(墨绿);fashionRed(时尚红);这些样式,设置时传入的key就是英文名,括号里面的是中文名</p>
+                            <p>可以自定义主题,需要传入英文名、中文名、和配置项,传入的英文名和原有的重复就是修改原来的主题设置。配置项就是一个key-value的对象,值是颜色的rgb值,可以使用下面的方式,使用layui的颜色选择组件来选择</p>
+                        </blockquote>
+                        <h3>方法</h3>
+                        <h4>颜色主题初始化</h4>
+                        <p><code>layui.colortheme.run();</code>可以对当前页面的主题进行初始化操作</p>
+                        <h4>颜色主题缓存设置</h4>
+                        <p><code>colortheme</code>使用<code>layui.data</code>做持久化处理。想要切换缓存的空间,可以调用<code>layui.config({themeKey:'XXX'});</code></p>
+                        <p><code>colortheme</code>使用<code>layui.data</code>做持久化处理。想要切换缓存的空间,可以调用<code>layui.config({themeConfigKey:'XXX'});</code></p>
+                        <ul>
+                            <li>参数<code>XXX</code>是需要修改的缓存的空间的名称,必填<span style="color: red;">为了防止多个使用colortheme页面之间的冲突,建议给你的页面起一个专属的缓存空间的名称。</span></li>
+                            <li><code>themeKey</code>缓存的是主题的英文名,是一个字符串</li>
+                            <li><code>themeConfigKey</code>缓存的所有的配色方案,是一个数组</li>
+                        </ul>
+                        <h4>获取颜色主题</h4>
+                        <p><code>layui.colortheme.getTheme(key);</code>获取这个key对应的颜色主题的英文名</p>
+                        <ul>
+                            <li>参数<code>key</code>可选,是颜色主题的英文名称(在内置主题一栏有介绍内置的英文名称和中文名称),如果不传就返回当前正在使用的颜色主题的英文名</li>
+                        </ul>
+                        <h4>设置颜色主题</h4>
+                        <p><code>layui.colortheme.setTheme(key);</code>将当前页面的主题设置成这个key对应的颜色主题(该主题配色方案需要在配置缓存中存在)</p>
+                        <ul>
+                            <li>参数<code>key</code>可选,是颜色主题的英文名称(在内置主题一栏有介绍内置的英文名称和中文名称),如果不传就使用当前正在使用的颜色主题的英文名</li>
+                        </ul>
+                        <h4>获取主题配色方案</h4>
+                        <p><code>layui.colortheme.getConfig();</code>获取当前缓存的所有主题配色方案</p>
+                        <h4>新增/修改主题配色方案</h4>
+                        <p><code>layui.colortheme.setConfig(name, cnname, config);</code>可以保存用户自定义的颜色配置方案。如果传入主题配色方案是一个新的英文名就在配置缓存中新增一个,如果不是就修改原来的主题配色方案</p>
+                        <ul>
+                            <li>参数<code>name</code>必填,是主题配色方案的英文名称(也是该主题配色方案的唯一id)</li>
+                            <li>参数<code>cnname</code>必填,是主题配色方案的中文名称</li>
+                            <li>参数<code>config</code>必填,是主题配色方案的内容,内容是对上面layui颜色主题css变量定义的自定义声明</li>
+                        </ul>
+                        <p>在自定义颜色时可以使用layui的颜色选择组件来做,下面是一个例子</p>
+                        <pre>
+layui.colorpicker.render({
+    elem: "#theme",
+    format: "rgb",
+    done: function (color) {
+      // 选择颜色后将值反填到输入框中,因为最后上传的是表单中输入框里面的信息
+      $("#form").val(color.substring(4, color.length - 1));
+    },
+});
+                        </pre>
+                        <h4>可视化</h4>
+                        <p><code>layui.colortheme.popup();</code>弹出一个右侧的抽屉层,这个是内置的可视化配置界面,是模拟的layuiAdmin的主题设置</p>
+                        <h3>示例</h3>
+                        <!-- 切换主题 -- start -->
+                        <div class = "layui-tab" lay-pre-code="切换主题" lay-options="{title: 'HTML', encode: 'true'}" >
+                            <pre>
     {{ layui_html_head }}
     <div class="layui-card">
         <div class="layui-card-header">切换主题</div>
@@ -513,15 +475,12 @@ layui.colorpicker.render({
         });
     </x3cscript>
     {{ layui_html_tail }}
-                    </pre>
-                </div>
-                <h4>其它</h4>
-                <blockquote class="layui-elem-quote">
-                    <p>类似于layuiframework,colortheme的使用一般是要控制整个系统的,但是当前能影响的只是当前页面。所以这个功能也需要自己去实现</p>
-                    <p>下面是layuiframework中实现多个iframe之前联动主题的方式(iframe需要先引用并启用colortheme功能)</p>
-                    <hr class="layui-border-red">
-                </blockquote>
-                <pre>
+                            </pre>
+                        </div>
+                        <!-- 切换主题 -- end -->
+                        <h3>其它</h3>
+                        <p>使用上面的方式只能修改当前页面的主题,如果要想多个页面随着修改,可以试试下面的方式。页面上方的主题设置就是用的这种方式</p>
+                        <pre>
 // 主题监听事件修改,就是修改当前的colortheme修改主题的方法,在修改完之后也要去查找各个iframe页面去调用他们的方法来修改主题
 // touchLayuiMoudle 方法是确定这个页面里面的layui.colortheme加载成功之后再调用方法
 const setTheme = layui.colortheme.setTheme;
@@ -542,7 +501,7 @@ layui.colortheme.setTheme = function(key){
     });
 
     // 修改普通页面
-    _lodash.each(handler.cache.cache, (v, k) => {
+    layui.each(handler.cache.cache, (k, v) => {
         let _iframe = $bodyGroup.find('[lay-id="'+ v.value +'"]').find("." + ELEM_IFRAME_CLASS).get(0);
         handler.touchLayuiMoudle(function () {
             return (
@@ -573,7 +532,7 @@ layui.colortheme.setConfig = function(name, cnname, config){
     });
 
     // 修改普通页面
-    _lodash.each(handler.cache.cache, (v, k) => {
+    layui.each(handler.cache.cache, (k, v) => {
         let _iframe = $bodyGroup.find('[lay-id="'+ v.value +'"]').find("." + ELEM_IFRAME_CLASS).get(0);
         handler.touchLayuiMoudle(function () {
             return (
@@ -587,7 +546,9 @@ layui.colortheme.setConfig = function(name, cnname, config){
         });
     });
 };
-                </pre>
+                            </pre>
+                    </div>
+                </div>
             </div>
         </div>
      <!--    请勿在项目正式环境中引用该 layui.js 地址     -->
@@ -601,6 +562,8 @@ layui.colortheme.setConfig = function(name, cnname, config){
     <script type="text/javascript">
         layui.example.render();
         layui.outline.render();
+        layui.util.fixbar();
+        layui.colortheme.run();
     </script>
     </body>
 </html>

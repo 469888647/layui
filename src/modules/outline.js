@@ -80,60 +80,62 @@ layui.define(["jquery"], function (exports) {
 
       let ulHtml = '';
 
-      document.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(function (domElement){
-
-        /**
-         * 配置项获取规则：
-         *    lay-options属性 > dom属性
-         *
-         *    id(dom的id属性): 该属性决定锚点
-         *    title(dom的id属性|dom的内容): 该属性决定大纲上面展示的内容
-         *    level(dom的标签级别): 该属性决定在大纲上面的缩进
-         *    hot: 该属性决定大纲上面有无小圆点 - default:false
-         *    anchor: 该属性决定在大纲上是否生成可点击的a标签  - default:true
-         */
-        let _opt = {
-          id: null,
-          title: null,
-          level: null,
-          hot: false,
-          anchor: true,
-        }
-        // 获取dom的lay-options属性值
-        let optionsAttr = domElement.getAttribute("lay-options");
-        if(optionsAttr !== undefined) {
-          // 处理参数
-          let options = optionsAttr ? JSON.parse(String(optionsAttr).replace(/\'/g, () => '"')) : {};
-          _opt.id = options.id;
-          _opt.title = options.title;
-          _opt.level = options.level;
-          _opt.hot = options.hot !== undefined ? options.hot : _opt.hot;
-          _opt.anchor = options.anchor !== undefined ? options.anchor : _opt.anchor;
-        }
-        if(!_opt.level && !baseLevel) baseLevel = parseInt(domElement.tagName.substr(1,2));
-        // 最后取dom上面的信息
-        if(!_opt.id){
-          if(_opt.anchor)
-            domElement.setAttribute("id", "layui-outline-id-" + ID_INDEX ++);
-          _opt.id = domElement.getAttribute("id");
-        }
-        if(!_opt.title) _opt.title = domElement.getAttribute("title") ? domElement.getAttribute("title") : domElement.textContent;
-        if(!_opt.level) _opt.level = parseInt(domElement.tagName.substr(1,2)) - baseLevel + 1;
-        let rect = domElement.getBoundingClientRect();
-        _opt.index = ++ intervalIndex;
-        _opt.top = rect.top + scrollTop;
-        _opt.height = rect.height;
-        // 缓存配置项
-        handler.relationList.push(_opt);
-        // 根据信息构造dom
-        ulHtml += `<li lay-id = "${_opt.index}" ${_opt.level > 1 ? `level="${_opt.level}"`: ``}  >
+      document.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(function (domElement) {
+        if (domElement.getAttribute("lay-ignore") === null) {
+          /**
+           * 配置项获取规则：
+           *    lay-options属性 > dom属性
+           *
+           *    id(dom的id属性): 该属性决定锚点
+           *    title(dom的id属性|dom的内容): 该属性决定大纲上面展示的内容
+           *    level(dom的标签级别): 该属性决定在大纲上面的缩进
+           *    hot: 该属性决定大纲上面有无小圆点 - default:false
+           *    anchor: 该属性决定在大纲上是否生成可点击的a标签  - default:true
+           */
+          let _opt = {
+            id: null,
+            title: null,
+            level: null,
+            hot: false,
+            anchor: true,
+          }
+          // 获取dom的lay-options属性值
+          let optionsAttr = domElement.getAttribute("lay-options");
+          if (optionsAttr !== undefined) {
+            // 处理参数
+            let options = optionsAttr ? JSON.parse(String(optionsAttr).replace(/\'/g, () => '"')) : {};
+            _opt.id = options.id;
+            _opt.title = options.title;
+            _opt.level = options.level;
+            _opt.hot = options.hot !== undefined ? options.hot : _opt.hot;
+            _opt.anchor = options.anchor !== undefined ? options.anchor : _opt.anchor;
+          }
+          if (!_opt.level && !baseLevel) baseLevel = parseInt(domElement.tagName.substr(1, 2));
+          // 最后取dom上面的信息
+          if (!_opt.id) {
+            _opt.id = domElement.getAttribute("id");
+            if (!_opt.id && _opt.anchor){
+              domElement.setAttribute("id", "layui-outline-id-" + ID_INDEX++);
+              _opt.id = domElement.getAttribute("id");
+            }
+          }
+          if (!_opt.title) _opt.title = domElement.getAttribute("title") ? domElement.getAttribute("title") : domElement.textContent;
+          if (!_opt.level) _opt.level = parseInt(domElement.tagName.substr(1, 2)) - baseLevel + 1;
+          let rect = domElement.getBoundingClientRect();
+          _opt.index = ++intervalIndex;
+          _opt.top = rect.top + scrollTop;
+          _opt.height = rect.height;
+          // 缓存配置项
+          handler.relationList.push(_opt);
+          // 根据信息构造dom
+          ulHtml += `<li lay-id = "${_opt.index}" ${_opt.level > 1 ? `level="${_opt.level}"` : ``}  >
                     ${_opt.anchor ? `<a _href = "${_opt.id}">${_opt.title}
-                                            ${_opt.hot ? `<span class="layui-badge-dot"></span>`:``}
-                                    </a>`:`${_opt.title}${_opt.hot ? `<span class="layui-badge-dot"></span>`:``}`}
+                                            ${_opt.hot ? `<span class="layui-badge-dot"></span>` : ``}
+                                    </a>` : `${_opt.title}${_opt.hot ? `<span class="layui-badge-dot"></span>` : ``}`}
                  </li>`;
-        /*                    ${_opt.anchor ? `<a href = "${_opt.id}">${_opt.title}
-                                            ${_opt.hot ? `<span class="layui-badge-dot"></span>`:``}
-                                    </a>`:``}*/
+          /*                    ${_opt.anchor ? `<a href = "${_opt.id}">${_opt.title}
+                                              ${_opt.hot ? `<span class="layui-badge-dot"></span>`:``}
+                                      </a>`:``}*/
 //<a href = "#examples" > 综合演示 < span className = "layui-badge-dot" > < /span></a >
           /*var anchorElement = document.querySelectorAll('.anchor');
 
@@ -147,7 +149,7 @@ layui.define(["jquery"], function (exports) {
               // 比较当前滚动位置和锚点位置
 
           });*/
-
+        }
       });
       /**
        * dom 结构
@@ -232,6 +234,21 @@ layui.define(["jquery"], function (exports) {
       return false;
     },
 
+    location: function (id){
+      // 判断,如果传入的handler.window并不是window只是普通的dom,需要考虑它当前的top值,否则定位不够准确
+      let _offsetTop = handler.window.getBoundingClientRect ? handler.window.getBoundingClientRect().top : 0;
+      handler.every(handler.relationList, function(option){
+        if(option.id == id) {
+          handler.window.scrollTo(null, option.top - _offsetTop);
+          setTimeout(function (){
+            handler.doFix(option.index);
+          });
+          return false;
+        }
+        return true;
+      })
+    },
+
     /**
      * @inner 添加监听事件
      */
@@ -262,7 +279,7 @@ layui.define(["jquery"], function (exports) {
       });
 
       // 判断,如果传入的handler.window并不是window只是普通的dom,需要考虑它当前的top值,否则定位不够准确
-      let _offsetTop = handler.window.getBoundingClientRect ? handler.window.getBoundingClientRect().top : 0;
+      // let _offsetTop = handler.window.getBoundingClientRect ? handler.window.getBoundingClientRect().top : 0;
       let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
 
       fitBody
@@ -270,16 +287,17 @@ layui.define(["jquery"], function (exports) {
         .find("." + OUTLINE + "-container").on('click', '*[_href]', function(){
         let id = $(this).attr("_href");
         if(id && handler.relationList && handler.relationList.length > 0){
-          handler.every(handler.relationList, function(option){
-            if(option.id == id) {
-              handler.window.scrollTo(null, option.top - _offsetTop);
-              setTimeout(function (){
-                handler.doFix(option.index);
-              });
-              return false;
-            }
-            return true;
-          })
+          handler.location(id);
+          // handler.every(handler.relationList, function(option){
+          //   if(option.id == id) {
+          //     handler.window.scrollTo(null, option.top - _offsetTop);
+          //     setTimeout(function (){
+          //       handler.doFix(option.index);
+          //     });
+          //     return false;
+          //   }
+          //   return true;
+          // })
         }
 
       });
