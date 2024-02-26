@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>treeorder使用示例</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+        <!--  大致起完美适配的作用,试开发者不管像素比,只需按照css像素编写代码即可     -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <!--    请勿在项目正式环境中引用该 layui.css 地址     -->
+       <!--  <link href="//cdn.staticfile.org/layui/2.8.17/css/layui.css" rel="stylesheet"> -->
+        <link href="../plugin/layui/css/layui.css" rel="stylesheet">
+        <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+        <!-- <link href="../plugin/layuiframework/css/colortheme.css" rel="stylesheet"> -->
+        <link href="../plugin/layuiframework/css/index.css" rel="stylesheet">
+        <style>
+            .layui-outline-side-fixed .layui-outline-ul li[level="4"]{
+                padding-left: 56px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <!-- 大屏时占大半屏幕(右侧为outline留位置),小屏时占全部屏幕 -->
+            <div class="layui-col-xs12 layui-col-md10">
+                <div class = "ws-content">
+                    <div class = "layui-text ws-text">
+                        <h1 lay-ignore >树排序</h1>
+                        <blockquote class="layui-elem-quote">
+                            <p>树排序组件<code>treeorder</code>是对树组件<code>tree</code>功能的扩展。PR #1420</p>
+                        </blockquote>
+                        <h2>基本原理</h2>
+                        <p><code>tree</code>组件中的数据源没有对外提供,在<code>treeorder</code>中缓存用户传入的数据源,然后根据需要(比如排序)进行处理,通过修改传入数据源信息达到排序等效果</p>
+                        <blockquote class="layui-elem-quote">
+                            <p>排序说明</p>
+                        </blockquote>
+                        <ul>
+                            <li>默认是子节点越多的节点越靠上</li>
+                            <li>在实例的<code>search</code>方法中传入搜索内容是采用内容排序:即匹配到的内容越多的节点越靠上,匹配到的节点强制展开,未匹配到的节点收起</li>
+                            <li><span style="color: red;">排序的具体效果遇到特殊数据源可能有所差异</span></li>
+                            <li>可以在原始<code>tree</code>组件中自行修改传入的数据源达到自定义排序规则的效果</li>
+                        </ul>
+                        <h2 lay-options = '{"hot":true}' >方法 - 树渲染</h2>
+                        <p><code>layui.tree(option, deploy)</code>可以创建并返回一个树实例对象</p>
+                        <p>请注意:<span style="color: red;">此实例对象在<code>treeorder</code>中会修改它原来的方法,所以与从<code>tree</code>中获取的实例对象是有区别的</span></p>
+                        <ul>
+                            <li>参数<code>option</code>必填,除了<a target="_blank" href="https://layui.dev/docs/2/tree/#options">树的配置项</a>还新增了一个配置项</li>
+                            <li>参数<code>deploy</code>用来标记是否使用treeorder来管理树的数据源,默认是false;<span style="color: red;">使用treeorder来渲染树就要填true。</span></li>
+                        </ul>
+                        <p>在<code>tree</code>的配置参数中新增一个参数,其使用方法可以参考接下来的数据源介绍</p>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col>
+                                <col width="100">
+                                <col width="100">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>属性名</th>
+                                    <th>描述</th>
+                                    <th>类型</th>
+                                    <th>默认值</th>
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>customName.parentid</td>
+                                    <td>自定义parent节点名称,节点父节点的id(顶层节点为0)</td>
+                                    <td>string</td>
+                                    <td>parentid</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2>数据源</h2>
+                        <ul>
+                            <li><p><code>tree</code>可以接收一个对象型的数据源(即数据源是封装成一个对象,子节点以父节点下面的children来表示)</p></li>
+                            <li><p><code>treeorder</code>除了接收上面对象型的数据源,还可以接收列表型数据源</p></li>
+                            <li><p>列表型数据源:数据以list的方式传入,无论父节点还是子节点都是list中的对象,父子节点之间以parentid关联。子节点的parentid指向父节点的id,顶层节点的parentid设置成0</p></li>
+                            <li>上面的<code>id</code><code>parentid</code>都可以在配置项<code>customName</code>中自定义</p></li>
+                        </ul>
+                        <h2>实例方法</h2>
+                        <p><code>tree.render</code>会返回树的实例<code>treeInst</code>,通过增加和修改将这个实例的方法来实现各种效果</p>
+                        <p>再次强调:<span style="color: red;">此实例对象在<code>treeorder</code>中会修改它原来的方法,所以与从<code>tree</code>中获取的实例对象是有区别的</span></p>
+                        <h3>重载(修改)</h3>
+                        <p><code>treeInst.reload(option)</code>可以根据传入的配置项来重载树</p>
+                        <ul>
+                            <li>参数<code>option</code>必填,<a target="_blank" href="https://layui.dev/docs/2/tree/#options">树的配置项</a></li>
+                        </ul>
+                        <h3>搜索(新增)</h3>
+                        <p><code>treeInst.search(searchContent, values)</code>可以根据传入的信息在树里面搜索,具体排序规则可以参考上面的排序规则</p>
+                        <ul>
+                            <li>参数<code>searchContent</code>可选,需要匹配搜索的信息,匹配数据源中customName.title对应的信息</a></li>
+                            <li>参数<code>values</code>可选,类型string/array,设置当前选中的节点,内容是节点的id,对应id的节点checked属性会设置为true,其它的会设置成false</a></li>
+                        </ul>
+                        <h2>示例</h2>
+                        <!-- 树排序示例 -- start -->
+                        <div class = "layui-tab" lay-pre-code="树排序示例" lay-options="{title: 'HTML', encode: 'true'}" >
+                            <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">树排序示例</div>
+        <div class="layui-card-body" style="height: 600px;">
+            <div class="layui-form layui-form-pane" lay-filter="treeorder-tree-demo1">
+                <div class="layui-form-item">
+                    <button type="button" class="layui-btn" lay-demo="getChecked">获取选中数据</button>
+                    <button type="button" class="layui-btn" lay-demo="setChecked">设置节点勾选</button>
+                    <button type="button" class="layui-btn" lay-demo="reload">重载实例</button>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">搜索1</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="search1" autocomplete="off" placeholder="请输入搜索内容" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div id="test1" style="width: 400px;"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">搜索2</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="search2" autocomplete="off" placeholder="请输入搜索内容" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div id="test2" style="width: 400px;"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">搜索3</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="search3" autocomplete="off" placeholder="请输入搜索内容" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div id="test3" style="width: 400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use(['formplus','treeorder','util'], function(){
+            // 数据源 - 对象型数据源
+            var data1 = [{
+              title: 'A-1'
+              ,id: 1
+              ,children: [{
+                title: 'B-1-1'
+                ,id: 3
+                ,href: 'https://www.layui.com/doc/'
+                ,children: [{
+                  title: 'C-1-1-3'
+                  ,id: 23
+                  ,children: [{
+                    title: 'D-1-1-3-1'
+                    ,id: 24
+                    ,children: [{
+                      title: 'E-1-1-3-1-1'
+                      ,id: 30
+                    },{
+                      title: 'E-1-1-3-1-2'
+                      ,id: 31
+                    }]
+                  }]
+                },{
+                  title: 'C-1-1-1'
+                  ,id: 7
+                  ,checked: true
+                  ,children: [{
+                    title: 'D-1-1-1-1'
+                    ,id: 15
+                    //,checked: true
+                    ,href: 'https://www.layui.com/doc/base/infrastructure.html'
+                  }]
+                },{
+                  title: 'C-1-1-2'
+                  ,id: 8
+                  ,children: [{
+                    title: 'D-1-1-2-1'
+                    ,id: 32
+                  }]
+                }]
+              },{
+                title: 'B-1-2'
+                ,id: 4
+                ,spread: true
+                ,children: [{
+                  title: 'C-1-2-1'
+                  ,id: 9
+                  ,checked: true
+                  ,disabled: true
+                },{
+                  title: 'C-1-2-2'
+                  ,id: 10
+                }]
+              },{
+                title: 'B-1-3'
+                ,id: 20
+                ,children: [{
+                  title: 'C-1-3-1'
+                  ,id: 21
+                },{
+                  title: 'C-1-3-2'
+                  ,id: 22
+                }]
+              }]
+            },{
+              title: 'A-2'
+              ,id: 2
+              ,spread: true
+              ,children: [{
+                title: 'B-2-1'
+                ,id: 5
+                ,spread: true
+                ,children: [{
+                  title: 'C-2-1-1'
+                  ,id: 11
+                },{
+                  title: 'C-2-1-2'
+                  ,id: 12
+                }]
+              },{
+                title: 'B-2-2'
+                ,id: 6
+                ,checked: true
+                ,children: [{
+                  title: 'C-2-2-1'
+                  ,id: 13
+                },{
+                  title: 'C-2-2-2'
+                  ,id: 14
+                  ,disabled: true
+                }]
+              }]
+            },{
+              title: 'A-3'
+              ,id: 16
+              ,children: [{
+                title: 'B-3-1'
+                ,id: 17
+                ,fixed: true
+                ,children: [{
+                  title: 'C-3-1-1'
+                  ,id: 18
+                },{
+                  title: 'C-3-1-2'
+                  ,id: 19
+                }]
+              },{
+                title: 'B-3-2'
+                ,id: 27
+                ,children: [{
+                  title: 'C-3-2-1'
+                  ,id: 28
+                },{
+                  title: 'C-3-2-2'
+                  ,id: 29
+                }]
+              }]
+            }];
+
+            // 列表型数据源
+            var data2 = [
+            {
+              "id": 1,
+              "cityName": "中国",
+              "spread": true,
+              "parentid": 0
+            },
+            {
+              "id": 113,
+              "cityName": "四川",
+              "spread": true,
+              "parentid": 1
+            },
+            {
+              "id": 114,
+              "cityName": "成都",
+              "spread": true,
+              "parentid": 113
+            },
+            {
+              "id": 115,
+              "cityName": "德阳",
+              "spread": true,
+              "parentid": 113
+            },
+            {
+              "id": 116,
+              "cityName": "绵阳",
+              "spread": true,
+              "parentid": 113
+            },
+            {
+              "id": 117,
+              "cityName": "重庆",
+              "spread": true,
+              "parentid": 1
+            },
+            {
+              "id": 118,
+              "cityName": "广东",
+              "spread": true,
+              "parentid": 1
+            },
+            {
+              "id": 119,
+              "cityName": "广州",
+              "spread": true,
+              "parentid": 118
+            },
+            {
+              "id": 120,
+              "cityName": "阳江",
+              "spread": true,
+              "parentid": 118
+            },
+            {
+              "id": 121,
+              "cityName": "茂名",
+              "spread": true,
+              "parentid": 118
+            }
+          ];
+
+          // 渲染表单,后面用表单事件绑定一些事件
+          layui.form.render(null, 'treeorder-tree-demo1', true);
+
+          // 除了render第二个参数,其它与tree提供的例子一致
+          var index = 100;
+          var treeInst1 = layui.tree.render({
+            elem: '#test1'
+            ,data: data1
+            ,id: 'demoId1'
+            ,click: function(obj){
+              layer.msg(JSON.stringify(obj.data));
+              console.log(obj);
+            }
+            ,oncheck: function(obj){
+              //console.log(obj);
+            }
+            ,operate: function(obj){
+              var type = obj.type;
+              if(type == 'add'){
+                //ajax操作，返回key值
+                return index++;
+              }else if(type == 'update'){
+                console.log(obj.elem.find('.layui-tree-txt').html());
+              }else if(type == 'del'){
+                console.log(obj);
+              };
+            }
+            ,showCheckbox: true  //是否显示复选框
+            ,accordion: 0  //是否开启手风琴模式
+      
+            ,onlyIconControl: true //是否仅允许节点左侧图标控制展开收缩
+            ,isJump: 0  //点击文案跳转地址
+            ,edit: true  //操作节点图标
+          }, true);
+
+          // 测试列表型数据源
+          var treeInst2 = layui.tree.render({
+            elem: '#test2'
+            ,data: data2
+            ,id: 'demoId2'
+            ,customName: {
+                title: 'cityName'
+            }
+            ,click: function(obj){
+                layer.msg(JSON.stringify(obj.data));
+                console.log(obj);
+            }
+          }, true);
+
+          // 测试树重载来更新数据源
+          var treeInst3 = layui.tree.render({
+            elem: '#test3'
+            ,data: []
+            ,id: 'demoId3'
+            ,customName: {
+                title: 'cityName'
+            }
+            ,click: function(obj){
+                layer.msg(JSON.stringify(obj.data));
+                console.log(obj);
+            }
+          }, true);
+          // 设置树的数据
+          $.get('../plugin/json/selecttree.json', {}, function(res){
+            // 对树实例的data属性重新进行赋值
+            treeInst3.reload({
+                data: res.data
+            });
+          });
+
+          // 添加搜索事件
+          layui.formplus.on('treeorder-tree-demo1','search1', function(value, oldValue){
+            treeInst1.search(value);
+          });
+          layui.formplus.on('treeorder-tree-demo1','search2', function(value, oldValue){
+            treeInst2.search(value);
+          });
+          layui.formplus.on('treeorder-tree-demo1','search3', function(value, oldValue){
+            treeInst3.search(value);
+          });
+
+          //按钮事件
+          layui.util.event('lay-demo', {
+            getChecked: function(othis){
+              var checkedData = layui.tree.getChecked('demoId1');
+              layui.layer.alert(JSON.stringify(checkedData), {shade:0});
+              console.log(checkedData);
+            }
+            ,setChecked: function(){
+              layui.tree.setChecked('demoId1', [11,12]);
+            }
+            ,reload: function(){
+              layui.tree.reload('demoId1', {
+      
+              });
+            }
+          });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                            </pre>
+                        </div>
+                        <!-- 树排序示例 -- end -->
+                        <div style="width: 100%;height: 360px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     <!--    请勿在项目正式环境中引用该 layui.js 地址     -->
+    <!-- <script type="text/javascript" src="//cdn.staticfile.org/layui/2.8.17/layui.js"></script> -->
+    <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="../config.js"></script>
+    <script type="text/javascript" src="../plugin/layuiframework/js/util.js"></script>
+    <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+    <!-- <script type="text/javascript" src="../plugin/layuiframework/js/colortheme.js"></script> -->
+    <script type="text/javascript" src="../plugin/lay/example.js"></script>
+    <script type="text/javascript">
+        layui.example.render();
+        layui.outline.render();
+        // layui.util.fixbar();
+        layui.colortheme.run();
+    </script>
+    </body>
+</html>
+
+

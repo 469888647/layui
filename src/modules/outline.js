@@ -1,6 +1,6 @@
 
 ("use strict");
-layui.define(["jquery"], function (exports) {
+layui.define(["jquery","util"], function (exports) {
 
   // jquery的初始化
   if (!window.$) window.$ = layui.$;
@@ -163,7 +163,7 @@ layui.define(["jquery"], function (exports) {
        */
       let html = `
         <div class = "${OUTLINE}-container">
-            <button type="button" class="${OUTLINE}-bth layui-btn-sm layui-btn"><i class="layui-icon layui-icon-shrink-right"></i></button>
+         <!--   <button type="button" class="${OUTLINE}-bth layui-btn-sm layui-btn"><i class="layui-icon layui-icon-shrink-right"></i></button> -->
             <div class="${OUTLINE}-side">
                 <div class="${OUTLINE}-side-fixed">
                     <i class="${OUTLINE}-side-close layui-icon layui-icon-spread-left"></i>
@@ -182,7 +182,34 @@ layui.define(["jquery"], function (exports) {
       // $body.append($(html));
       fitBody.append($(html));
       // 添加监听事件
-      if(!handler.eventflag) handler.addListener();
+      if(!handler.eventflag) {
+        // handler.renderBar();
+        layui.util.fixbar({
+          // bars: parseInt(getComputedStyle($('.' + OUTLINE + '-side-fixed')[0]).right) < 0 ? [{type: "dir",icon: "layui-icon-more-vertical"}] : [],
+          // bars: (x = [],
+          // parseInt(getComputedStyle($('.' + OUTLINE + '-side-fixed')[0]).right) < 0 && x.push({
+          //     type: "dir",
+          //     icon: "layui-icon-more-vertical"
+          //   }), x),
+          bars: [{
+            type: "dir",
+            icon: "layui-icon-more-vertical"
+          }],
+          on: {
+            click: function(e){
+              if("dir" === e){
+                let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
+                if(fitBody.find("." + OUTLINE + "-container").hasClass(RETRACT)){
+                  fitBody.find("." + OUTLINE + "-container").removeClass(RETRACT);
+                }else{
+                  fitBody.find("." + OUTLINE + "-container").addClass(RETRACT);
+                }
+              }
+            },
+          }
+        });
+        handler.addListener();
+      }
     },
 
     /**
@@ -312,13 +339,13 @@ layui.define(["jquery"], function (exports) {
       });
 
       // 点击按钮展开outline
-      fitBody.find("." + OUTLINE + "-container").on('click', '.layui-outline-bth', function(){
-        if(fitBody.find("." + OUTLINE + "-container").hasClass(RETRACT)){
-          fitBody.find("." + OUTLINE + "-container").removeClass(RETRACT);
-        }else{
-          fitBody.find("." + OUTLINE + "-container").addClass(RETRACT);
-        }
-      });
+      // fitBody.find("." + OUTLINE + "-container").on('click', '.layui-outline-bth', function(){
+      //   if(fitBody.find("." + OUTLINE + "-container").hasClass(RETRACT)){
+      //     fitBody.find("." + OUTLINE + "-container").removeClass(RETRACT);
+      //   }else{
+      //     fitBody.find("." + OUTLINE + "-container").addClass(RETRACT);
+      //   }
+      // });
     },
   };
 

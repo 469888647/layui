@@ -28,6 +28,10 @@ const LAYER_CONFIG = {
         name: '快捷菜单示例',
         url: './html/tileExp.html',
     },
+    treeorderExp: {
+        name: '树排序示例',
+        url: './html/treeorderExp.html',
+    },
     test: {
         name: 'music测试',
         url: './html/test.html',

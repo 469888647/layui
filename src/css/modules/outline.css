@@ -5,7 +5,7 @@
   /*right: -210px;*/
   right: 20px;
   /*top: 32px;*/
-  bottom: 0;
+  /*bottom: 0;*/
   width: 210px;
   z-index: 99999999;
   margin-top: 20px;
@@ -18,6 +18,7 @@
   z-index: 776;
   width: 210px;
   right: 20px;
+  background-color: #fff;
 }
 
 /* 正常情况下,点击按钮添加class之后就隐藏这个 */
@@ -43,7 +44,7 @@
   display: block;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
   /* 平板移动设备,outline隐藏 */
   /*.layui-outline-container .layui-outline-side{*/
   /*  right: -210px;*/

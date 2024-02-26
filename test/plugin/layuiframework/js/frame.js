@@ -976,15 +976,11 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
         theme: function () {
           layui.colortheme && layui.colortheme.popup();
         },
-        // TODO 信息
-        message: function (othis) {
-          othis.find(".layui-badge-dot").remove();
-        },
         //弹出关于面板 大于765像素
         about: function () {
           layui.openPopup({
             id: "home_doc",
-            title: 'layuiGenerator介绍',
+            title: 'layui-framework介绍',
             type: 1,
             shade: 0.1,
             shadeClose: true,
@@ -993,8 +989,8 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
             anim: "slideLeft", // 从右往左
             offset: "r",
             success: function(layero){
-              layui.use('doc', function(){
-                layui.doc.run(layero);
+              layero.on('click','span', function(){
+                handler.setTop('test');
               });
             },
           });
@@ -1003,17 +999,17 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
         more: function () {
           layui.openPopup({
             id: "home_doc",
-            title: 'layuiGenerator介绍',
+            title: 'layui-framework介绍',
             type: 1,
             shade: 0.1,
             shadeClose: true,
             url: './plugin/layuiframework/html/doc.html',
-            area: ["640px", "100%"],
+            area: ["100%", "100%"],
             anim: "slideLeft", // 从右往左
             offset: "r",
             success: function(layero){
-              layui.use('doc', function(){
-                layui.doc.run(layero);
+              layero.on('click','span', function(){
+                handler.setTop('test');
               });
             },
           });

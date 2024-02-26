@@ -769,8 +769,10 @@ layui.define(["jquery", "util", "layer"],function (exports) {
     /**
      * 设置主题色,并缓存起来
      * @param {*} key 主题色的key
+     * 修改,在设置之前先判断,没有初始化先触发下初始化,防止出现不必要的错误
      */
     setTheme: function (key) {
+      if(!handler.themeConfig) handler.initConfig();
       let _config = handler.themeConfig[key || handler.getTheme()];
       util.each(_config, (v, k) => {
         // 遍历时 alias 属性不能用来设置css变量,简单判断下
@@ -812,7 +814,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       // var cssname = 'colortheme',path = 'modules/colortheme.css';
       // layui.addcss(path, cssname);
       // 初始化配置
-      handler.initConfig();
+      // handler.initConfig();
       // 初始化主题
       handler.setTheme();
     },

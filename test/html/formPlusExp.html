@@ -29,7 +29,7 @@
                             <p>表单扩展组件<code>formplus</code>是对表单组件<code>form</code>功能的扩展。PR #1410</p>
                         </blockquote>
                         <h2>基础功能</h2>
-                        <p>最开始这个功能是为了解决form.val赋值时不能触发form.on添加的change监听事件,<a href="https://gitee.com/layui/layui/issues/I5JMRW">#I5JMRW</a></p>
+                        <p>最开始这个功能是为了解决form.val赋值时不能触发form.on添加的change监听事件,<a target="_blank" href="https://gitee.com/layui/layui/issues/I5JMRW">#I5JMRW</a></p>
                         <ul>
                             <li>引入该js文件就可以开始使用,使用<code>layui.form.render(null, filter, true);</code>对属性lay-filter值为filter的表单进行渲染,最后一个参数需要带上</li>
                             <li>使用<code>layui.formplus.val(filter, object);</code>对表单进行赋值与取值</li>
@@ -40,7 +40,7 @@
                         <p>再次强调这两者的change事件(select,checkbox,switch,radio)不能混用</p>
                         <hr class="layui-border-red" />
                         <h3>表单渲染</h3>
-                        <p><code>layui.form.render(null, filter, true);<a href="https://layui.dev/docs/2/form/#render">#渲染</a></code></p>
+                        <p><code>layui.form.render(null, filter, true);<a target="_blank" href="https://layui.dev/docs/2/form/#render">#渲染</a></code></p>
                         <ul>
                             <li>参数<code>type</code>可选,对应表单组件类型,支持:input,select,checkbox,radio;<span style="color: red;">这里要求填null,指向所有类型。</span></li>
                             <li>参数<code>filter</code>可选,对应 class="layui-form" 所在元素的 lay-filter 属性值,用于指定需渲染的表单区域。</li>
@@ -170,7 +170,7 @@
                         <blockquote class="layui-elem-quote">
                             <p>在<code>input</code>文本输入框和<code>textarea</code>文本域上面添加一个maxlength的属性可以设置这个输入框和文本域的最大输入字数。使用fromplus渲染后会在上面以伪标签的形式展示<span style="color: red;">当前字数/最大输入字数</span></p>
                         </blockquote>
-                        <p>不需要添加额外的配置<code>maxlength</code>是标签自带的属性,<a href="https://www.runoob.com/tags/att-input-maxlength.html">#maxlength</a></p>
+                        <p>不需要添加额外的配置<code>maxlength</code>是标签自带的属性,<a target="_blank" href="https://www.runoob.com/tags/att-input-maxlength.html">#maxlength</a></p>
                         <!-- 字数限制示例 -- start -->
                         <div class = "layui-tab" lay-pre-code="字数限制示例" lay-options="{title: 'HTML', encode: 'true'}" >
                             <pre>
@@ -235,7 +235,7 @@
                         </blockquote>
                         <ul>
                             <li>这个功能仅针对<span style="color: red;">普通的单个时间选择框</span>,在文本输入框上面添加<code>laydate</code>属性即可</li>
-                            <li>文本输入框上面添加的<code>lay-options</code>属性可以指定渲染时的<a href="https://layui.dev/docs/2/laydate/#options">#配置参数</a>。这个方法会使用字符串转json,因此属性的key需要加上引号;并且<span style="color: red;">elem和回调函数是不能设置的</span></li>
+                            <li>文本输入框上面添加的<code>lay-options</code>属性可以指定渲染时的<a target="_blank" href="https://layui.dev/docs/2/laydate/#options">#配置参数</a>。这个方法会使用字符串转json,因此属性的key需要加上引号;并且<span style="color: red;">elem和回调函数是不能设置的</span></li>
                             <li>已经渲染过的时间选择框不会在这里重复渲染。如果不想让<code>fromplus</code>渲染你的时间选择框,可以在表单渲染之前渲染时间选择框</li>
                             <li><code>lay-options</code>参数不明确的可以copy下面的示例,可以减小因参数解析问题导致的错误</li>
                         </ul>
@@ -324,7 +324,7 @@
                         <blockquote class="layui-elem-quote">
                             <p>这个功能是将表单组件<code>form</code>和树组件<code>tree</code>功能的结合。PR #1410</p>
                         </blockquote>
-                        <p>这个功能是为了解决layui中没有下拉树这一个功能<a href="https://github.com/layui/layui/issues/1505">#1505</a>(在Layui of Vue里面是有这个<a href="http://www.layui-vue.com/zh-CN/components/treeSelect">组件</a>的)</p>
+                        <p>这个功能是为了解决layui中没有下拉树这一个功能<a target="_blank" href="https://github.com/layui/layui/issues/1505">#1505</a>(在Layui of Vue里面是有这个<a target="_blank" href="http://www.layui-vue.com/zh-CN/components/treeSelect">组件</a>的)</p>
                         <ul>
                             <li>需要在文本输入框中添加<code>lay-options</code>属性,通过这个属性的值可以自定义下拉树</li>
                             <li><code>fromplus</code>本着最小改动的原则,许多功能都没有实现,需要自行实现</li>
@@ -333,7 +333,7 @@
                             <li>下拉树的dom结构必须使用下面的结构</li>
                         </ul>
                         <h4>lay-options属性</h4>
-                        <p>整理一下<code>lay-options</code>支持的属性,除了下面的属性,还可以设置<a href="https://layui.dev/docs/2/tree/#options">树的配置项</a>来自定义树</p>
+                        <p>整理一下<code>lay-options</code>支持的属性,除了下面的属性,还可以设置<a target="_blank" href="https://layui.dev/docs/2/tree/#options">树的配置项</a>来自定义树</p>
                         <table class="layui-table">
                             <colgroup>
                                 <col width="150">
@@ -618,7 +618,7 @@
     <script type="text/javascript">
         layui.example.render();
         layui.outline.render();
-        layui.util.fixbar();
+        // layui.util.fixbar();
         layui.colortheme.run();
     </script>
     </body>
