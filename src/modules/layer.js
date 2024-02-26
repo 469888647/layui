@@ -33,7 +33,7 @@ var ready = {
   events: {resize: {}}, 
   minStackIndex: 0,
   minStackArr: [],
-  btn: ['&#x786E;&#x5B9A;', '&#x53D6;&#x6D88;'],
+  btn: ['确定', '取消'],
 
   // 五种原始层模式
   type: ['dialog', 'page', 'iframe', 'loading', 'tips'],
@@ -257,6 +257,7 @@ doms.anim = {
 
 doms.SHADE = 'layui-layer-shade';
 doms.MOVE = 'layui-layer-move';
+doms.SHADE_KEY = 'LAYUI-LAYER-SHADE-KEY';
 
 // 默认配置
 Class.pt.config = {
@@ -264,7 +265,7 @@ Class.pt.config = {
   shade: 0.3,
   fixed: true,
   move: doms[1],
-  title: '&#x4FE1;&#x606F;',
+  title: '信息',
   offset: 'auto',
   area: 'auto',
   closeBtn: 1,
@@ -397,7 +398,22 @@ Class.pt.creat = function(){
   var content = config.content;
   var conType = typeof content === 'object';
   var body = $('body');
-  
+
+  var setAnim = function(layero){
+    // anim 兼容旧版 shift
+    if(config.shift){
+      config.anim = config.shift;
+    }
+
+    // 为兼容 jQuery3.0 的 css 动画影响元素尺寸计算
+    if(doms.anim[config.anim]){
+      var animClass = 'layer-anim '+ doms.anim[config.anim];
+      layero.addClass(animClass).one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+        $(this).removeClass(animClass);
+      });
+    }
+  }
+
   // 若 id 对应的弹层已经存在，则不重新创建
   if(config.id && $('.'+ doms[0]).find('#'+ config.id)[0]){
     return (function(){
@@ -413,6 +429,10 @@ Class.pt.creat = function(){
       } else if(options.hideOnClose){
         elemShade.show();
         layero.show();
+        setAnim(layero);
+        setTimeout(function(){
+          elemShade.css({opacity: elemShade.data(doms.SHADE_KEY)});
+        }, 10);
       }
     })();
   }
@@ -425,11 +445,6 @@ Class.pt.creat = function(){
   // 初始化 area 属性
   if(typeof config.area === 'string'){
     config.area = config.area === 'auto' ? ['', ''] : [config.area, ''];
-  }
-  
-  // anim 兼容旧版 shift
-  if(config.shift){
-    config.anim = config.shift;
   }
   
   if(layer.ie == 6){
@@ -486,7 +501,9 @@ Class.pt.creat = function(){
   that.shadeo.css({
     'background-color': config.shade[1] || '#000'
     ,'opacity': config.shade[0] || config.shade
+    ,'transition': config.shade[2] || ''
   });
+  that.shadeo.data(doms.SHADE_KEY, config.shade[0] || config.shade);
 
   config.type == 2 && layer.ie == 6 && that.layero.find('iframe').attr('src', content[0]);
 
@@ -518,14 +535,7 @@ Class.pt.creat = function(){
     layer.close(that.index);
   }, config.time);
   that.move().callback();
-  
-  // 为兼容 jQuery3.0 的 css 动画影响元素尺寸计算
-  if(doms.anim[config.anim]){
-    var animClass = 'layer-anim '+ doms.anim[config.anim];
-    that.layero.addClass(animClass).one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-      $(this).removeClass(animClass);
-    });
-  }
+  setAnim(that.layero);
   
   // 记录配置信息
   that.layero.data('config', config);
@@ -1245,11 +1255,15 @@ layer.close = function(index, callback){
     }
   };
   // 移除遮罩
-  var removeShade = (function fn(){
-    $('#'+ doms.SHADE + index)[
-      hideOnClose ? 'hide' : 'remove'
-    ]();
-  })();
+  var shadeo = $('#'+ doms.SHADE + index);
+  if((layer.ie && layer.ie < 10) || !options.isOutAnim){
+    shadeo[hideOnClose ? 'hide' : 'remove']();
+  }else{
+    shadeo.css({opacity: 0});
+    setTimeout(function(){
+      shadeo[hideOnClose ? 'hide' : 'remove']();
+    }, 350);
+  }
   
   // 是否允许关闭动画
   if(options.isOutAnim){
@@ -1331,7 +1345,7 @@ layer.prompt = function(options, yes){
   
   return layer.open($.extend({
     type: 1,
-    btn: ['&#x786E;&#x5B9A;','&#x53D6;&#x6D88;'],
+    btn: ['确定','取消'],
     content: content,
     skin: 'layui-layer-prompt' + skin('prompt'),
     maxWidth: win.width(),
@@ -1344,7 +1358,7 @@ layer.prompt = function(options, yes){
     yes: function(index){
       var value = prompt.val();
       if(value.length > (options.maxlength||500)) {
-        layer.tips('&#x6700;&#x591A;&#x8F93;&#x5165;'+ (options.maxlength || 500) +'&#x4E2A;&#x5B57;&#x6570;', prompt, {tips: 1});
+        layer.tips('最多输入'+ (options.maxlength || 500) +'个字符', prompt, {tips: 1});
       } else {
         yes && yes(value, index, prompt);
       }
@@ -1460,7 +1474,7 @@ layer.photos = function(options, loop, key){
     // 不直接弹出
     if (!loop) return;
   } else if (data.length === 0){
-    return layer.msg('&#x6CA1;&#x6709;&#x56FE;&#x7247;');
+    return layer.msg('没有图片');
   }
   
   // 上一张
@@ -1646,7 +1660,7 @@ layer.photos = function(options, loop, key){
   }
   
   dict.loadi = layer.load(1, {
-    shade: 'shade' in options ? false : 0.9,
+    shade: 'shade' in options ? false : [0.9, undefined, 'unset'],
     scrollbar: false
   });
 
@@ -1681,7 +1695,7 @@ layer.photos = function(options, loop, key){
         return [imgarea[0]+'px', imgarea[1]+'px']; 
       }(),
       title: false,
-      shade: 0.9,
+      shade: [0.9, undefined, 'unset'],
       shadeClose: true,
       closeBtn: false,
       move: '.layer-layer-photos-main img',
@@ -1745,9 +1759,9 @@ layer.photos = function(options, loop, key){
     }, options));
   }, function(){
     layer.close(dict.loadi);
-    layer.msg('&#x5F53;&#x524D;&#x56FE;&#x7247;&#x5730;&#x5740;&#x5F02;&#x5E38;<br>&#x662F;&#x5426;&#x7EE7;&#x7EED;&#x67E5;&#x770B;&#x4E0B;&#x4E00;&#x5F20;&#xFF1F;', {
+    layer.msg('当前图片地址异常，<br>是否继续查看下一张？', {
       time: 30000, 
-      btn: ['&#x4E0B;&#x4E00;&#x5F20;', '&#x4E0D;&#x770B;&#x4E86;'], 
+      btn: ['下一张', '不看了'], 
       yes: function(){
         data.length > 1 && dict.imgnext(true,true);
       }
