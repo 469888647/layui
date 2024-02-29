@@ -257,7 +257,9 @@ doms.anim = {
 
 doms.SHADE = 'layui-layer-shade';
 doms.MOVE = 'layui-layer-move';
-doms.SHADE_KEY = 'LAYUI-LAYER-SHADE-KEY';
+
+var SHADE_KEY = 'LAYUI-LAYER-SHADE-KEY';
+var RECORD_HEIGHT_KEY = 'LAYUI_LAYER_CONTENT_RECORD_HEIGHT';
 
 // 默认配置
 Class.pt.config = {
@@ -431,7 +433,7 @@ Class.pt.creat = function(){
         layero.show();
         setAnim(layero);
         setTimeout(function(){
-          elemShade.css({opacity: elemShade.data(doms.SHADE_KEY)});
+          elemShade.css({opacity: elemShade.data(SHADE_KEY)});
         }, 10);
       }
     })();
@@ -503,7 +505,7 @@ Class.pt.creat = function(){
     ,'opacity': config.shade[0] || config.shade
     ,'transition': config.shade[2] || ''
   });
-  that.shadeo.data(doms.SHADE_KEY, config.shade[0] || config.shade);
+  that.shadeo.data(SHADE_KEY, config.shade[0] || config.shade);
 
   config.type == 2 && layer.ie == 6 && that.layero.find('iframe').attr('src', content[0]);
 
@@ -967,14 +969,18 @@ Class.pt.openLayer = function(){
 // 记录宽高坐标，用于还原
 ready.record = function(layero){
   if(!layero[0]) return window.console && console.error('index error');
+  var type = layero.attr('type');
+  var contentElem = layero.find('.layui-layer-content');
+  var contentRecordHeightElem = type === ready.type[2] ? contentElem.children('iframe') : contentElem;
   var area = [
-    layero[0].style.width || layero.width(),
-    layero[0].style.height || layero.height(),
+    layero[0].style.width || ready.getStyle(layero[0], 'width'),
+    layero[0].style.height || ready.getStyle(layero[0], 'height'),
     layero.position().top, 
     layero.position().left + parseFloat(layero.css('margin-left'))
   ];
   layero.find('.layui-layer-max').addClass('layui-layer-maxmin');
   layero.attr({area: area});
+  contentElem.data(RECORD_HEIGHT_KEY, ready.getStyle(contentRecordHeightElem[0], 'height'));
 };
 
 // 设置页面滚动条
@@ -1026,7 +1032,7 @@ layer.iframeSrc = function(index, url){
 // 设定层的样式
 layer.style = function(index, options, limit){
   var layero = $('#'+ doms[0] + index);
-  var contElem = layero.find('.layui-layer-content');
+  var contentElem = layero.find('.layui-layer-content');
   var type = layero.attr('type');
   var titHeight = layero.find(doms[1]).outerHeight() || 0;
   var btnHeight = layero.find('.'+doms[6]).outerHeight() || 0;
@@ -1054,10 +1060,10 @@ layer.style = function(index, options, limit){
       height: (typeof options.height === 'number' ? options.height : layero.height()) - titHeight - btnHeight
     });
   } else {
-    contElem.css({
+    contentElem.css({
       height: (typeof options.height === 'number' ? options.height : layero.height()) - titHeight - btnHeight
-      - parseFloat(contElem.css('padding-top'))
-      - parseFloat(contElem.css('padding-bottom'))
+      - parseFloat(contentElem.css('padding-top'))
+      - parseFloat(contentElem.css('padding-bottom'))
     })
   }
 };
@@ -1128,9 +1134,11 @@ layer.min = function(index, options){
 layer.restore = function(index){
   var layero = $('#'+ doms[0] + index);
   var shadeo = $('#'+ doms.SHADE + index);
+  var contentElem = layero.find('.layui-layer-content');
   var area = layero.attr('area').split(',');
   var type = layero.attr('type');
   var options = layero.data('config') || {};
+  var contentRecordHeight = contentElem.data(RECORD_HEIGHT_KEY);
 
   layero.removeData('maxminStatus'); // 移除最大最小状态
   
@@ -1150,6 +1158,13 @@ layer.restore = function(index){
 
   // 恢复页面滚动条弹层打开时的状态
   options.scrollbar ? ready.restScrollbar(index) : ready.setScrollbar(index);
+
+  // #1604
+  if(contentRecordHeight !== undefined){
+    contentElem.removeData(RECORD_HEIGHT_KEY);
+    var contentRecordHeightElem = type === ready.type[2] ? contentElem.children('iframe') : contentElem;
+    contentRecordHeightElem.css({height: contentRecordHeight});
+  }
   
   // 恢复遮罩
   shadeo.show();
@@ -1306,8 +1321,18 @@ layer.closeAll = function(type, callback){
 
 // 根据弹层类型关闭最近打开的层
 layer.closeLast = function(type, callback){
-  type = type || 'page';
-  layer.close($('.layui-layer-'+ type +':last').attr("times"), callback);
+  var layerIndexList = [];
+  var isArrayType = $.isArray(type);
+  $(typeof type === 'string' ? '.layui-layer-' + type : '.layui-layer').each(function(i, el){
+    var layero = $(el);
+    var shouldSkip = (isArrayType && type.indexOf(layero.attr('type')) === -1) || layero.css('display') === 'none';
+    if(shouldSkip) return true;
+    layerIndexList.push(Number(layero.attr('times')));
+  });
+  if(layerIndexList.length > 0){
+    var layerIndexMax = Math.max.apply(null, layerIndexList);
+    layer.close(layerIndexMax, callback);
+  }
 };
 
 
