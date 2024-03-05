@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>music使用示例</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+        <!--  大致起完美适配的作用,试开发者不管像素比,只需按照css像素编写代码即可     -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <!--    请勿在项目正式环境中引用该 layui.css 地址     -->
+       <!--  <link href="//cdn.staticfile.org/layui/2.8.17/css/layui.css" rel="stylesheet"> -->
+        <link href="../plugin/layui/css/layui.css" rel="stylesheet">
+        <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+        <!-- <link href="../plugin/layuiframework/css/colortheme.css" rel="stylesheet"> -->
+        <link href="../plugin/layuiframework/css/index.css" rel="stylesheet">
+        <style>
+            .layui-outline-side-fixed .layui-outline-ul li[level="4"]{
+                padding-left: 56px;
+            }
+        </style>
+    </head>
+    <body class="layui-layout-body">
+        <div class="layui-fluid">
+            <!-- 大屏时占大半屏幕(右侧为outline留位置),小屏时占全部屏幕 -->
+            <div class="layui-col-xs12 layui-col-md10">
+                <div class = "ws-content">
+                    <div class = "layui-text ws-text">
+                        <h1 lay-ignore >音频播放</h1>
+                        <blockquote class="layui-elem-quote">
+                            <p>音频播放组件<code>music</code>是基于<code>Web_Audio</code>接口开发,与audio标签无关。<a target="_blank" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API">#Web_Audio开发文档</a></p>
+                        </blockquote>
+                        <h2>快速上手</h2>
+                        <p>在h5中可以非常简单的播放一段音频,使用<code>music</code>组件也是如此,你可以使用<code>layui.music().play(XXX)</code>来播放<code>XXX</code>音频</p>
+                        <ul>
+                            <li>参数<code>XXX</code>可以是一段音频文件的url地址,<span style="color: red;">由于浏览器的同源以及跨域问题,本页面不演示这种用法。</span></li>
+                            <li>参数<code>XXX</code>可以是一个文件对象,本页面主要演示使用<code>upload</code>组件获取音频文件,然后播放。</li>
+                            <li>参数<code>XXX</code>可以是一个<code>AudioBuffer</code>,可以根据需要自定义的进行音频解析,<a target="_blank" href="https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer">#AudioBuffer</a></li>
+                        </ul>
+                        <h3>简单示例</h3>
+                        <!-- 简单示例 -- start -->
+                        <div class = "layui-tab" lay-pre-code="简单示例" lay-options="{title: 'HTML', encode: 'true'}" >
+                            <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">简单示例</div>
+        <div class="layui-card-body">
+            <p>页面上的audio标签都可以是多个的,那music实例也可以是多个的。使用<code>layui.music()</code>就可以创建一个音频实例,使用这个实例可以去进行下面的操作。这里先不管,下面的内容会展开介绍。</p>
+            <blockquote class="layui-elem-quote">
+                <p>虽然可以使用<code>layui.music().play()</code>播放音频,但是一般建议将这两步分开进行<code>var inst = layui.music();</code>;<code>inst.play();</code></p>
+            </blockquote>
+            <p>接下来,可以点击下面的上传按钮,上传一个音频文件来播放。</p>
+            <button type="button" class="layui-btn layui-btn-normal" id="layui-music-demo1-bth">
+                <i class="layui-icon layui-icon-upload"></i> 上传音频文件
+            </button>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use(['upload','music'], function(){
+            // 创建实例(虽然可以使用layui.music().play()播放音频,但是一般建议将这两步分开进行)
+            var musicInst = new layui.music();
+            // upload渲染
+            layui.upload.render({
+                elem: '#layui-music-demo1-bth',
+                url: '',
+                accept: 'audio',
+                auto: false,
+                // 选择文件后的回调
+                choose: function(obj){
+                    // 取出上传的文件
+                    var files = obj.pushFile();
+                    var playFlag = false;
+                    layui.each(files, function(k, v){
+                        if(!playFlag){
+                            playFlag = true;
+                            // 使用music组件播放选择的音频文件
+                            musicInst.play(v);
+                        }
+                        // 清空已经选择的文件
+                        delete files[k];
+                    });
+                },
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                            </pre>
+                        </div>
+                        <!-- 简单示例 -- end -->
+                        <h2>音频实例</h2>
+                        <p>页面上的audio标签都可以是多个的,所以<code>music</code>组件在设计时就考虑到一个页面多个实例的情况。通过<code>layui.music(options)</code>或<code>new layui.music(options)</code>可以返回一个音频实例<code>musicInst</code>。<code>music</code>组件的功能就是在这个实例上进行调用的。<span style="color: red;">一个实例可以反复的播放,请不要无休止的调用方法创建实例!</span></p>
+                        <p><code>options</code>既可以在创建实例时传入,也可以放在<code>elem</code>的<code>lay-options</code>属性上进行定义,参数优先级大于属性值。</p>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col>
+                                <col width="100">
+                                <col width="100">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>属性名</th>
+                                    <th>描述</th>
+                                    <th>类型</th>
+                                    <th>默认值</th>
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>示例的id,没有设置会自动生成一个,这个属性不能使用lay-options,而是取elem的id属性</td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>loop</td>
+                                    <td>是否循环播放</td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>speed</td>
+                                    <td>播放的倍速 0 - 2</td>
+                                    <td>Number</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>effect</td>
+                                    <td>声效(详见下面的切换声效方法)</td>
+                                    <td>string</td>
+                                    <td>NONE</td>
+                                </tr>
+                                <tr>
+                                    <td>volume</td>
+                                    <td>声音 0 - 2</td>
+                                    <td>Number</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>elem</td>
+                                    <td>绑定元素选择器或DOM对象,下面的属性必须有elem才有效</td>
+                                    <td>string/DOM</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>sliderTotal</td>
+                                    <td>播放进度滑块的最大值(参考最大音频文件能播放的秒数)</td>
+                                    <td>Number</td>
+                                    <td>500</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2>可视化页面</h2>
+                        <p>单单js播放是不够的,有些情况下还需要一些页面可视化的交互,通过上面可以了解到可以通过参数<code>elem</code>来绑定一个页面的dom。<code>music</code>根据这个dom对象简单的实现了一套可视化页面。</p>
+                        <ul>
+                            <li>layui图标<code>layui-icon-play</code>为播放/恢复按钮;<code>layui-icon-pause</code>为暂停按钮</li>
+                            <li>layui图标<code>layui-icon-mute</code>为静音图标;<code>layui-icon-speaker</code>为声音图标</li>
+                            <li>添加了class<code>layui-music-play-bar</code>的容器会用来渲染播放进度条</li>
+                            <li>添加了class<code>layui-music-gain-bar</code>的容器会用来渲染声音控制条</li>
+                            <li>添加了class<code>layui-music-canvas-area</code>的容器会用来添加canvas动画</li>
+                        </ul>
+                        <h3>内置可视化示例</h3>
+                        <!-- 内置可视化示例 -- start -->
+                        <div class = "layui-tab" lay-pre-code="简单示例" lay-options="{title: 'HTML', encode: 'true'}" >
+                            <pre>
+    {{ layui_html_head }}
+    <div class="layui-card">
+        <div class="layui-card-header">简单示例</div>
+        <div class="layui-card-body">
+            <p>可以点击下面的上传按钮,上传一个音频文件来播放。</p>
+            <button type="button" class="layui-btn layui-btn-normal" id="layui-music-demo2-bth">
+                <i class="layui-icon layui-icon-upload"></i> 上传音频文件
+            </button>
+            <div id = "layui-music-demo2"  class="layui-form layui-form-pane" lay-options = "{'loop':true,'effect':'panner'}" action="">
+                <div class="layui-form-item">
+                    <div class = "layui-music-canvas-area" style = "width:240px;height: 200px;margin: 0 10px;"></div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-group">
+                        <div class="layui-input-split layui-input-prefix">
+                            <i class="layui-icon layui-icon-pause"></i>
+                        </div>
+                        <div style="display: inline-block;width: 200px;margin: 0 15px;" class = "layui-music-play-bar"></div>
+                        <div class="layui-input-split layui-input-suffix">
+                            <i class="layui-icon layui-icon-mute"></i>
+                            <div class="layui-music-gain-bar" style="position: absolute;bottom: 30px;left: -20px;z-index: 2;"></div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ layui_js_area }}
+    <x3cscript type="text/javascript" >
+        layui.use(['upload','music'], function(){
+            // 创建实例(虽然可以使用layui.music().play()播放音频,但是一般建议将这两步分开进行)
+            var musicInst = new layui.music({elem: '#layui-music-demo2'});
+            // upload渲染
+            layui.upload.render({
+                elem: '#layui-music-demo2-bth',
+                url: '',
+                accept: 'audio',
+                auto: false,
+                // 选择文件后的回调
+                choose: function(obj){
+                    // 取出上传的文件
+                    var files = obj.pushFile();
+                    var playFlag = false;
+                    layui.each(files, function(k, v){
+                        if(!playFlag){
+                            playFlag = true;
+                            // 使用music组件播放选择的音频文件
+                            musicInst.play(v);
+                        }
+                        // 清空已经选择的文件
+                        delete files[k];
+                    });
+                },
+            });
+        });
+    </x3cscript>
+    {{ layui_html_tail }}
+                            </pre>
+                        </div>
+                        <!-- 内置可视化示例 -- end -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--    请勿在项目正式环境中引用该 layui.js 地址     -->
+        <!-- <script type="text/javascript" src="//cdn.staticfile.org/layui/2.8.17/layui.js"></script> -->
+        <script type="text/javascript" src="../plugin/layui/layui.js"></script>
+        <script type="text/javascript" src="../config.js"></script>
+        <script type="text/javascript" src="../plugin/layuiframework/js/util.js"></script>
+        <!-- 当前使用特殊版本的layui,已将colortheme打包,这里不用单独引用 -- https://gitee.com/giteetcj/layui/tree/layuiframework/ -->
+        <!-- <script type="text/javascript" src="../plugin/layuiframework/js/colortheme.js"></script> -->
+        <script type="text/javascript" src="../plugin/lay/example.js"></script>
+        <script type="text/javascript">
+            layui.example.render();
+            layui.outline.render();
+            // layui.util.fixbar();
+            layui.colortheme.run();
+        </script>
+    </body>
+</html>

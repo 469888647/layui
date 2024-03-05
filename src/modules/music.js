@@ -271,16 +271,25 @@ layui.define(["jquery", "form"], function (exports) {
      * @param options 配置项
      */
     initConfig: function(options = {}){
-
-      // 滑块的最大值,这个关系到播放条的配置
-      this.sliderTotal = options.sliderTotal || 500;
-
+      let _options = {};
       // 初始化页面的id或者dom
       this.id = options.id;
       this.elem = null;
       if(options.elem){
         this.elem = $(options.elem);
+        if(this.elem.attr('lay-options')){
+          try{
+            let optionsAttr = this.elem.attr('lay-options');
+            _options = optionsAttr
+              ? JSON.parse(String(optionsAttr).replace(/\'/g, () => '"'))
+              : {};
+          }catch (e) {
+            console.error(e);
+          }
+        }
         if(!this.id) this.id = getContextFilter(this.elem.get(0));
+        // 滑块的最大值,这个关系到播放条的配置
+        this.sliderTotal = options.sliderTotal || _options.sliderTotal || 500;
         // 绑定dom事件
         if(this.elem.length == 1) this.initElement();
       }
@@ -295,12 +304,12 @@ layui.define(["jquery", "form"], function (exports) {
        * 播放循环
        * @type {boolean}
        */
-      this.playLoop = options.loop || false;
+      this.playLoop = options.loop || _options.loop || false;
       /**
        * 播放倍速
        * @type {Number}
        */
-      this.playSpeed = options.speed || 1;
+      this.playSpeed = options.speed || _options.speed || 1;
 
       /**
        * 混响延时时间
@@ -316,12 +325,12 @@ layui.define(["jquery", "form"], function (exports) {
       /**
        * 设置声效
        */
-      this.changeSoundEffect(options.effect || GLOBAL_CONSTANT.SOUND_EFFECT.NONE);
+      this.changeSoundEffect(options.effect || _options.effect || GLOBAL_CONSTANT.SOUND_EFFECT.NONE);
 
       /**
        * 设置主声音
        */
-      this.setVolume(options.volume || 1);
+      this.setVolume(options.volume || _options.volume || 1);
 
     },
 

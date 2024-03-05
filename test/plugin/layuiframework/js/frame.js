@@ -988,9 +988,11 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
             area: ["640px", "100%"],
             anim: "slideLeft", // 从右往左
             offset: "r",
-            success: function(layero){
-              layero.on('click','span', function(){
-                handler.setTop('test');
+            success: function(layero, index){
+              layero.off('click', '*[lay-page-key]').on('click', '*[lay-page-key]', function(){
+                var key = $(this).attr("lay-page-key");
+                layui.layer.close(index)
+                handler.setTop(key);
               });
             },
           });
@@ -1007,9 +1009,11 @@ layui.define(["jquery", "element", "layer", "util"], function (exports) {
             area: ["100%", "100%"],
             anim: "slideLeft", // 从右往左
             offset: "r",
-            success: function(layero){
-              layero.on('click','span', function(){
-                handler.setTop('test');
+            success: function(layero, index){
+              layero.off('click', '*[lay-page-key]').on('click', '*[lay-page-key]', function(){
+                var key = $(this).attr("lay-page-key");
+                layui.layer.close(index)
+                handler.setTop(key);
               });
             },
           });

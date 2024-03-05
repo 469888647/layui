@@ -32,9 +32,14 @@ const LAYER_CONFIG = {
         name: '树排序示例',
         url: './html/treeorderExp.html',
     },
+    formExp: {
+        name: '表单补充示例',
+        url: './html/formExp.html',
+    },
     test: {
         name: 'music测试',
-        url: './html/test.html',
+        url: './html/music.html',
     },
+
 };
 
