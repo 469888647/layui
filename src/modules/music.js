@@ -17,6 +17,20 @@ layui.define(["jquery", "form"], function (exports) {
   const MOD_NAME = 'music';
 
   /**
+   * @constant
+   * 鼠标按下事件名称
+   * @type {string}
+   */
+  const EVENT_DOWN = layui.device().mobile ? 'touchstart' : 'mousedown';
+
+  /**
+   * @constant
+   * 鼠标抬起事件名称
+   * @type {string}
+   */
+  const EVENT_UP = layui.device().mobile ? 'touchend' : 'mouseup';
+
+  /**
    * 定义一系列的公共常量
    * @namespace  公共常量
    * @constant
@@ -429,10 +443,10 @@ layui.define(["jquery", "form"], function (exports) {
             },
           });
           // 不能直接给播放条的回调函数中做setValue时也会触发
-          self.elem.on('mousedown', '.layui-slider-wrap-btn', function(){
+          self.elem.on(EVENT_DOWN, '.layui-slider-wrap-btn', function(){
             controlFlag = false;
           });
-          $('body').on('mouseup', function(){
+          $('body').on(EVENT_UP, function(){
             if(controlFlag == false){
               controlFlag = true;
               // self.playBuffer(null, parseInt(playBarInst.value / 100 * self.duration));
@@ -664,7 +678,7 @@ layui.define(["jquery", "form"], function (exports) {
       // 设置循环
       // self.switchLoop(self.playLoop);
       // 设置倍速
-      self.changePlaySpeed(self.playSpeed);
+      self.bufferedSourceNode.playbackRate.setValueAtTime(self.playSpeed, self.getAudioContext().currentTime);
       // 设置播放结束事件
       self.bufferedSourceNode.onended = function(){
         // 移除定时任务,这里不清除,因为可能是执行前后的关系,这个后执行会影响下一次播放
@@ -725,8 +739,9 @@ layui.define(["jquery", "form"], function (exports) {
      */
     changePlaySpeed: function (speed = 1){
       this.playSpeed = speed;
-      if(this.bufferedSourceNode)
-        this.bufferedSourceNode.playbackRate.setValueAtTime(this.playSpeed, this.getAudioContext().currentTime);
+      if(this.bufferedSourceNode){
+        this.playBuffer(null, parseInt(this.currentTime));
+      }
     },
 
     /**
@@ -933,10 +948,12 @@ layui.define(["jquery", "form"], function (exports) {
     playCallBack: function (){
       let self = this;
       // 记录起始时间
-      self.startTime =  self.getAudioContext().currentTime - self.playCurrentTime;
+      self.startTime =  self.getAudioContext().currentTime - self.playCurrentTime / self.playSpeed;
       // 修改状态
       self.playState = GLOBAL_CONSTANT.PLAY_STATE.PLAYING
       self.lastPlayState = GLOBAL_CONSTANT.PLAY_STATE.PLAYING;
+      // 再次调用方法来更改声效,没有播放的时候的修改好像是不生效的
+      self.changeSoundEffect(self.soundEffect);
       // 调取播放事件
       self.doPlayingCallBack(function(){
         // 增长计数
