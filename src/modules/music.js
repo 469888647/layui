@@ -636,7 +636,7 @@ layui.define(["jquery", "form"], function (exports) {
       request.responseType = 'arraybuffer';
       request.onload = function(){
         let audioData = request.response;
-        self.getContext().decodeAudioData(audioData,function(buffer){
+        self.getAudioContext().decodeAudioData(audioData,function(buffer){
           self.playBuffer(buffer, start);
         },function(e){"Error with decoding audio data" + e.err});
       }
