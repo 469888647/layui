@@ -435,7 +435,7 @@ layui.define(['lay', 'layer', 'util'], function(exports){
                     let _index = 0;
                     // 循环添加
                     layui.each(list, function(k, v){
-                      if(dl.children('[lay-value="'+v[creatableOption.idKey || 'id']+'"]').length == 0){
+                      if(dl.children('[lay-value="'+v[creatableOption.idKey || 'id']+'"]').length == 0 && v[creatableOption.nameKey || 'name'].indexOf(value) !== -1){
                         let textVal = $('<div>' + v[creatableOption.nameKey || 'name'] +'</div>').text();
                         dl.append('<dd class="' + CREATE_OPTION + '" lay-value="'+ v[creatableOption.idKey || 'id'] +'">' + util.escape(textVal) + '</dd>');
                         _index ++;
