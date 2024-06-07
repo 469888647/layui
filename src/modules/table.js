@@ -220,8 +220,14 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
 
     ,'<div class="layui-table-box">'
       ,'{{# if(d.data.loading){ }}'
-      ,'<div class="layui-table-init" style="background-color: #fff;">'
-        ,'<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>'
+      ,'<div class="layui-table-init">'
+        ,'<div class="layui-table-loading-icon">'
+        ,'{{# if(typeof d.data.loading === "string"){ }}'
+          ,'{{- d.data.loading}}'
+        ,'{{# } else{ }}'
+          ,'<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>'
+        ,'{{# } }}'
+        ,'</div>'
       ,'</div>'
       ,'{{# } }}'
 
@@ -910,7 +916,6 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       that.layMain.find('table').width('auto');
     }
 
-    that.loading(!0);
   };
 
   // 重置表格尺寸/结构
@@ -975,6 +980,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     that.syncCheckAll();
     that.renderForm();
     that.setColsWidth();
+    that.loading(false);
   };
 
   // 初始页码
@@ -1001,6 +1007,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     };
     var done = function(res, origin){
       that.setColsWidth();
+      that.loading(false);
       typeof options.done === 'function' && options.done(
         res, curr, res[response.countName], origin
       );
@@ -1045,7 +1052,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
         data = JSON.stringify(data);
       }
 
-      that.loading();
+      that.loading(true);
 
       $.ajax({
         type: options.method || 'get',
@@ -1079,7 +1086,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
             // 耗时（接口请求+视图渲染）
             options.time = (new Date().getTime() - that.startTime) + ' ms';
           }
-          done(res);
+          done(res, opts.type);
         },
         error: function(e, msg){
           that.errorView('请求异常，错误提示：'+ msg);
@@ -1109,7 +1116,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
         type: opts.type
       }), sort();
 
-      done(res);
+      done(res, opts.type);
     }
   };
 
@@ -1590,7 +1597,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     // 匹配行元素
     var tr = function(tr) {
       return isCheckAll ? tr : tr.filter(isCheckMult ? function() {
-        var dataIndex = $(this).attr('data-index');
+        var dataIndex = $(this).data('index');
         return opts.index.indexOf(dataIndex) !== -1;
       } : '[data-index="'+ opts.index +'"]');
     }(that.layBody.find('tr'));
@@ -1740,20 +1747,12 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
   };
 
   // 请求 loading
-  Class.prototype.loading = function(hide){
+  Class.prototype.loading = function(show){
     var that = this;
     var options = that.config;
+
     if(options.loading){
-      if(hide){
-        that.layInit && that.layInit.remove();
-        delete that.layInit;
-        that.layBox.find(ELEM_INIT).remove();
-      } else {
-        that.layInit = $(['<div class="layui-table-init">',
-          '<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>',
-          '</div>'].join(''));
-        that.layBox.append(that.layInit);
-      }
+      that.layBox.find(ELEM_INIT).toggleClass(HIDE_V, !show); 
     }
   };
 
@@ -2292,7 +2291,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     //数据行中的事件返回的公共对象成员
     var commonMember = that.commonMember = function(sets){
       var othis = $(this);
-      var index = othis.parents('tr').eq(0).attr('data-index');
+      var index = othis.parents('tr').eq(0).data('index');
       var tr = that.layBody.find('tr[data-index="'+ index +'"]');
       var data = table.cache[that.key] || [];
 
@@ -2338,7 +2337,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.closest('td');
       var checkbox = othis.prev();
       var children = that.layBody.find('input[name="layTableCheckbox"]');
-      var index = checkbox.parents('tr').eq(0).attr('data-index');
+      var index = checkbox.parents('tr').eq(0).data('index');
       var checked = checkbox[0].checked;
       var isAll = checkbox.attr('lay-filter') === 'layTableAllChoose';
 
@@ -2378,7 +2377,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.closest('td');
       var radio = othis.prev();
       var checked = radio[0].checked;
-      var index = radio.parents('tr').eq(0).attr('data-index');
+      var index = radio.parents('tr').eq(0).data('index');
 
       layui.stope(e);
       if(radio[0].disabled) return false;
@@ -2451,7 +2450,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var field = othis.data('field');
       var key = othis.data('key');
       var col = that.col(key);
-      var index = othis.closest('tr').attr('data-index');
+      var index = othis.closest('tr').data('index');
       var data = table.cache[that.key][index];
       var elemCell = othis.children(ELEM_CELL);
 
@@ -2485,7 +2484,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.parent();
       var value = this.value;
       var field = othis.parent().data('field');
-      var index = othis.closest('tr').attr('data-index');
+      var index = othis.closest('tr').data('index');
       var data = table.cache[that.key][index];
 
       //事件回调的参数对象
@@ -2564,7 +2563,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.parent();
       var key = td.data('key');
       var col = that.col(key);
-      var index = td.parent().attr('data-index');
+      var index = td.parent().data('index');
       var elemCell = td.children(ELEM_CELL);
       var ELEM_CELL_C = 'layui-table-cell-c';
       var elemCellClose = $('<i class="layui-icon layui-icon-up '+ ELEM_CELL_C +'">');
@@ -2661,7 +2660,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     var toolFn = function(type){
       var othis = $(this);
       var td = othis.closest('td');
-      var index = othis.parents('tr').eq(0).attr('data-index');
+      var index = othis.parents('tr').eq(0).data('index');
       // 标记当前活动行
       that.setRowActive(index);
 

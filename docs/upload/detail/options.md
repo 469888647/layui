@@ -388,6 +388,38 @@ before: function(obj){ // obj 参数同 choose
   }
   */
 }
+
+// 返回 jQuery Deferred 对象或 JS 原生 Promise 对象，false 或 Promise.reject 表明阻止上传(2.9.11+)
+// Promise
+/** @type {(obj: object) => boolean | JQueryDeferred<boolean> | Promise<boolean>} */
+before: function(obj){
+  return new Promise(function(resolve, reject){
+    setTimeout(function(){
+      console.log('before_async_task', obj);
+      resolve(true);
+    }, 1000)
+  })
+}
+
+// Deferred
+before: function(obj){
+  return $.Deferred(function(defer){
+    setTimeout(function(){
+      console.log('before_async_task', obj);
+      defer.resolve(true);
+    }, 1000)
+  }).promise();
+}
+
+// Deferred2
+before: function(obj){
+  var defer = $.Deferred();
+  setTimeout(function(){
+    console.log('before_async_task', obj);
+    defer.resolve(true);
+  }, 1000)
+  return defer.promise();
+}
 ```
 
 </td>
