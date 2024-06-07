@@ -118,6 +118,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
 
   // 字符
   var MOD_NAME = 'table';
+  var MOD_ID = 'lay-' + MOD_NAME + '-id';
   var ELEM = '.layui-table';
   var THIS = 'layui-this';
   var SHOW = 'layui-show';
@@ -392,16 +393,19 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       ];
       if(options.className) arr.push(options.className);
       return arr.join(' ');
-    }()).attr({
-      'lay-filter': 'LAY-TABLE-FORM-DF-'+ that.index,
-      'lay-id': options.id,
-      'style': function(){
-        var arr = [];
-        if(options.width) arr.push('width:'+ options.width + 'px;');
-        // if(options.height) arr.push('height:'+ options.height + 'px;');
-        return arr.join('')
-      }()
-    }).html(laytpl(TPL_MAIN, {
+    }()).attr(function(){
+      var obj = {
+        'lay-filter': 'LAY-TABLE-FORM-DF-'+ that.index,
+        'style': function(){
+          var arr = [];
+          if(options.width) arr.push('width:'+ options.width + 'px;');
+          // if(options.height) arr.push('height:'+ options.height + 'px;');
+          return arr.join('')
+        }()
+      }
+      obj[MOD_ID] = options.id;
+      return obj;
+    }()).html(laytpl(TPL_MAIN, {
       open: '{{', // 标签符前缀
       close: '}}' // 标签符后缀
     }).render({
@@ -413,7 +417,10 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     that.renderStyle();
 
     // 生成替代元素
-    hasRender[0] && hasRender.remove(); // 如果已经渲染，则 Rerender
+    if(hasRender[0]){
+      that.resizeObserver && that.resizeObserver.unobserve(that.elem[0]);
+      hasRender.remove(); // 如果已经渲染，则 Rerender
+    }
     othis.after(reElem);
 
     // 各级容器
@@ -1583,7 +1590,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     // 匹配行元素
     var tr = function(tr) {
       return isCheckAll ? tr : tr.filter(isCheckMult ? function() {
-        var dataIndex = $(this).data('index');
+        var dataIndex = $(this).attr('data-index');
         return opts.index.indexOf(dataIndex) !== -1;
       } : '[data-index="'+ opts.index +'"]');
     }(that.layBody.find('tr'));
@@ -2188,7 +2195,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
 
           if(dict.rule){
             var setWidth = dict.ruleWidth + e.clientX - dict.offset[0];
-            var id = thisTable.eventMoveElem.closest('.' + ELEM_VIEW).attr('lay-id');
+            var id = thisTable.eventMoveElem.closest('.' + ELEM_VIEW).attr(MOD_ID);
             var thatTable = getThisTable(id);
 
             if(!thatTable) return;
@@ -2204,7 +2211,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       }).on('mouseup', function(e){
         if(thisTable.eventMoveElem){
           var th = thisTable.eventMoveElem; // 当前触发拖拽的 th 元素
-          var id = th.closest('.' + ELEM_VIEW).attr('lay-id');
+          var id = th.closest('.' + ELEM_VIEW).attr(MOD_ID);
           var thatTable = getThisTable(id);
 
           if(!thatTable) return;
@@ -2285,7 +2292,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     //数据行中的事件返回的公共对象成员
     var commonMember = that.commonMember = function(sets){
       var othis = $(this);
-      var index = othis.parents('tr').eq(0).data('index');
+      var index = othis.parents('tr').eq(0).attr('data-index');
       var tr = that.layBody.find('tr[data-index="'+ index +'"]');
       var data = table.cache[that.key] || [];
 
@@ -2331,7 +2338,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.closest('td');
       var checkbox = othis.prev();
       var children = that.layBody.find('input[name="layTableCheckbox"]');
-      var index = checkbox.parents('tr').eq(0).data('index');
+      var index = checkbox.parents('tr').eq(0).attr('data-index');
       var checked = checkbox[0].checked;
       var isAll = checkbox.attr('lay-filter') === 'layTableAllChoose';
 
@@ -2371,7 +2378,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.closest('td');
       var radio = othis.prev();
       var checked = radio[0].checked;
-      var index = radio.parents('tr').eq(0).data('index');
+      var index = radio.parents('tr').eq(0).attr('data-index');
 
       layui.stope(e);
       if(radio[0].disabled) return false;
@@ -2444,7 +2451,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var field = othis.data('field');
       var key = othis.data('key');
       var col = that.col(key);
-      var index = othis.closest('tr').data('index');
+      var index = othis.closest('tr').attr('data-index');
       var data = table.cache[that.key][index];
       var elemCell = othis.children(ELEM_CELL);
 
@@ -2478,7 +2485,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.parent();
       var value = this.value;
       var field = othis.parent().data('field');
-      var index = othis.closest('tr').data('index');
+      var index = othis.closest('tr').attr('data-index');
       var data = table.cache[that.key][index];
 
       //事件回调的参数对象
@@ -2544,7 +2551,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       if(hide){
         othis.find('.layui-table-grid-down').remove();
       } else if((
-        elemCell.prop('scrollWidth') > elemCell.outerWidth() ||
+        elemCell.prop('scrollWidth') > elemCell.prop('clientWidth') ||
         elemCell.find("br").length > 0
       ) && !options.lineStyle){
         if(elemCell.find('.'+ ELEM_GRID_DOWN)[0]) return;
@@ -2557,7 +2564,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       var td = othis.parent();
       var key = td.data('key');
       var col = that.col(key);
-      var index = td.parent().data('index');
+      var index = td.parent().attr('data-index');
       var elemCell = td.children(ELEM_CELL);
       var ELEM_CELL_C = 'layui-table-cell-c';
       var elemCellClose = $('<i class="layui-icon layui-icon-up '+ ELEM_CELL_C +'">');
@@ -2654,7 +2661,7 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
     var toolFn = function(type){
       var othis = $(this);
       var td = othis.closest('td');
-      var index = othis.parents('tr').eq(0).data('index');
+      var index = othis.parents('tr').eq(0).attr('data-index');
       // 标记当前活动行
       that.setRowActive(index);
 
@@ -2703,6 +2710,15 @@ layui.define(['lay', 'laytpl', 'laypage', 'form', 'util'], function(exports){
       e.preventDefault();
       that.layMain.scrollTop(scrollTop + (delta > 0 ? -step : step));
     });
+
+    if(window.ResizeObserver){
+      if(!that.resizeObserver){
+        that.resizeObserver = new ResizeObserver(function(){
+          table.resize(that.key);
+        });
+      }
+      that.resizeObserver.observe(that.elem[0]);
+    }
   };
 
   // 全局事件

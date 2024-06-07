@@ -170,6 +170,29 @@ format: '北京时间 H 点 m 分'
 </td>
     </tr>
     <tr>
+<td>formatToDisplay <sup>2.9.9+</sup></td>
+<td>
+  
+仅用于格式化日期显示的格式，不影响日期值
+
+```
+formatToDisplay: function (value) {
+  // value - 日期字符串
+  var date = new Date(value);
+  var displayValue = [
+    value,
+    date.toLocaleDateString(Intl.LocalesArgument, { weekday: 'long' })
+  ].join(' ')；
+  return displayValue;
+};
+
+```
+
+</td>
+<td>function</td>
+<td>-</td>
+    </tr>
+    <tr>
 <td>
 
 [value](#options.value)
@@ -323,6 +346,66 @@ max: 7 // 最大日期为 7 天后
 相关效果可参考： [#示例](#demo-limit)
 
 </td>
+    </tr>
+    <tr>
+<td>disabledDate <sup>2.9.8+</sup> </td>
+<td>
+
+用于设置不可选取的日期。示例：
+
+```js
+disabledDate: function(date, type){
+  // date - 当前的日期对象
+  // type - 面板类型，'start'/'end'
+
+  // 返回值为 true 的日期会被禁用
+  return date.getTime() < new Date(2024, 1).getTime(); // 2024-02-01
+}
+
+```
+
+</td>
+<td>function</td>
+<td> - </td>
+    </tr>
+    <tr>
+<td>disabledTime <sup>2.9.8+</sup> </td>
+<td>
+
+用于设置不可选取的时间。示例：
+
+```js
+disabledTime: function(date, type){
+  // date - 当前的日期对象
+  // type - 面板类型，'start'/'end'
+
+  // 数组中指定的时间会被禁用
+  return {
+    hours: function(){
+      return range(0, 10);
+    },
+    minutes:function(hour){
+      return hour > 5 ? range(0, 20) : [];
+    },
+    seconds:function(hour, minute){
+      return range(0, 2);
+    }
+  };
+}
+
+function range(start, end) {
+  var result = [];
+  for (var i = start; i < end; i++) {
+    result.push(i);
+  }
+  return result;
+}
+
+```
+
+</td>
+<td>function</td>
+<td> - </td>
     </tr>
     <tr>
 <td>trigger</td>
@@ -539,6 +622,8 @@ theme: ['#16baaa', '#16b777']
 
 </div>
 
+- object 类型
+
 ```
 mark: {
   '0-10-14': '生日', //每年每月的某一天
@@ -548,6 +633,27 @@ mark: {
 ```
 
 前缀 `0-` 即代表每年，`0-0-` 即代表每年每月。
+
+- function 类型 <sup>2.9.9+</sup>
+
+```
+mark: function (ymd, render) {
+  var y = ymd.year;
+  var m = ymd.month;
+  var d = ymd.date;
+
+  // 字符串
+  if (m === 6 && d === 1) return render('儿童节');
+
+  // 对象
+  render ({
+    '0-10-14': '生日',
+    '0-0-15': '中旬',
+    '2024-03-20': 'v2',
+    '2024-03-31': '月底',
+  });
+}
+```
 
 效果详见： [#示例](#demo-mark)
 
@@ -565,8 +671,10 @@ mark: {
 <td>
   
 <div id="options.holidays" class="ws-anchor">
-用于标注节假日及补班日。值是一个二维数组，如：
+用于标注节假日及补班日。
 </div>
+
+- 若为 array 类型，值是一个二维数组，如：
 
 ```
 holidays: [
@@ -577,6 +685,27 @@ holidays: [
 ]
 ```
 
+- 若为 function 类型 <sup>2.9.9+</sup>
+
+```
+holidays: function (ymd, render) {
+  var y = ymd.year;
+  var m = ymd.month;
+  var d = ymd.date;
+
+  // 字符串
+  if (y === 2023 && m === 6) {
+    render('holidays'); // 'holidays'/'workdays'
+  // 数组
+  } else if (y === 2024) {
+    render([
+      ['2024-03-01', '2024-03-02', '2024-03-03'],
+      ['2024-03-6', '2024-03-25'],
+    ]);
+  }
+}
+```
+
 相关日期值可详细参考国家每年公布的法定节假日安排
 
 效果详见： [#示例](#demo-mark)
@@ -584,6 +713,29 @@ holidays: [
 </td>
 <td>array</td>
 <td>-</td>
+    </tr>
+    <tr>
+<td>cellRender <sup>2.9.9+</sup></td>
+<td>
+  
+自定义单元格内容。
+
+```
+cellRender: function(ymd, render, info){
+  var y = ymd.year;
+  var m = ymd.month;
+  var d = ymd.date;
+
+  // 面板类型 'year' | 'month' | 'date'
+  if(info.type === 'date'){
+    render(d); // 参数为 string, HTMLElement, JQuery 类型
+  }
+}
+```
+
+</td>
+<td>function</td>
+<td> - </td>
     </tr>
     <tr>
     <td colspan="4" style="text-align: center"> 

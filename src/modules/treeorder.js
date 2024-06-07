@@ -422,7 +422,7 @@ layui.define(["jquery", "tree"], function (exports) {
       if(wrapper._tempJson[node[wrapper.idKey]]){
         // 如果已经声明过这个节点 (- 由子节点创建的),那就将它的信息补全
         layui.each(value, function(k, o){
-          wrapper._tempJson[node[wrapper.idKey]][k] = o[k];
+          wrapper._tempJson[node[wrapper.idKey]][k] = o; // 此处的bug o[k]导致补全信息时出错
         });
       }else{
         // 如果没有声明过这个节点,就将它放入hash表
@@ -441,7 +441,8 @@ layui.define(["jquery", "tree"], function (exports) {
       if(wrapper._tempJson[node[wrapper.idKey]]){
         // 如果已经声明过这个节点 (- 由子节点创建的),那就将它的信息补全
         layui.each(node, function(k, o){
-          wrapper._tempJson[node[wrapper.idKey]][k] = o[k];
+          // wrapper._tempJson[node[wrapper.idKey]][k] = o[k];
+          wrapper._tempJson[node[wrapper.idKey]][k] = o; // 此处的bug o[k]导致补全信息时出错
         });
       }else{
         // 如果没有声明过这个节点,就将它放入hash表并且添加到临时的list中
@@ -460,7 +461,8 @@ layui.define(["jquery", "tree"], function (exports) {
         wrapper._tempJson[node[wrapper.parentidKey]] = parentNode;
       }
       // 将该节点放入hash的父节点的children里面
-      wrapper._tempJson[node[wrapper.parentidKey]][wrapper.childrenKey].push(node);
+      // wrapper._tempJson[node[wrapper.parentidKey]][wrapper.childrenKey].push(node); 使用node会丢失它的children
+      wrapper._tempJson[node[wrapper.parentidKey]][wrapper.childrenKey].push(wrapper._tempJson[node[wrapper.idKey]]);
     },
 
     /**

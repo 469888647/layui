@@ -13,51 +13,38 @@
         <link href="../plugin/layui/css/layui.css" rel="stylesheet">
     </head>
     <body class="layui-layout-body">
-        <div style="position: absolute;width: 100%;height: 100%;">
-            <input type = "file" id = "upload" />
-            <!-- <div id = "canvas" style = "width:500px;height: 400px;"></div> -->
-            <div id = "music" class="layui-form layui-form-pane" action="">
-                <div class="layui-form-item">
-                    <div class = "layui-music-canvas-area" style = "width:240px;height: 200px;margin: 0 10px;"></div>
+        <div class="layui-card">
+            <div class="layui-card-header layui-hide-xs">简单示例</div>
+            <div class="layui-card-body" style="height:741px;padding: 0;">   <!-- 741  767.98  474  -->
+                <div id = "echartsDom" style="width: 100%; height: 100%;"></div>
+                <div id = "echartsDomForm" style="position: absolute; width: 100%; height: 100%;top: 0;">
+                
                 </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-group">
-                        <div class="layui-input-split layui-input-prefix">
-                            <i class="layui-icon layui-icon-pause"></i>
-                        </div>
-                        <div style="display: inline-block;width: 200px;margin: 0 15px;" class = "layui-music-play-bar"></div>
-                        <div class="layui-input-split layui-input-suffix">
-                            <i class="layui-icon layui-icon-mute"></i>
-                            <div class="layui-music-gain-bar" style="position: absolute;bottom: 30px;left: -20px;z-index: 2;"></div> 
-                        </div>
-                    </div>
-                </div>
-              </div>
-
+            </div>
         </div>
         <script type="text/javascript" src="../plugin/layui/layui.js"></script>
         <script type="text/javascript" src="../plugin/echarts-4.9.1.min.js"></script>
         <script type="text/javascript" src="../plugin/echarts-gl.min.js"></script>
         <script type="text/javascript">
-            var musicInst = layui.music({
-                            elem: '#music'
-                        });
-            var uploadBtn = document.getElementById('upload');
-            uploadBtn.onchange = function(){
-                if (uploadBtn.files.length !== 0) {
-                    var file = uploadBtn.files[0];
-                    try {
-                        musicInst.play(file);
-                    //     layui.music.loadFile(file, function(buffer){
-                    //     layui.music.playBuffer(buffer);
-                    // });
-                    } catch (error) {
-                        layui.layer.msg(error)
-                    }
-                    uploadBtn.value='';
-                };
-            };
-            musicInst.play("https://ri-sycdn.kuwo.cn/a162e7d39e49302fa27d2ea5a1cb6390/65e6c65c/resource/n1/87/57/3082041059.mp3");
+            // var musicInst = layui.music({
+            //                 elem: '#music',loop:true,effect:'panner'
+            //             });
+            // var uploadBtn = document.getElementById('upload');
+            // uploadBtn.onchange = function(){
+            //     if (uploadBtn.files.length !== 0) {
+            //         var file = uploadBtn.files[0];
+            //         try {
+            //             musicInst.play(file);
+            //         //     layui.music.loadFile(file, function(buffer){
+            //         //     layui.music.playBuffer(buffer);
+            //         // });
+            //         } catch (error) {
+            //             layui.layer.msg(error)
+            //         }
+            //         uploadBtn.value='';
+            //     };
+            // };
+            // musicInst.play("https://ri-sycdn.kuwo.cn/a162e7d39e49302fa27d2ea5a1cb6390/65e6c65c/resource/n1/87/57/3082041059.mp3");
 
 
 

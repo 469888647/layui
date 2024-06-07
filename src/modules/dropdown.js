@@ -16,6 +16,7 @@ layui.define(['jquery', 'laytpl', 'lay', 'util'], function(exports){
   // 模块名
   var MOD_NAME = 'dropdown';
   var MOD_INDEX = 'layui_'+ MOD_NAME +'_index'; // 模块索引名
+  var MOD_ID = 'lay-' + MOD_NAME + '-id';
 
   // 外部接口
   var dropdown = {
@@ -60,6 +61,9 @@ layui.define(['jquery', 'laytpl', 'lay', 'util'], function(exports){
       },
       close: function () {
         that.remove()
+      },
+      open: function () {
+        that.render()
       }
     }
   };
@@ -146,6 +150,10 @@ layui.define(['jquery', 'laytpl', 'lay', 'util'], function(exports){
     options.id = 'id' in options ? options.id : (
       elem.attr('id') || that.index
     );
+
+    if(!lay.isTopElem(elem[0])){
+      elem.attr(MOD_ID, options.id);
+    }
 
     // 初始化自定义字段名
     options.customName = $.extend({}, dropdown.config.customName, options.customName);
@@ -269,7 +277,7 @@ layui.define(['jquery', 'laytpl', 'lay', 'util'], function(exports){
     };
     
     // 主模板
-    var TPL_MAIN = ['<div class="layui-dropdown layui-border-box layui-panel layui-anim layui-anim-downbit" lay-id="' + options.id + '">'
+    var TPL_MAIN = ['<div class="layui-dropdown layui-border-box layui-panel layui-anim layui-anim-downbit" ' + MOD_ID + '="' + options.id + '">'
     ,'</div>'].join('');
     
     // 如果是右键事件，则每次触发事件时，将允许重新渲染
@@ -279,7 +287,7 @@ layui.define(['jquery', 'laytpl', 'lay', 'util'], function(exports){
     if(!rerender && options.elem.data(MOD_INDEX +'_opened')) return;
 
     // 记录模板对象
-    that.elemView = $('.' + STR_ELEM + '[lay-id="' + options.id + '"]');
+    that.elemView = $('.' + STR_ELEM + '[' + MOD_ID + '="' + options.id + '"]');
     if (type === 'reloadData' && that.elemView.length) {
       that.elemView.html(options.content || getDefaultView());
     } else {
@@ -381,7 +389,7 @@ layui.define(['jquery', 'laytpl', 'lay', 'util'], function(exports){
     
     // 若存在已打开的面板元素，则移除
     if(prevContentElem){
-      var prevId = prevContentElem.attr('lay-id');
+      var prevId = prevContentElem.attr(MOD_ID);
       var prevTriggerElem = prevContentElem.data('prevElem');
       var prevInstance = thisModule.getThis(prevId);
       var prevOnClose = prevInstance.config.close;
@@ -627,6 +635,15 @@ layui.define(['jquery', 'laytpl', 'lay', 'util'], function(exports){
     that.remove();
     return thisModule.call(that);
   };
+
+  // 打开面板
+  dropdown.open = function(id){
+    var that = thisModule.getThis(id);
+    if(!that) return this;
+    
+    that.render();
+    return thisModule.call(that);
+  }
   
   // 重载实例
   dropdown.reload = function(id, options, type){
