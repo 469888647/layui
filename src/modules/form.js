@@ -399,6 +399,91 @@ layui.define(['lay', 'layer', 'util'], function(exports){
           thatInput = null;
         };
 
+        // 2024/02/29 修改,将添加新的option提取成为一个方法
+        /**
+         * 根据信息添加新的option
+         * @param othis 指代当前的select下拉框
+         * @param dl    指代下拉框美化后的下拉区域dl
+         * @param input 指代下拉框美化后的输入框
+         * @param value 传入此时的输入框输入值
+         * @param none  传入none判断是否生成空的option
+         */
+        function addOption(othis, dl, input, value, none){
+          // 获取creatable配置项
+          var creatableOption = othis.attr('lay-creatable') != "" ? JSON.parse(String(othis.attr('lay-creatable')).replace(/\'/g, () => '"')) : null;
+          if(creatableOption && creatableOption.url){
+            // 异步更新全部的option
+            dl.children('.' + CREATE_OPTION).remove();
+            dl.find('.'+NONE).remove();
+            // 发起ajax请求
+            layui.layer.load();
+            var param = options.where || {};
+            param.value = value;
+            $.ajax({
+              url: creatableOption.url,
+              type: creatableOption.type || 'GET',
+              headers: creatableOption.headers || {},
+              contentType: creatableOption.contentType || "",
+              dataType: creatableOption.dataType || "",
+              data: creatableOption.dataType != 'json' ? param : JSON.stringify(param),
+              success: function (res) {
+                layui.layer.closeAll('loading');
+                if(input.val() == "") return;
+                if (res[creatableOption.statusName || 'code'] == (creatableOption.statusCode || 200)) {
+                  let list = res[creatableOption.dataName || 'data'];
+                  if(list.length > 0){
+                    let _index = 0;
+                    // 循环添加
+                    layui.each(list, function(k, v){
+                      if(dl.children('[lay-value="'+v[creatableOption.idKey || 'id']+'"]').length == 0){
+                        let textVal = $('<div>' + v[creatableOption.nameKey || 'name'] +'</div>').text();
+                        dl.append('<dd class="' + CREATE_OPTION + '" lay-value="'+ v[creatableOption.idKey || 'id'] +'">' + util.escape(textVal) + '</dd>');
+                        _index ++;
+                      }
+                    });
+                    // 如果所有请求的选项都添加过了,上面的方法不会创建临时的选项,这个情况只能创建一个空选项
+                    if(_index == 0){
+                      if(none){
+                        dl.find('.'+NONE)[0] || dl.append('<p class="'+ NONE +'">无匹配项</p>');
+                      } else {
+                        dl.find('.'+NONE).remove();
+                      }
+                    }
+                    return;
+                  }
+                }
+                if(none){
+                  dl.find('.'+NONE)[0] || dl.append('<p class="'+ NONE +'">无匹配项</p>');
+                } else {
+                  dl.find('.'+NONE).remove();
+                }
+              },
+              error: function(){
+                layui.layer.closeAll('loading');
+                if(input.val() == "") return;
+                if(none){
+                  dl.find('.'+NONE)[0] || dl.append('<p class="'+ NONE +'">无匹配项</p>');
+                } else {
+                  dl.find('.'+NONE).remove();
+                }
+              },
+            });
+          }else{
+            // 取出 XXX(YYYY)将括号中的值取出做id括号外的当名称,如果不得行就两个都取value
+            let _filter = (value || '').match(/\((.*)\)$/)||['', value];
+            let _title = value.substring(0, value.length - _filter[0].length);
+            // 和初始渲染保持行为一致
+            var textVal = $('<div>' + _title +'</div>').text();
+            var createOptionElem = dl.children('.' + CREATE_OPTION);
+            if(createOptionElem[0]){
+              createOptionElem.attr('lay-value', _filter[1]);
+              createOptionElem.text(textVal);
+            }else{
+              dl.append('<dd class="' + CREATE_OPTION + '" lay-value="'+ _filter[1] +'">' + util.escape(textVal) + '</dd>');
+            }
+          }
+        }
+
         // 各种事件
         var events = function(reElem, disabled, isSearch, isCreatable){
           var select = $(this);
@@ -606,7 +691,9 @@ layui.define(['lay', 'layer', 'util'], function(exports){
 
               // 需要区分大小写
               if(isCreatable && !isCreateOption && text === rawValue){
-                hasEquals = true;
+                // hasEquals = true;
+                // 2024/02/29 修改,将判断条件修改,防止新增的option的影响
+                hasEquals = !othis.hasClass(CREATE_OPTION);
               }
 
               // 是否区分大小写
@@ -653,15 +740,19 @@ layui.define(['lay', 'layer', 'util'], function(exports){
               if(isCreatable){
                 if(hasEquals){
                   dl.children('.' + CREATE_OPTION).remove();
+                  // 2024/02/29 添加清除空的option,使用addOption方法时可能会添加空的option
+                  dl.find('.'+NONE).remove();
                 }else{
-                  var createOptionElem = dl.children('.' + CREATE_OPTION);
-                  if(createOptionElem[0]){
-                    createOptionElem.attr('lay-value', value).html(util.escape(value));
-                  }else{
-                    var ddElem = $('<dd>');
-                    ddElem.addClass(CREATE_OPTION).attr('lay-value', value).html(util.escape(value));
-                    dl.append(ddElem);
-                  }
+                  // 2024/02/29  使用新的方法添加option
+                  addOption(select, dl, input, value, none);
+                  // var createOptionElem = dl.children('.' + CREATE_OPTION);
+                  // if(createOptionElem[0]){
+                  //   createOptionElem.attr('lay-value', value).html(util.escape(value));
+                  // }else{
+                  //   var ddElem = $('<dd>');
+                  //   ddElem.addClass(CREATE_OPTION).attr('lay-value', value).html(util.escape(value));
+                  //   dl.append(ddElem);
+                  // }
                 }
               }else{
                 if(none){
