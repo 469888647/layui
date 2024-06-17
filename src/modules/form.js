@@ -684,6 +684,12 @@ layui.define(['lay', 'layer', 'util'], function(exports){
             var dds = dl.children('dd');
             var hasEquals = false;
             var rawValue = value;
+            if(/\((.*)\)$/.test(value || '')){
+              // 2024/06/17 修改 对XXX(YYYY)格式的字符作特殊处理,防止输入特殊写法时不匹配,重复生成项
+              var _filter = (value || '').match(/\((.*)\)$/)||['', value];
+              var _title = value.substring(0, value.length - _filter[0].length);
+              rawValue = _title;
+            }
             layui.each(dds, function(){
               var othis = $(this);
               var text = othis.text();
@@ -700,12 +706,16 @@ layui.define(['lay', 'layer', 'util'], function(exports){
               if(laySearch !== 'cs'){
                 text = text.toLowerCase();
                 value = value.toLowerCase();
+                // 2024/06/17 修改 后面的比对使用rawValue,这里转化一下
+                rawValue = rawValue.toLowerCase();
               }
 
               // 匹配
-              var not = text.indexOf(value) === -1;
-
-              if(value === '' || (origin === 'blur') ? value !== text : not) num++;
+              // var not = text.indexOf(value) === -1;
+              // if(value === '' || (origin === 'blur') ? value !== text : not) num++;
+              // 2024/06/17 修改,使用rawValue
+              var not = /\((.*)\)$/.test(value || '') ? text != rawValue : text.indexOf(rawValue) === -1;
+              if(rawValue === '' || (origin === 'blur') ? rawValue !== text : not) num++;
               origin === 'keyup' && othis[(isCreatable ? (not && !isCreateOption) : not) ? 'addClass' : 'removeClass'](HIDE);
             });
             // 处理 select 分组元素
