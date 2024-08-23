@@ -47,9 +47,10 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">选择框</label>
                     <div class="layui-input-inline">
-                        <select name="interest" lay-search="" lay-creatable = "" lay-filter="aihao">
+                        <select name="interest" lay-search="" lay-creatable = "" lay-hint lay-filter="aihao">
                             <option value=""></option>
                             <option value="0" selected="selected">写作</option>
+                            <option value="5">写作+阅读</option>
                             <option value="1">阅读</option>
                             <option value="2">游戏</option>
                             <option value="3">音乐</option>
@@ -65,8 +66,8 @@
     </div>
     {{ layui_js_area }}
     <x3cscript type="text/javascript" >
-        layui.use('form', function(){
-            layui.form.render();
+        layui.use(['form','formplus'], function(){
+            layui.form.render(null, 'form-demo1', true);
             // 表单事件监听 - 提交事件 
             layui.form.on('submit(form-bth-demo1)', function(obj){
                 var field = obj.field;

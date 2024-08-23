@@ -16,10 +16,103 @@
             .layui-outline-side-fixed .layui-outline-ul li[level="4"]{
                 padding-left: 56px;
             }
+
+
+            .layui-water-ripples-container{
+                overflow: hidden;
+                position: relative;
+                display: inline-block;
+            }
+
+            .layui-water-ripples-container .layui-inset-ripples {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%,-50%);
+                opacity: 1;
+                width: 0px;
+                height: 0px;
+                background: var(--layui-ripple-color);
+                pointer-events: none;
+            }
+
+            @keyframes size-effect {
+                0% {
+                    width: 0px;
+                    height: 0px;
+                    opacity: .8
+                }
+
+                to {
+                    width: var(--layui-spread-size);
+                    height: var(--layui-spread-size);
+                    opacity: 0
+                }
+            }
+
+
+
+
+            .layui-water-ripples-container .layui-animate-once--inset {
+                animation: size-effect 1s forwards
+            }
+
+            .layui-water-ripples-container .layui-animate-always--inset {
+                animation: size-effect 1s infinite
+            }
+
+            .layui-water-ripples-container .layui-out-ripples{
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                opacity: 1;
+                z-index: 1;
+                pointer-events: none
+            }
+
+
+            .layui-water-ripples-container .layui-animate-once--out {
+                animation: ripple-effect 1s forwards
+            }
+
+            .layui-water-ripples-container .layui-animate-always--out {
+                animation: ripple-effect 1s infinite
+            }
+
+            @keyframes ripple-effect {
+                0% {
+                    box-shadow: 0 0 0 0 var(--layui-ripple-color);
+                    opacity: .4
+                }
+
+                to {
+                    box-shadow: 0 0 0 var(--layui-spread-width) var(--layui-ripple-color);
+                    opacity: 0
+                }
+            }
+
+
         </style>
     </head>
     <body class="layui-layout-body">
         <div class="layui-fluid">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <div class = "layui-water-ripples-container">
+                            <div class="layui-inset-ripples" style="border-radius: 50%; --layui-ripple-color: currentColor; --layui-spread-width: 6px; --layui-spread-size: 110.92339699089638px; left: 50px; top: 14px;"></div>
+                            <button type="submit" class="layui-btn" lay-submit lay-filter="demo1">立即提交</button>
+                        </div>
+                        <div class = "layui-water-ripples-container">
+                            <div class="layui-out-ripples" style="border-radius: 2px; --layui-ripple-color: currentColor; --layui-spread-width: 6px; --layui-spread-size: 0px; width: 65px;"></div>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+
             <!-- 大屏时占大半屏幕(右侧为outline留位置),小屏时占全部屏幕 -->
             <div class="layui-col-xs12 layui-col-md10">
                 <div class = "ws-content">
@@ -358,6 +451,11 @@
             layui.outline.render();
             // layui.util.fixbar();
             layui.colortheme.run();
+
+            $('.layui-water-ripples-container').on('click','button', function(e){
+                console.log('Mouse position: X=' + e.clientX + ', Y=' + e.clientY);
+            })
+
         </script>
     </body>
 </html>

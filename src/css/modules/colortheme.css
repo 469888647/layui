@@ -1342,3 +1342,9 @@ body,
   bottom: 1px;
   right: 1px;
 }
+
+/* laydate 组件中这两个样式是 important修饰的,打包的css的原因导致这个css会被原来的覆盖,这里在加上 .layui-laydate-content 来加强这个样式的权重  */
+.layui-laydate .layui-laydate-content .layui-this,.layui-laydate .layui-laydate-content .layui-this>div {
+  background-color: rgba(var(--lay-framework-secondary-bgColor),1)!important;
+  color: rgba(var(--lay-framework-main-highlight-fontColor),1)!important
+}

@@ -81,7 +81,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">选择框</label>
                     <div class="layui-input-inline">
-                        <select name="interest" lay-search="" lay-filter="aihao">
+                        <select name="interest" lay-search="" lay-hint lay-filter="aihao">
                             <option value=""></option>
                             <option value="0" selected="selected">写作</option>
                             <option value="1">阅读</option>
@@ -113,8 +113,16 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <button class="layui-btn layui-btn-normal" id="formplus-bth-demo1-change">赋值</button>
-                    <button class="layui-btn" lay-submit="" lay-filter="formplus-bth-demo1">提交</button>
+                    <div class="layui-input-inline">
+                        <div class = "layui-water-ripples-container" lay-options = "{'type':'out','trigger': 'always', 'color': '#ff0000'}">
+                            <button class="layui-btn layui-btn-normal" id="formplus-bth-demo1-change">赋值</button>
+                        </div>
+                    </div>
+                    <div class="layui-input-inline">
+                        <div class = "layui-water-ripples-container">
+                            <button class="layui-btn" lay-submit="" lay-filter="formplus-bth-demo1">提交</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

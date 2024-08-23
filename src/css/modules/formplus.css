@@ -1,0 +1,109 @@
+@charset "utf-8";
+
+.layui-form-autoSelect{
+  position: absolute;
+  z-index: 99999999;
+  background-color: rgba(22, 183, 119, 1);
+  background-color: rgba(var(--lay-framework-main-bgColor), 1);
+  color: rgba(238, 238, 238, 1);
+  color: rgba(var(--lay-framework-main-nomal-fontColor), 1);
+  font-weight: bold;
+}
+
+/* 设置了maxlength的 [input or textarea] 字数提示样式 */
+[datamaxlength]:after {
+  content: attr(datamaxlength);
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: 12px;
+  line-height: 38px;
+  color: #666;
+  user-select: none;
+  pointer-events: none;
+}
+
+/*  maxlength针对input的前缀后缀修饰的修改   */
+.layui-input-wrap[datamaxlength]:after{
+  right: 27px;
+}
+
+/*  selectTree在搜索时,高亮字的样式  */
+.layui-form-selecttree-selected,
+.layui-form-selecttree-selected:hover{
+  color: rgba(var(--lay-framework-main-bgColor), 1) !important;
+}
+
+/* 水波纹样式  */
+
+.layui-water-ripples-container{
+  /* overflow: hidden;  //  inside 需要添加  outside 不能添加   */
+  position: relative;
+  display: inline-block;
+}
+
+.layui-water-ripples-container .layui-inset-ripples {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  opacity: 1;
+  width: 0px;
+  height: 0px;
+  background: var(--layui-ripple-color);
+  pointer-events: none;
+}
+
+@keyframes size-effect {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: .8
+  }
+
+  to {
+    width: var(--layui-spread-size);
+    height: var(--layui-spread-size);
+    opacity: 0
+  }
+}
+
+.layui-water-ripples-container .layui-animate-once--inset {
+  animation: size-effect 1s forwards
+}
+
+.layui-water-ripples-container .layui-animate-always--inset {
+  animation: size-effect 1s infinite
+}
+
+.layui-water-ripples-container .layui-out-ripples{
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  opacity: 1;
+  z-index: 1;
+  pointer-events: none
+}
+
+@keyframes ripple-effect {
+  0% {
+    box-shadow: 0 0 0 0 var(--layui-ripple-color);
+    opacity: .4
+  }
+
+  to {
+    box-shadow: 0 0 0 var(--layui-spread-width) var(--layui-ripple-color);
+    opacity: 0
+  }
+}
+
+.layui-water-ripples-container .layui-animate-once--out {
+  animation: ripple-effect 1s forwards
+}
+
+.layui-water-ripples-container .layui-animate-always--out {
+  animation: ripple-effect 1s infinite
+}
+
+

@@ -53,7 +53,7 @@ layui.define(["jquery", "form"], function (exports) {
         color: rgba(var(--lay-framework-main-bgColor), 1) !important
       }
     `;
-  document.getElementsByTagName("HEAD").item(0).appendChild(css);
+  // document.getElementsByTagName("HEAD").item(0).appendChild(css);
   /**  formplus 额外样式设置  --  end  */
 
   /**
@@ -620,6 +620,233 @@ layui.define(["jquery", "form"], function (exports) {
           self.dispatcher.after.call(self, fKey, value, oldValue, o.name);
         },
       });
+    },
+
+    /**
+     * @function util~assign 参数合并
+     * @desc 调用的是jQuery里面的参数合并方法
+     */
+    assign: (...params) => $.extend.call(this, ...params),
+
+    /**
+     * @function util~debounce 防抖
+     * @param {Boolean|Function} isClear  传入一个函数,则第二个参数是一个配置项;传入一个boolean,则代表阻止第二个参数(函数)的执行
+     * @param {Object|Function} fn 配置项 or 执行函数
+     * @desc
+     *    <p style = "color: #16b777;text-indent: 10px;">传入的配置项:</p>
+     *    <ol>
+     *      <li>context: 指定函数执行的this指向</li>
+     *      <li>args: 指定函数调用时的参数列表</li>
+     *      <li>time: 防抖时间,默认300毫秒</li>
+     *    </ol>
+     */
+    debounce(isClear, fn) {
+      if (!util.isFunction(isClear)) {
+        fn._throttleID && clearTimeout(fn._throttleID);
+      } else {
+        util.debounce(true, isClear);
+        var param = util.assign({ context: null, args: [], time: 300 }, fn);
+        isClear._throttleID = setTimeout(function () {
+          isClear.apply(param.context, param.args);
+        }, param.time);
+      }
+    },
+
+    /**
+     * @function util~enableComplate 开启layui下拉选择框自动补全功能
+     * @param {HTMLElement} formItem layui下拉框select的document
+     */
+    enableComplate(formItem){
+      /**
+       * 判断是否有lay-search属性
+       */
+      let laySearch = formItem.getAttribute("lay-search");
+      if(laySearch == null) return;
+
+      /**
+       * 需要给input输入框添加输入的监听事件,
+       * 这里不能保证layui的form组件已经渲染完毕,
+       * 所以放在父节点上面用jQuery来托管事件
+       */
+      let $patent = $(formItem.parentElement);
+      $patent.on("input propertychange", "input", function (e) {
+        // 输入框在输入的时候就进行匹配补全的操作
+        util.debounce(function (){
+          util.autoComplete(formItem, e);
+        });
+      });
+
+      $patent.on("blur", "input", function (e) {
+        util.cacelComplete(e);
+      });
+
+      $patent.on("keydown", "input", function (e) {
+
+        if (e.keyCode == 38 || e.keyCode == 40) {
+          /**
+           * 在键入上下方向键。layui默认是切换下拉选项
+           * 这个时候要重新进行自动匹配
+           * 这个时候是用户选择选项，所以要关掉一些自动推荐的判断环节
+           */
+          util.autoComplete(formItem, e, false);
+        }
+
+        if (e.keyCode == 9) {
+          /**
+           * 在键入tab键，就认为用户接受当前的推荐项
+           * 调用选中的dd的点击方法确认选择
+           * 最后还是要隐藏推荐的div
+           */
+          util.cacelComplete(e);
+        }
+      });
+
+      if(!formProxy.recordSpan){
+        formProxy.recordSpan = $(
+          '<span style="visibility: hidden;position: absolute;z-index: -1;"></span>'
+        );
+        $("body").append(formProxy.recordSpan);
+      }
+
+      if(!formProxy.completeSpan){
+        formProxy.completeSpan = $('<div class = "layui-form-autoSelect" ></div>');
+        $("body").append(formProxy.completeSpan);
+      }
+
+    },
+
+    /**
+     * @function util~autoComplete 更新补全状态
+     * @param {HTMLElement} formItem layui下拉框select的document
+     * @param {Event} e 鼠标事件对象
+     * @param {Boolean} auto  是否自动判断推荐选项,默认为true
+     */
+    autoComplete(formItem, e, auto = true){
+      // 去掉前后空格的影响
+      let _v = String(e.target.value).trim();
+      if(!_v) return util.cacelComplete(e);
+      // 每次调用的时候清除之前的延时任务
+      formProxy.timer && clearTimeout(formProxy.timer);
+      let $self = $(e.target);
+      /**
+       * 声明几个参数变量
+       *
+       *
+       * eleFlag 判断当前是否有dd选项被选中,初始化假定为false
+       */
+      let eleFirst = null,eleSelect = null,eleMatch = null,eleFlag = false;
+      e.target.parentElement.parentElement
+        .querySelectorAll("dd")
+        .forEach((dd) => {
+          let $dd = $(dd);
+          // 1.判断有value值，证明是由值的选项，默认值项被剔除
+          if ($dd.attr("lay-value") || $dd.attr("lay-value") === 0) {
+            // 2. 判断没得layui-hide 类, 说明当前项是可视的选项
+            if (!$(dd).hasClass("layui-hide")) {
+              // 当前eleFirst没有被赋值，并且是推荐状态，就将当前dd项作为 eleFirst
+              if (!eleFirst && auto) eleFirst = dd;
+              // 3. 判断有layui-this 类, 说明这个瞬间layui选中了这一项
+              if ($(dd).hasClass("layui-this")) {
+                // 如果是非推荐状态，或者推荐状态再次校验成功，将当前dd项作为 eleSelect
+                if (!eleSelect && (dd.textContent.indexOf(_v) >= 0 || !auto))
+                  eleSelect = dd;
+              }
+            }
+            /**
+             * 在输入中文字的过程中，没有匹配到会隐藏所有项，导致输入结束的瞬间也匹配不到选项。这里手动匹配第一个适合的选项
+             */
+            if (!eleMatch && dd.textContent && dd.textContent.indexOf(_v) >= 0)
+              eleMatch = dd;
+          } else {
+            // 如果这个项有被选中的class样式,并且是可选的状态(没有layui-hide)那就判断当前有dd项被选中
+            eleFlag = $dd.hasClass("layui-this") && !$dd.hasClass("layui-hide");
+          }
+        });
+      // 默认项被选中
+      if (eleFlag) return util.cacelComplete();
+      /**
+       * 因为 eleMatch 优先级高于 eleFirst
+       * 所以这里使用 eleMatch 替换 eleFirst
+       * 后面统一使用 eleFirst 处理
+       */
+      if (!!eleMatch) eleFirst = eleMatch;
+
+      /**
+       * 如果处在推荐状态下，没有捕获到layui选中的选项，但是在刚才的过程中有推荐的选项
+       * 将这个推荐项选中(将其它项的layui-this移除，单独给它添加layui-this)
+       * 然后将 推荐的项赋值给 eleSelect
+       * 后面统一使用 eleSelect 处理
+       */
+      if (!eleSelect && !!eleFirst && auto === true) {
+        e.target.parentElement.parentElement
+          .querySelectorAll("dd")
+          .forEach((dd) => $(dd).removeClass("layui-this"));
+        $(eleFirst).addClass("layui-this");
+        eleSelect = eleFirst;
+      }
+
+      // 没有找到任何一项可以继续，就关闭推荐的div，然后结束
+      if (!eleSelect) return util.cacelComplete(e);
+
+      // 当前推荐项的展示内容
+      let _value = eleSelect.textContent;
+      // 记录补全信息
+      let content = "";
+      if (_value.indexOf(_v) == 0) {
+        content = _value.substring(_v.length, _value.length);
+      } else {
+        return util.cacelComplete(e);
+      }
+
+      // 输入框的x坐标
+      let inputOffsetX = e.target.getBoundingClientRect().x;
+      // 输入框开始文字距离框体的位置(text-indent),这里考虑可能是nomal之类的非数字，所以默认是0
+      let indent = parseFloat($self.css("text-indent")) || 0;
+      let paddingLeft = parseFloat($self.css("padding-left")) || 0;
+      /**
+       * 将记录输入内容的span的font-size样式与当前输入框同步，以确保最后计算出的文字长度偏差不会太大
+       * 这里忽略了比如letter-space等样式
+       */
+      formProxy.recordSpan.css("font-size", $self.css("font-size"));
+      // 将记录输入内容的文本内容修改成当前输入框的内容，此时文字的长度就是当前span的长度
+      formProxy.recordSpan.get(0).textContent = e.target.value;
+      // 最后计算出当前光标的位置,多加2防止光标被模糊
+      let left = inputOffsetX + paddingLeft + indent + formProxy.recordSpan.get(0).getBoundingClientRect().width + 2;
+
+      // 将补全信息放入推荐div中
+      formProxy.completeSpan.get(0).textContent = content;
+      formProxy.completeSpan.css("font-size", $self.css("font-size"));
+      formProxy.completeSpan.css(
+        "line-height",
+        e.target.getBoundingClientRect().height + "px"
+      );
+      formProxy.completeSpan.css(
+        "height",
+        e.target.getBoundingClientRect().height + "px"
+      );
+
+      // 获取当前窗口水平滚动条的位置
+      var scrollX = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+
+      // 获取当前窗口垂直滚动条的位置
+      var scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+
+      formProxy.completeSpan.css("top", scrollY + e.target.getBoundingClientRect().y + "px");
+      formProxy.completeSpan.css("left", scrollX + left + "px");
+      formProxy.completeSpan.css("display", "block");
+      // 这个complate属性是一个标志
+      // 设置为true说明当前的推荐系统生效，在按下->键的时候可以触发确认的回调
+      formProxy.completeSpan.attr("complete", "true");
+
+    },
+
+    /**
+     * @function util~cacelComplete 清除提示
+     */
+    cacelComplete() {
+      formProxy.completeSpan.get(0).textContent = "";
+      formProxy.completeSpan.css("display", "none");
+      formProxy.completeSpan.attr("complete", "false");
     },
   };
 
@@ -1192,6 +1419,21 @@ layui.define(["jquery", "form"], function (exports) {
               }
             }
           });
+          // 渲染波纹按钮
+          let waveElems = $(item).find(".layui-water-ripples-container");
+          if(waveElems.length > 0){
+            util.each(waveElems, (waveItem) => {
+              if (waveItem instanceof HTMLElement) {
+                // lay-ignore标注后不会对这个进行美化,这里就放弃渲染它
+                if (waveItem.getAttribute("lay-ignore") === null && waveItem.getAttribute("lay-formplus-ignore") === null) {
+                  if($(waveItem).hasClass('layui-water-ripples-container'))
+                    // 调用渲染方法
+                    formRenderer.wave($(waveItem));
+                }
+              }
+            });
+          }
+
         },
       });
       // 放入form中
@@ -1284,6 +1526,115 @@ layui.define(["jquery", "form"], function (exports) {
       // 监听事件
       _formProxy.$watch(key, fn);
     },
+
+    /**
+     * @function formRenderer~wave 为按钮添加水波纹动画
+     * @param destination 按钮外层的div对应的jq对象
+     * @param option  配置参数
+     * @desc
+     *    要想达到效果,dom结构需要如下(外面套一层class为layui-water-ripples-container的div需要注意的是这个div display是inline-block):
+     *
+     *    <div class = "layui-water-ripples-container">
+     *       <button class="layui-btn" >按钮</button>
+     *    </div>
+     */
+    wave: function(destination, option = {}){
+      // 渲染过一次之后防止重复渲染
+      if(destination.attr("lay-wave")){
+        return;
+      }
+      // 处理配置项参数
+      let optionsAttr = destination.attr("lay-options");
+      let options = {};
+      if(optionsAttr){
+        options = optionsAttr
+          ? JSON.parse(String(optionsAttr).replace(/\'/g, () => '"'))
+          : {};
+      }
+      let opt = {
+        type: option.type || options.type || 'inset', // or out
+        color: option.color || options.color || '#000000', // or rgba
+        borderRadius: option.borderRadius || options.borderRadius || '2px', // 仅 out 类型生效,需要带上px 或者直接是填百分比
+        spreadWidth: option.spreadWidth || options.spreadWidth || '6px',// 仅 out 类型生效
+        spreadSize: option.spreadSize || options.spreadSize,// 仅 inset 类型生效
+        trigger: option.trigger || options.trigger || 'click', // 触发方式 click always mouseenter
+        center: option.center || options.center || false,// 仅 inset 类型生效  true or false
+      };
+
+      let btnWidth = destination.find('button').outerWidth(true);
+      let btnHeight = destination.find('button').outerHeight(true);
+      let style = '';
+      if(opt.type == 'inset'){
+        style = 'left: '+ btnWidth/2 +'px; top: '+ btnHeight/2 +'px;'
+      }else{
+        style = 'width: '+ btnWidth +'px;';
+      }
+      if(!opt.spreadSize){
+        opt.spreadSize = (Math.max(btnWidth, btnHeight) + 20) + 'px';
+      }
+      let waveArea = `
+        <div class="${opt.type == 'inset' ? 'layui-inset-ripples' : 'layui-out-ripples'}${opt.trigger == 'always' ? ` layui-animate-always--${opt.type == 'inset' ? 'inset' : 'out'}` : ''}" style="border-radius: ${opt.type == 'inset' ? '50%' : opt.borderRadius}; --layui-ripple-color: ${opt.color}; --layui-spread-width: ${opt.spreadWidth}; --layui-spread-size: ${opt.spreadSize}; ${style} "></div>
+      `;
+      destination.append($(waveArea));
+      destination.attr("lay-wave", true);
+      if(opt.type == 'inset'){
+        destination.css({
+          'overflow': 'hidden',
+        });
+      }
+      // 绑定点击事件
+      if(opt.trigger == 'click'){
+        destination.find('button').on('click', function(e){
+          if(opt.type == 'out'){
+            if(!destination.find('.layui-out-ripples').hasClass('layui-animate-once--out'))
+              destination.find('.layui-out-ripples').addClass('layui-animate-once--out');
+            setTimeout(function(){
+              destination.find('.layui-out-ripples').removeClass('layui-animate-once--out')
+            }, 1000);
+          }else{
+            if(!opt.center){
+              let rect = destination.find('button').get(0).getBoundingClientRect();
+              let offsetX = e.clientX - rect.x;
+              let x = Math.max(offsetX, btnWidth - offsetX);
+              let offsetY = e.clientY - rect.y;
+              let y = Math.max(offsetY, btnHeight - offsetY);
+              let spreadSize = Math.sqrt(x * x + y * y) * 2 + 20;
+              destination.find('.layui-inset-ripples').css({
+                'left': offsetX + 'px',
+                'top': offsetY + 'px',
+                '--layui-spread-size': spreadSize + 'px',
+              });
+              destination.find('.layui-inset-ripples').get(0).style.setProperty('--layui-spread-size', spreadSize + 'px');
+            }
+            if(!destination.find('.layui-inset-ripples').hasClass('layui-animate-once--inset'))
+              destination.find('.layui-inset-ripples').addClass('layui-animate-once--inset');
+            setTimeout(function(){
+              destination.find('.layui-inset-ripples').removeClass('layui-animate-once--inset')
+            }, 1000);
+          }
+        });
+      }
+
+      // 鼠标移入事件
+      if(opt.trigger == 'mouseenter'){
+        destination.on('mouseenter', 'button', function(e){
+          if(opt.type == 'out'){
+            if(!destination.find('.layui-out-ripples').hasClass('layui-animate-once--out'))
+              destination.find('.layui-out-ripples').addClass('layui-animate-once--out');
+          }else{
+            if(!destination.find('.layui-inset-ripples').hasClass('layui-animate-once--inset'))
+              destination.find('.layui-inset-ripples').addClass('layui-animate-once--inset');
+          }
+        }).on('mouseleave', 'button', function(){
+          if(opt.type == 'out'){
+            destination.find('.layui-out-ripples').removeClass('layui-animate-once--out')
+          }else{
+            destination.find('.layui-inset-ripples').removeClass('layui-animate-once--inset')
+          }
+        });
+      }
+    },
+
 
   };
 
@@ -2042,6 +2393,11 @@ layui.define(["jquery", "form"], function (exports) {
           });
           layui.form.render("select", item.getAttribute(constant.LAYUI_FILTER));
         });
+
+        // 添加提示
+        let layHint = formItem.getAttribute("lay-hint");
+        if(layHint != null) util.enableComplate(formItem);
+
       }
     ),
     /**
