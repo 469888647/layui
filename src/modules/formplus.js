@@ -1661,7 +1661,7 @@ layui.define(["jquery", "form"], function (exports) {
      *        <ol>
      *          <li>传入的type是input证明它确实是一个输入框</li>
      *          <li>没有被laydate属性标注,说明formplus不会把它当作时间选择框来处理</li>
-     *          <li>没有被layui-laydate-id | lay-key属性标注,说明它没有被laydate组件渲染</li>
+     *          <li>没有被lay-laydate-id | lay-key属性标注,说明它没有被laydate组件渲染</li>
      *        </ol>
      *      </li>
      *      <li>处理步骤:
@@ -1681,7 +1681,7 @@ layui.define(["jquery", "form"], function (exports) {
           type == "input" &&
           formItem.getAttribute("laydate") === null &&
           formItem.getAttribute("lay-key") === null &&
-          formItem.getAttribute("layui-laydate-id") === null
+          formItem.getAttribute("lay-laydate-id") === null // 更正属性值 layui-laydate-id => lay-laydate-id
         );
       },
       function (item, formItem, formProxy) {
@@ -2156,13 +2156,13 @@ layui.define(["jquery", "form"], function (exports) {
      *        <ol>
      *          <li>传入的type是input证明它是一个输入框</li>
      *          <li>被laydate属性标注,说明formplus把它当作时间选择框来处理</li>
-     *          <li>被layui-laydate-id标注,说明它已经被laydate组件渲染</li>
+     *          <li>被lay-laydate-id标注,说明它已经被laydate组件渲染</li>
      *        </ol>
      *      </li>
      *      <li>处理步骤:
      *        <ol>
      *          <li>如果输入框还没有被laydate渲染,就根据它上面的lay-options属性值来进行渲染时间选择框</li>
-     *          <li>通过获取layui-laydate-id|lay-key属性获取时间组件的key,从而得到时间控件对象</li>
+     *          <li>通过获取lay-laydate-id|lay-key属性获取时间组件的key,从而得到时间控件对象</li>
      *          <li>在时间控件对象的done回调函数的末尾添加上修改实例里面对应的值这一操作</li>
      *          <li>添加实例监视事件,在修改实例对应的值的同时修改表单的值</li>
      *          <li>3和4来保证页面表单元素的值和实例里面对应的值同步</li>
@@ -2176,12 +2176,12 @@ layui.define(["jquery", "form"], function (exports) {
         let flag =
           type == "input" &&
           (formItem.getAttribute("laydate") !== null ||
-            formItem.getAttribute("layui-laydate-id") !== null);
+            formItem.getAttribute("lay-laydate-id") !== null); // 更正属性值 layui-laydate-id => lay-laydate-id
         return flag;
       },
       function (item, formItem, formProxy) {
         if (
-          formItem.getAttribute("layui-laydate-id") === null &&
+          formItem.getAttribute("lay-laydate-id") === null && // 更正属性值 layui-laydate-id => lay-laydate-id
           formItem.getAttribute("lay-key") === null
         ) {
           let optionsAttr = formItem.getAttribute("lay-options");
@@ -2291,8 +2291,8 @@ layui.define(["jquery", "form"], function (exports) {
           layui.laydate.render(options);
         }
         let laydateKey =
-          formItem.getAttribute("layui-laydate-id") ||
-          formItem.getAttribute("lay-key");
+          formItem.getAttribute("lay-laydate-id") ||
+          formItem.getAttribute("lay-key"); // 更正属性值 layui-laydate-id => lay-laydate-id
         // 获取laydate对象
         let laydateInstance = layui.laydate.getInst(laydateKey);
         /**
