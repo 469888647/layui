@@ -383,6 +383,29 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
 
     /**
      * @method
+     * 设置主要颜色
+     * @param {Number} r 颜色的r值
+     * @param {Number} g 颜色的g值
+     * @param {Number} b 颜色的b值
+     */
+    setMainColor: function(r,g,b){
+      return windows.setColor('--windows-main-bgColor', r, g, b);
+    },
+
+    /**
+     * @method
+     * 设置颜色
+     * @param {String} k css对应的变量名称
+     * @param {Number} r 颜色的r值
+     * @param {Number} g 颜色的g值
+     * @param {Number} b 颜色的b值
+     */
+    setColor: function(k, r,g,b){
+      document.documentElement.style.setProperty(k, `${r}, ${g}, ${b}`);
+    },
+
+    /**
+     * @method
      * 处理layui弹出层参数
      * @param {Object} deliver 弹层相关参数
      * @param {*} args0 补充参数1 [补充参数;回调函数]
@@ -393,6 +416,7 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
      */
     open: function(deliver, args0, args1){
 
+
       /**
        * @inner
        * 过滤判断
@@ -401,17 +425,20 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
        *  > 以此参数作为下面过滤判断的标准(true.进行参数包装;false.不对参数进行包装,直接返回)
        *  ***
        *  > 符合下面任意一条,该参数取true:
-       *  >> - 自定义filter函数的返回值不为false
+       *  >> - 自定义filter函数的返回值为true
        *  >> - 传入参数中,明确有windows这个配置项,且设置为true
        *
        */
-      let filter = layui.event.call(windows, KEY, windows.eventKey.filter , { deliver: deliver ,args0: args0 ,args1: args1 }) !== false || deliver.windows === true;
-      if (!filter) return deliver;
-
-      /**
-       * 设置窗口的key,作为放入 {@linkplain windows.cache 配置项缓存} 中的key
-       */
-      if(!deliver.key) deliver.key = 'WINDOWS-' + intervalIndex ++;
+      let filter = layui.event.call(windows, KEY, windows.eventKey.filter , { deliver: deliver ,args0: args0 ,args1: args1 });
+      // 特殊处理,只有返回false才能返回false,其它的返回的是null
+      if (filter === false) {
+        /**
+         * 设置窗口的key,作为放入 {@linkplain windows.cache 配置项缓存} 中的key
+         */
+        if(!deliver.key) deliver.key = 'WINDOWS-' + intervalIndex ++;
+      } else {
+        return deliver;
+      }
 
       /*  修改弹出层主题  */
       /**
@@ -479,7 +506,7 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
               /**
                * 执行run方法
                */
-              layui[deliver.module].run(layero, index, callbackFlag ? null : args0);
+              layui[deliver.module].run(layero, index, layui.layer, callbackFlag ? null : args0);
               /**
                * 如果传入的是回调函数就执行这个回调函数
                */
@@ -498,7 +525,7 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
                 /**
                  * 执行run方法
                  */
-                layui[deliver.module].run(layero, index, callbackFlag ? null : args0);
+                layui[deliver.module].run(layero, index, layui.layer, callbackFlag ? null : args0);
                 /**
                  * 如果传入的是回调函数就执行这个回调函数
                  */
