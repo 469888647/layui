@@ -13,7 +13,7 @@
  *
  */
 ("use strict");
-layui.define(["jquery", "form"], function (exports) {
+layui.define(["jquery", "lay", "form"], function (exports) {
 
   // jquery的初始化
   if (!window.$) window.$ = layui.$;
@@ -1646,6 +1646,30 @@ layui.define(["jquery", "form"], function (exports) {
     },
 
 
+    /**
+     * @function formRenderer~addHoliday 为日期插件设置自定义假期
+     * @param destination {String} 被设置日期 - 日期格式 yyyyMMdd
+     * @param holiday {String} 所属节假期的日期 - 日期格式 yyyyMMdd
+     * @param order {Number}  (举例)节假期的序号:(0.元旦;1.春节;2.清明节;3.劳动节;4.端午节;5.中秋节;6.国庆节)
+     * @param work 是否调休:(true.上班;false.休息)
+     * @desc
+     *
+     *  - 需要在HolidayUtil声明getKey和setKey的方法
+     *  - `,getKey:function(){return x;},setKey:function(arg){x=arg;}`
+     *  -  直接在这个变量的fix函数后面添加即可
+     */
+    addHoliday: function(destination, holiday, order, work){
+      if(!window.HolidayUtil) return;
+      // 参数校验 如果为18位数,就当是悟透了规则的,直接加入
+      if(/^[0-9]{18}/.test(destination)) return HolidayUtil.setKey(HolidayUtil.getKey() + destination);
+      // 参数校验 destination 和 holiday 参数应该是一个8位数字 order 参数应该是一个数字
+      var paramFlag = /^[0-9]{8}/.test(destination) && /^[0-9]{8}/.test(holiday) && /^[0-9]{1}/.test(order);
+      if(paramFlag) {
+        var str = destination + order + (work ? 0 : 1 ) + holiday;
+        return HolidayUtil.setKey(HolidayUtil.getKey() + str);
+      }
+    },
+
   };
 
   /**
@@ -1764,6 +1788,8 @@ layui.define(["jquery", "form"], function (exports) {
           );
         }
 
+        var removeClickOutsideEvent;
+
         /**
          * @method  展开select-tree的树下拉区域
          * @param {*} ele
@@ -1776,6 +1802,15 @@ layui.define(["jquery", "form"], function (exports) {
           ele.parents(".layui-form-select").toggleClass("layui-form-selected");
           // 将滚动条调整到最上面
           ele.parents(".layui-form-select").find("dl").scrollTop(0);
+
+          removeClickOutsideEvent = lay.onClickOutside(
+            ele.parents(".layui-form-select")[0],
+            function(){
+              hideDown(ele.parents(".layui-form-select"));
+            },
+            {ignore: ele}
+          );
+
         }
 
         /**
@@ -1791,6 +1826,12 @@ layui.define(["jquery", "form"], function (exports) {
           layui.stope(e);
         }
 
+        var hideDown = function(choose){
+          choose.removeClass("layui-form-selected");
+          removeClickOutsideEvent && removeClickOutsideEvent();
+          setTimeout(fixValue, 200);
+        }
+
         /**
          * @method  模拟在下拉选择框 隐藏 之后的回调
          * @param {*} e
@@ -1798,13 +1839,15 @@ layui.define(["jquery", "form"], function (exports) {
          * @desc
          *   2024/01/22 添加下拉树功能时新增
          */
-        var hide = function(e, clear){
-          if(!$(e.target).parent().hasClass("layui-select-title") || clear){
-            $(".layui-select-title").removeClass("layui-form-selected");
-            // 添加上settimeout让下面的select的事件先触发
-            setTimeout(fixValue, 200);
-          }
-        };
+        // 不好用,暂时不再使用了,现在都是使用lay.onClickOutside的方式监听了
+        // var hide = function(e, clear){
+        //   if(!$(e.target).parent().hasClass("layui-select-title") || clear){
+        //     $(".layui-select-title").removeClass("layui-form-selected");
+        //     // 添加上settimeout让下面的select的事件先触发
+        //     setTimeout(fixValue, 200);
+        //   }
+        //   removeClickOutsideEvent && removeClickOutsideEvent();
+        // };
 
         /**
          * @method 让下拉树的 layui-select-tree-value 和 layui-select-tree-title 值保持一致的做法
@@ -2126,10 +2169,11 @@ layui.define(["jquery", "form"], function (exports) {
               }
             });
             // 绑定windows事件
-            if(!SELECT_TREE_EVENT){
-              SELECT_TREE_EVENT = true;
-              $(document).on('click', hide);
-            }
+            // 不好用,暂时不再使用了,现在都是使用lay.onClickOutside的方式监听了
+            // if(!SELECT_TREE_EVENT){
+            //   SELECT_TREE_EVENT = true;
+            //   $(document).on('click', hide);
+            // }
           }
           // 去掉lay-options属性,防止重复绑定
           othis.removeAttr('lay-options');
@@ -2202,6 +2246,11 @@ layui.define(["jquery", "form"], function (exports) {
                 var key = this.elem.attr('lay-key');
                 var panelEl = $('#layui-laydate' + key);
                 this._previewEl = panelEl.find('.layui-laydate-preview');
+                this.cellRender(date);
+              } else {
+                // 添加重新打开面板时需要以当前的值再次刷新农历
+                // 一般的,在done函数之后都是会关闭面板,所以这里先不对done函数进行特殊处理
+                // 但是保留自定义done函数 (新增的修改让done的this指向正确,可以直接调用cellRender来进行渲染)
                 this.cellRender(date);
               }
             };
@@ -2306,8 +2355,11 @@ layui.define(["jquery", "form"], function (exports) {
             date: date,
             endDate: endDate,
           };
-          done && done(value, date, endDate, params);
+          // 但是保留自定义done函数 (新增的修改让done的this指向正确,可以直接调用cellRender来进行渲染)
+          done && done.call(laydateInstance.config, value, date, endDate, params);
           formProxy.getValue(formItem.name, params.value);
+          // 对config.value进行修改值，让配置项里面获取到的值也正确
+          laydateInstance.config.value = params.value;
         };
         laydateInstance.config.done = newDone;
 
