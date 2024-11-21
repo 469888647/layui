@@ -1,0 +1,175 @@
+@charset "utf-8";
+
+
+:root {
+  --windows-main-bgColor: 0, 0, 0;
+  --windows-main-highlight-color: 255, 255, 255;
+  --windows-main-back-color: 0, 0, 0;
+  --windows-main-gray-color: 100, 100, 100;
+  --windows-main-red-color: 180, 0, 0;
+  --windows-main-button-color: 250, 250, 250;
+  --windows-button-highlight-color: 51, 108, 208;
+  --windows-main-d-color: 220, 220, 220;
+  --windows-main-layui-color: 0, 186, 170;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.layui-min-header {
+  z-index: 1 !important;
+}
+
+.layui-layer.layui-layer-windows {
+  border-radius: 4px;
+  box-shadow: 1px 1px 6px 3px rgba(var(--windows-main-back-color), .9);
+  background-image: linear-gradient(-45deg, rgba(var(--windows-main-bgColor), .3), 0%,
+  rgba(var(--windows-main-bgColor), .3), 20%,
+  rgba(var(--windows-main-bgColor), .7), 40%,
+  rgba(var(--windows-main-bgColor), .7), 70%,
+  rgba(var(--windows-main-bgColor), .3), 80%,
+  rgba(var(--windows-main-bgColor), .3));
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+}
+
+.layui-layer.layui-layer-windows .layui-layer-title {
+  border: none;
+  color: rgba(var(--windows-main-highlight-color), 1);
+  text-shadow: 0 0 2px rgba(var(--windows-main-back-color), 1);
+  font-size: 14px;
+  background-color: transparent;
+  height: 36px;
+  line-height: 36px;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-content {
+  position: absolute;
+  top: 38px;
+  bottom: 10px;
+  left: 5px;
+  right: 5px;
+  height: auto !important;
+  background-color: rgba(var(--lay-framework-main-body-bgColor), 1);
+  box-shadow: 0 1px 2px 1px rgba(var(--windows-main-gray-color), 1);
+}
+
+.layui-layer.layui-layer-windows .layui-layer-setwin {
+  top: 0;
+  right: 5px;
+  width: 92px;
+  height: 20px;
+  /*   border: 1px solid rgba(var(--windows-main-bgColor), 1); */
+  border-top: none;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-setwin span {
+  position: absolute;
+  width: 30px;
+  height: 20px;
+  margin: 0;
+  transition: all .5s;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-min,
+.layui-layer.layui-layer-windows .layui-layer-max {
+  background-image: linear-gradient(to bottom,
+  rgba(var(--windows-main-highlight-color), .5),
+  rgba(var(--windows-main-bgColor), .5));
+}
+
+.layui-layer.layui-layer-windows .layui-layer-max {
+  left: 31px;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-min {
+  border-bottom-left-radius: 5px;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-min:hover,
+.layui-layer.layui-layer-windows .layui-layer-max:hover {
+  background-image: linear-gradient(to bottom,
+  rgba(var(--windows-main-highlight-color), .8), 30%,
+  rgba(var(--windows-main-bgColor), .8));
+  box-shadow: 0px 3px 5px -2px rgba(var(--windows-main-highlight-color), .9) inset,
+  0px -3px 5px -2px rgba(var(--windows-main-highlight-color), .1) inset,
+  0 -1px 1px 1px rgba(var(--windows-main-highlight-color), .7),
+  0 -3px 2px 1px rgba(var(--windows-main-highlight-color), .5),
+  0 -5px 3px 1px rgba(var(--windows-main-highlight-color), .4),
+  0 -7px 4px 1px rgba(var(--windows-main-highlight-color), .2);
+  /* top: -1px; */
+}
+
+.layui-layer.layui-layer-windows .layui-layer-min::before {
+  transition: all .5s;
+  height: 2px;
+  background-color: rgba(var(--windows-main-highlight-color), 1);
+}
+
+.layui-layer.layui-layer-windows .layui-layer-min:hover::before {
+  height: 2px;
+  background-color: rgba(var(--windows-main-highlight-color), 1);
+  top: 45%;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-max::before,
+.layui-layer.layui-layer-windows .layui-layer-max::after {
+  border-width: 2px;
+  border-color: rgba(var(--windows-main-highlight-color), 1);
+  margin: -5px 0 0 -5px;
+  width: 8px;
+  height: 7px;
+  transition: all .5s;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-max:hover::before,
+.layui-layer.layui-layer-windows .layui-layer-max:hover::after {
+  border-width: 2px;
+  border-color: rgba(var(--windows-main-highlight-color), 1);
+  margin: -6px 0 0 -5px;
+  width: 8px;
+  height: 7px;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-setwin span.layui-icon-close {
+  left: 62px;
+  background-color: rgba(var(--windows-main-red-color), 1);
+  border-bottom-right-radius: 5px;
+  font-weight: bold;
+  color: rgba(var(--windows-main-highlight-color), 1);
+  line-height: 20px;
+  box-shadow: 0px 5px 5px -3px rgba(var(--windows-main-highlight-color), .9) inset, 0px -4px 5px -3px rgba(var(--windows-main-highlight-color), .9) inset;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-setwin span.layui-icon-close::before {
+  transition: all .5s;
+}
+
+.layui-layer.layui-layer-windows .layui-layer-setwin span.layui-icon-close:hover {
+  box-shadow: 0px 5px 5px -2px rgba(var(--windows-main-highlight-color), .9) inset,
+  0px -4px 5px -2px rgba(var(--windows-main-highlight-color), .9) inset,
+  0 -1px 1px 1px rgba(var(--windows-main-red-color), .8),
+  0 -3px 2px 1px rgba(var(--windows-main-red-color), .6),
+  0 -5px 3px 1px rgba(var(--windows-main-red-color), .4),
+  0 -7px 4px 1px rgba(var(--windows-main-red-color), .2);
+  line-height: 18px;
+
+}
+
+/*   选择的对话框 test  */
+.layui-layer.layui-layer-windows.layui-layer-dialog .layui-layer-content,
+.layui-layer.layui-layer-windows.layui-layer-prompt .layui-layer-content{
+  position: relative;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+}
+
+
+

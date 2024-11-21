@@ -263,6 +263,14 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       name: "hover背景",
       desc: "菜单选项卡选中时的背景颜色",
     },
+    "--lay-framework-main-btn-fontColor": {
+      name: "按钮文字颜色",
+      desc: "按钮文字颜色",
+    },
+    "--lay-framework-nav-tree-fontColor": {
+      name: "导航菜单文字颜色",
+      desc: "导航菜单文字颜色",
+    }
   };
 
   /**
@@ -320,7 +328,8 @@ layui.define(["jquery", "util", "layer"],function (exports) {
     "--lay-framework-layer-img-fontColor": "113, 113, 113",
     "--lay-framework-layer-nomal-borderColor": "222, 222, 222",
     "--lay-framework-layer-secondary-borderColor": "211, 212, 211",
-
+    "--lay-framework-main-btn-fontColor":"255, 255, 255",
+    "--lay-framework-nav-tree-fontColor":"255, 255, 255",
   };
 
   /**
@@ -339,7 +348,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "0, 0, 0",
       "--lay-framework-header-more-color": "102, 6, 0",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
-
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
     },
     classicBlackHeader: {
       alias: "经典黑头",
@@ -355,8 +364,8 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-secondary-bgColor": "22, 186, 170",
       "--lay-framework-main-body-bgColor": "0, 0, 0",
       "--lay-framework-main-body-fontColor": "214, 214, 214",
-      "--lay-framework-main-nomal-borderColor": "31, 31, 31",
-      "--lay-framework-main-nomal-fontColor": "31, 31, 31",
+      "--lay-framework-main-nomal-borderColor": "214, 214, 214",
+      "--lay-framework-main-nomal-fontColor": "214, 214, 214",
       "--lay-framework-main-nomal-bgColor": "31, 31, 31",
       "--lay-framework-main-secondary-fontColor": "112, 112, 112",
       "--lay-framework-main-hover-fontColor": "190, 190, 190",
@@ -394,6 +403,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-laydate-header-fontColor": "246, 246, 246",
       "--lay-framework-laydate-grid-selected-bgColor": "242, 242, 242",
       "--lay-framework-body-grey-bgColor": "102, 102, 102",
+      "--lay-framework-body-secondary-fontColor": "255, 255, 255",
     },
     darkBlue: {
       alias: "藏蓝",
@@ -409,6 +419,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "0, 0, 0",
       "--lay-framework-header-more-color": "102, 6, 0",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
     },
     coffee: {
       alias: "咖啡",
@@ -424,6 +435,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "0, 0, 0",
       "--lay-framework-header-more-color": "102, 6, 0",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
     },
     purpleRed: {
       alias: "紫红",
@@ -439,6 +451,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "255, 255, 255",
       "--lay-framework-header-more-color": "251, 251, 251",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
 
     },
     ocean: {
@@ -455,7 +468,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "255, 255, 255",
       "--lay-framework-header-more-color": "251, 251, 251",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
-
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
     },
     green: {
       alias: "墨绿",
@@ -471,7 +484,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "255, 255, 255",
       "--lay-framework-header-more-color": "251, 251, 251",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
-
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
     },
     red: {
       alias: "橙色？",
@@ -487,6 +500,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "0, 0, 0",
       "--lay-framework-header-more-color": "102, 6, 0",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
     },
     fashionRed: {
       alias: "时尚红",
@@ -502,6 +516,7 @@ layui.define(["jquery", "util", "layer"],function (exports) {
       "--lay-framework-header-secondary-fontColor": "255, 255, 255",
       "--lay-framework-header-more-color": "251, 251, 251",
       "--lay-framework-body-grey-bgColor": "246, 246, 246",
+      "--lay-framework-body-secondary-fontColor": "102, 102, 102",
     },
   };
 

@@ -105,6 +105,10 @@
   --lay-framework-layer-nomal-borderColor: 222, 222, 222;
   /* layer主题边框颜色2      211, 212, 211  #d3d4d3       layer 边框颜色 */
   --lay-framework-layer-secondary-borderColor: 211, 212, 211;
+  /* layer主题按钮文字颜色      255, 255, 255  #ffffff       layui 按钮文字颜色 */
+  --lay-framework-main-btn-fontColor: 255, 255, 255;
+  /* layer主题导航菜单文字颜色      255, 255, 255  #ffffff       layui 导航菜单文字颜色 */
+  --lay-framework-nav-tree-fontColor: 255, 255, 255;
 }
 
 /* --lay-framework-main-body-fontColor     layui主题字体颜色        51, 51, 51     #333 */
@@ -206,6 +210,21 @@ body .layui-util-face .layui-layer-content,
 .layui-badge,
 .layui-badge-dot,
 .layui-badge-rim,
+.layui-table-tips-c,
+.layui-laypage .layui-laypage-curr em,
+.layui-form-checkbox[lay-skin="primary"]:hover>i,
+.layui-form-checked[lay-skin="primary"]>i,
+.layui-form-checkbox>div,
+.layui-progress-big .layui-progress-text {
+  color: rgba(var(--lay-framework-main-highlight-fontColor), 1);
+}
+
+.layui-btn,
+.layui-btn:hover {
+  color: rgba(var(--lay-framework-main-btn-fontColor), 1);
+}
+
+.layui-nav,
 .layui-nav-tree .layui-this,
 .layui-nav-tree .layui-this>a,
 .layui-nav-tree .layui-this>a:hover,
@@ -213,23 +232,11 @@ body .layui-util-face .layui-layer-content,
 .layui-nav-tree .layui-nav-child dd.layui-this a,
 .layui-nav-tree .layui-nav-child a:hover,
 .layui-nav-tree .layui-nav-child,
-.layui-nav,
-.layui-nav .layui-nav-item a:hover,
-.layui-table-tips-c,
-.layui-laypage .layui-laypage-curr em,
-.layui-form-checkbox[lay-skin="primary"]:hover>i,
-.layui-form-checked[lay-skin="primary"]>i,
-.layui-form-checkbox>div,
-.layui-progress-big .layui-progress-text,
-.layui-btn,
-.layui-btn:hover {
-  color: rgba(var(--lay-framework-main-highlight-fontColor), 1);
-}
-
 .layui-nav .layui-nav-item a ,
 .layui-nav-tree .layui-nav-child a,
+.layui-nav .layui-nav-item a:hover,
 .layui-carousel-ind ul li:hover{
-  color: rgba(var(--lay-framework-main-highlight-fontColor), .7);
+  color: rgba(var(--lay-framework-nav-tree-fontColor), .7);
 }
 
 .layui-carousel-ind ul li{
@@ -1347,4 +1354,23 @@ body,
 .layui-laydate .layui-laydate-content .layui-this,.layui-laydate .layui-laydate-content .layui-this>div {
   background-color: rgba(var(--lay-framework-secondary-bgColor),1)!important;
   color: rgba(var(--lay-framework-main-highlight-fontColor),1)!important
+}
+
+
+.layui-laydate{
+  background-color: rgba(var(--lay-framework-main-body-bgColor),1) !important;
+  color: rgba(var(--lay-framework-main-hover-fontColor),1) !important;
+  border-color: rgba(var(--lay-framework-main-disabled-borderColor),1) !important;
+  box-shadow: 0 2px 4px rgba(var(--lay-framework-dark-bgColor),.12) !important;
+}
+
+.layui-laydate-footer span{
+  border-color: rgba(var(--lay-framework-footer-span-borderColor),1) !important;
+  background-color: rgba(var(--lay-framework-main-body-bgColor),1) !important;
+}
+
+.layui-layer{
+  box-shadow: 1px 1px 50px rgba(var(--lay-framework-dark-bgColor),.3) !important;
+  /*这个样式加上后,windows的半透明效果就没有了*/
+  /*background-color: rgba(var(--lay-framework-main-body-bgColor),1) !important;*/
 }
