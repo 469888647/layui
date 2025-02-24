@@ -907,7 +907,7 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
              * 这个模块已经存在了
              * 判断它的是否拥有有效的resizing方法
              */
-            if(layui[deliver.module] && layui[deliver.module].destroy && layui.type(layui[deliver.module].resizing) == 'function' )
+            if(layui[deliver.module] && layui[deliver.module].resizing && layui.type(layui[deliver.module].resizing) == 'function' )
               debounce(layui[deliver.module]["resizing"], {context: windows, args: [layero]});
           }else{
             /**
@@ -918,7 +918,7 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
               /**
                * 判断它的是否拥有有效的resizing方法
                */
-              if(layui[deliver.module] && layui[deliver.module].destroy && layui.type(layui[deliver.module].resizing) == 'function' )
+              if(layui[deliver.module] && layui[deliver.module].resizing && layui.type(layui[deliver.module].resizing) == 'function' )
                 debounce(layui[deliver.module]["resizing"], {context: windows, args: [layero]});
             });
           }
@@ -1150,7 +1150,7 @@ layui.define(["jquery", "lay", "layer"], function (exports) {
        */
       windows.homePage.resizeFn[_value.key] = fn;
       $root.on("resize", function () {
-        debounce(windows.homePage.resizeFn[_value.key]);
+        debounce(windows.homePage.resizeFn[_value.key],{});
       });
     },
 

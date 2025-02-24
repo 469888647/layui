@@ -381,6 +381,7 @@ layui.define(["jquery", "lay", "form"], function (exports) {
     /**
      * @function util~getFormFilterName 获取表单元素的lay-filter属性值
      * @param {HTMLElement} formItem  表单元素
+     * @param {String} prefix  表单的$name属性,用来区分不同的表单
      * @returns {String} 表单元素的{@linkplain constant~LAYUI_FILTER lay-filter 属性值}
      * @description
      *    <p style = "color: #16b777;text-indent: 10px;">获取表单元素的lay-filter属性值</p>
@@ -398,10 +399,10 @@ layui.define(["jquery", "lay", "form"], function (exports) {
      *      </li>
      *    <ul>
      */
-    getFormFilterName(formItem) {
+    getFormFilterName(formItem, prefix) {
       let filter = formItem.getAttribute(constant.LAYUI_FILTER);
       if (filter) return filter;
-      filter = "layui-formplus-" + formItem.name;
+      filter = prefix + "-" + formItem.name;
       formItem.setAttribute(constant.LAYUI_FILTER, filter);
       return filter;
     },
@@ -974,6 +975,18 @@ layui.define(["jquery", "lay", "form"], function (exports) {
             return false !== event.fn.call(_this, v, v1, k, key);
           }
         );
+        // 修改一下,返回false是移除这个监听事件,返回true是阻止继续触发事件
+        // let newPool = [];
+        // layui.each(self.coreMap[key].pool, function(_key, event){
+        //   let res = event.fn.call(_this, v, v1, k, key);
+        //   if(false !== res) newPool.push(event);
+        //   /**
+        //    * - layui.each 遍历时,若返回值为true,则不再继续向下遍历
+        //    */
+        //   return true === res;
+        // });
+        // self.coreMap[key].pool = newPool;
+
         // 2.冒泡触发
         util.bubble(key, (v) => {
           if (v !== key && self.coreMap[v])
@@ -1520,6 +1533,9 @@ layui.define(["jquery", "lay", "form"], function (exports) {
       if(!filter) return null;
       let _formProxy = layui.form.render(null, filter, true);
       if(!_formProxy) return null;
+      if(!key){
+        return _formProxy.$data || null;
+      }
       return _formProxy.$data[key] || null;
     },
 
@@ -1780,7 +1796,7 @@ layui.define(["jquery", "lay", "form"], function (exports) {
           formItem.getAttribute("lay-affix") == "clear"
         ) {
           layui.form.on(
-            "input-affix(" + util.getFormFilterName(formItem) + ")",
+            "input-affix(" + util.getFormFilterName(formItem, formProxy.$name) + ")",
             function (data) {
               var elem = data.elem; // 获取输入框 DOM 对象
               formProxy.getValue(formItem.name, elem.value);
@@ -2410,7 +2426,7 @@ layui.define(["jquery", "lay", "form"], function (exports) {
          * 由于checkbox或者radio可能触发多次绑定，但是layui事件管理都是一对一的不会重复
          */
         layui.form.on(
-          "checkbox(" + util.getFormFilterName(formItem) + ")",
+          "checkbox(" + util.getFormFilterName(formItem, formProxy.$name) + ")",
           function () {
             formItem.parentElement
               .querySelectorAll('[name="' + formItem.name + '"]')
@@ -2486,7 +2502,7 @@ layui.define(["jquery", "lay", "form"], function (exports) {
          * 由于checkbox或者radio可能触发多次绑定，但是layui事件管理都是一对一的不会重复
          */
         layui.form.on(
-          "radio(" + util.getFormFilterName(formItem) + ")",
+          "radio(" + util.getFormFilterName(formItem, formProxy.$name) + ")",
           function () {
             formItem.parentElement
               .querySelectorAll('[name="' + formItem.name + '"]')
@@ -2543,7 +2559,7 @@ layui.define(["jquery", "lay", "form"], function (exports) {
          * 如果没有lay-filter属性，这里为它根据name自动添加一个filter属性，保证可以正常的使用
          */
         layui.form.on(
-          "select(" + util.getFormFilterName(formItem) + ")",
+          "select(" + util.getFormFilterName(formItem, formProxy.$name) + ")",
           function () {
             // 直接修改对应的值
             formProxy.getValue(formItem.name, formItem.value);
@@ -2551,16 +2567,26 @@ layui.define(["jquery", "lay", "form"], function (exports) {
         );
 
         // 添加监视属性
-        formProxy.$watch(formItem.name, function (v) {
-          formItem.value = v;
+        formProxy.$watch(formItem.name, function (v, v1) {
+          let findFlag = false;
           formItem.querySelectorAll("option").forEach((option) => {
             if (v == option.value) {
               option.setAttribute("selected", "selected");
+              findFlag = true;
             } else {
               option.removeAttribute("selected");
             }
           });
-          layui.form.render("select", item.getAttribute(constant.LAYUI_FILTER));
+          if(findFlag) {
+            formItem.value = v;
+            layui.form.render("select", item.getAttribute(constant.LAYUI_FILTER));
+          } else {
+            let self = this;
+            // 添加 setTimeout 是为了保证这个正确的change事件能排在稍后的时机触发,方便后期防抖的处理
+            setTimeout(function () {
+              self[formItem.name] = v1;
+            });
+          }
         });
 
         // 添加提示
@@ -2606,7 +2632,7 @@ layui.define(["jquery", "lay", "form"], function (exports) {
          * 由于checkbox或者radio可能触发多次绑定，但是layui事件管理都是一对一的不会重复
          */
         layui.form.on(
-          "switch(" + util.getFormFilterName(formItem) + ")",
+          "switch(" + util.getFormFilterName(formItem, formProxy.$name) + ")",
           function () {
             formProxy.getValue(formItem.name, this.checked);
           }

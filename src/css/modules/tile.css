@@ -1,11 +1,5 @@
 @charset "utf-8";
 
-:root {
-  --tile-main-color: 0, 149, 135;
-  --tile-highlight-color: 255, 255, 255;
-  --tile-shadow-color: 100, 100, 100;
-}
-
 .layui-layer-tiles{
   position: absolute;
   top: 0;
@@ -15,7 +9,10 @@
   bottom: 0;
   overflow: auto;
   user-select: none;
-  color: rgba(var(--tile-highlight-color), 1);
+  color: rgba(255, 255, 255, 1);
+  color: rgba(var(--lay-framework-main-body-bgColor), 1);
+  background-color: rgba(47, 54, 60 ,1);
+  background-color: rgba(var(--lay-framework-main-nav-bgColor),1);
   cursor: pointer;
 }
 
@@ -38,7 +35,8 @@
 }
 
 .layui-layer-tile:hover{
-  border: 2px solid rgba(var(--tile-highlight-color), 1);
+  border: 2px solid rgba(255, 255, 255, 1);
+  border: 2px solid rgba(var(--lay-framework-main-body-bgColor), 1);
   box-sizing: border-box;
 }
 
@@ -48,7 +46,8 @@
 }
 
 .layui-layer-tile-dynamic{
-  background-color: rgba(var(--tile-shadow-color), 1);
+  background-color: rgba(136, 136, 136, 1);
+  background-color: rgba(var(--lay-framework-color-picker-bgColor), 1);
   transition: all .5s;
   z-index: 0;
 }
@@ -143,11 +142,13 @@
 }
 
 .layui-layer-struct-input{
-  border: 1px solid rgba(var(--tile-main-color), 1);
+  border: 1px solid rgba(22, 180, 176, 1);
+  border: 1px solid rgba(var(--lay-framework-secondary-bgColor), 1);
 }
 
 .layui-layer-struct-select{
-  background-color: rgba(var(--tile-main-color), 1);
+  background-color: rgba(22, 180, 176, 1);
+  background-color: rgba(var(--lay-framework-secondary-bgColor), 1);
 }
 
 .layui-windows-desk-scroll::-webkit-scrollbar {
@@ -160,7 +161,8 @@
 }
 
 .layui-windows-desk-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(var(--tile-highlight-color), 1);
+  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(var(--lay-framework-main-body-bgColor), 1);
 }
 
 /*
@@ -183,9 +185,9 @@
 
   .layui-layer-struct-name .layui-layer-struct-edit .layui-layer-struct-icon{
     display: none;
-  } 
+  }
 
   .layui-layer-struct-select.layui-layer-struct-name .layui-layer-struct-edit .layui-layer-struct-icon{
     display: block;
-  } 
+  }
 }

@@ -1,4 +1,3 @@
-
 ("use strict");
 layui.define(["jquery","util"], function (exports) {
 
@@ -129,44 +128,24 @@ layui.define(["jquery","util"], function (exports) {
           handler.relationList.push(_opt);
           // 根据信息构造dom
           ulHtml += `<li lay-id = "${_opt.index}" ${_opt.level > 1 ? `level="${_opt.level}"` : ``}  >
-                    ${_opt.anchor ? `<a _href = "${_opt.id}">${_opt.title}
+                    ${_opt.anchor ? `<a href = "#${_opt.id}">${_opt.title}
                                             ${_opt.hot ? `<span class="layui-badge-dot"></span>` : ``}
                                     </a>` : `${_opt.title}${_opt.hot ? `<span class="layui-badge-dot"></span>` : ``}`}
                  </li>`;
-          /*                    ${_opt.anchor ? `<a href = "${_opt.id}">${_opt.title}
-                                              ${_opt.hot ? `<span class="layui-badge-dot"></span>`:``}
-                                      </a>`:``}*/
-//<a href = "#examples" > 综合演示 < span className = "layui-badge-dot" > < /span></a >
-          /*var anchorElement = document.querySelectorAll('.anchor');
-
-          // 添加 scroll 事件监听器
-          window.addEventListener('scroll', function() {
-              // 获取当前滚动位置
-              var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          anchorElement.forEach(function(e){  var rect = e.getBoundingClientRect(); if (rect.top <= 5 && (rect.top + rect.height) >= -5) {
-                  console.log('滚动到了锚点位置：' + e);
-              } })
-              // 比较当前滚动位置和锚点位置
-
-          });*/
         }
       });
       /**
        * dom 结构
        *    layui-outline-container  -- 最外层容器,方法查找和插入dom的
-       *      - layui-outline-bth  -- 小屏幕时点击打开的按钮
        *      - layui-outline-side -- 放置在右侧的整个区域绝对定位
        *          - layui-outline-side-fixed -- 绝对定位的区域
-       *              - layui-outline-side-close -- 关闭的按钮区域
        *              - layui-outline-dir
        *                  - layui-outline-ul -- ul的主题区域
        */
       let html = `
         <div class = "${OUTLINE}-container">
-         <!--   <button type="button" class="${OUTLINE}-bth layui-btn-sm layui-btn"><i class="layui-icon layui-icon-shrink-right"></i></button> -->
             <div class="${OUTLINE}-side">
                 <div class="${OUTLINE}-side-fixed">
-                    <i class="${OUTLINE}-side-close layui-icon layui-icon-spread-left"></i>
                     <div class="${OUTLINE}-dir">
                         <ul class="${OUTLINE}-ul">${ulHtml}</ul>
                     </div>
@@ -185,12 +164,6 @@ layui.define(["jquery","util"], function (exports) {
       if(!handler.eventflag) {
         // handler.renderBar();
         layui.util.fixbar({
-          // bars: parseInt(getComputedStyle($('.' + OUTLINE + '-side-fixed')[0]).right) < 0 ? [{type: "dir",icon: "layui-icon-more-vertical"}] : [],
-          // bars: (x = [],
-          // parseInt(getComputedStyle($('.' + OUTLINE + '-side-fixed')[0]).right) < 0 && x.push({
-          //     type: "dir",
-          //     icon: "layui-icon-more-vertical"
-          //   }), x),
           bars: [{
             type: "dir",
             icon: "layui-icon-more-vertical"
@@ -239,10 +212,13 @@ layui.define(["jquery","util"], function (exports) {
      */
     fix: function(id){
       let index = 0;
-      handler.every(handler.relationList, function(option){
+      layui.each(handler.relationList, function(key, option){
         if(option.id == id){
           index = option.index;
-          return false;
+          /**
+           * - layui.each 遍历时,若返回值为true,则不再继续向下遍历
+           */
+          return true;
         }
       });
       return handler.doFix(index);
@@ -256,24 +232,22 @@ layui.define(["jquery","util"], function (exports) {
       let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
       fitBody.find('.layui-outline-ul').find('.' + THIS).removeClass(THIS);
       fitBody.find('.layui-outline-ul').find('[lay-id="'+index+'"]').addClass(THIS);
-      // $body.find('.layui-outline-ul').find('.' + THIS).removeClass(THIS);
-      // $body.find('.layui-outline-ul').find('[lay-id="'+index+'"]').addClass(THIS);
       return false;
     },
 
     location: function (id){
       // 判断,如果传入的handler.window并不是window只是普通的dom,需要考虑它当前的top值,否则定位不够准确
       let _offsetTop = handler.window.getBoundingClientRect ? handler.window.getBoundingClientRect().top : 0;
-      handler.every(handler.relationList, function(option){
+      layui.each(handler.relationList,function(key, option){
         if(option.id == id) {
-          handler.window.scrollTo(null, option.top - _offsetTop);
+          let optionTop = document.getElementById(option.id).getBoundingClientRect().top;
+          handler.window.scrollTo(null, optionTop - _offsetTop);
           setTimeout(function (){
             handler.doFix(option.index);
           });
-          return false;
+          return true;
         }
-        return true;
-      })
+      });
     },
 
     /**
@@ -286,66 +260,33 @@ layui.define(["jquery","util"], function (exports) {
 
         if(handler.relationList && handler.relationList.length > 0){
           // 定义一个值,来判断那个区域最靠上方
-          let minValue = 0;
-          // 获取当前滚动位置
-          var scrollTop = handler.window.scrollTop === undefined ? handler.window.pageYOffset : handler.window.scrollTop || document.documentElement.scrollTop;
-          handler.every(handler.relationList, function(option){
-            let topFlag = scrollTop >= option.top - option.height/2;
-            let bottomFlag = scrollTop <= option.top + option.height/2;
-            if(topFlag && bottomFlag) return handler.doFix(option.index);
-            // 判断最小值
-            if(!minValue) minValue = Math.abs(scrollTop - option.top);
-            if(minValue < Math.abs(scrollTop - option.top)){
-              return handler.doFix(option.index - 1);
-            }else{
-              minValue = Math.abs(scrollTop - option.top);
+          // let minValue = 0;
+          // // 获取当前滚动位置
+          // var scrollTop = handler.window.scrollTop === undefined ? handler.window.pageYOffset : handler.window.scrollTop || document.documentElement.scrollTop;
+          let minIndex = null;
+          let minOffset = null;
+          layui.each(handler.relationList, function(key, option){
+            let rect = document.getElementById(option.id).getBoundingClientRect();
+            if(null == minIndex && null == minOffset){
+              minIndex = option.index;
+              minOffset = rect.top;
+            } else {
+              if(rect.top < 0 ){
+                let f = rect.top > minOffset;
+                minOffset = f ? rect.top : minOffset
+                minIndex = f ? option.index : minOffset
+              } else {
+                let f = rect.top > minOffset;
+                minOffset = f ? minOffset : rect.top;
+                minIndex = f ? minIndex : option.index;
+                return f;
+              }
             }
-            return true;
-          })
+          });
+          handler.doFix(minIndex);
         }
       });
 
-      // 判断,如果传入的handler.window并不是window只是普通的dom,需要考虑它当前的top值,否则定位不够准确
-      // let _offsetTop = handler.window.getBoundingClientRect ? handler.window.getBoundingClientRect().top : 0;
-      let fitBody = handler.window.getBoundingClientRect ? $(handler.window) : $body;
-
-      fitBody
-      // $body
-        .find("." + OUTLINE + "-container").on('click', '*[_href]', function(){
-        let id = $(this).attr("_href");
-        if(id && handler.relationList && handler.relationList.length > 0){
-          handler.location(id);
-          // handler.every(handler.relationList, function(option){
-          //   if(option.id == id) {
-          //     handler.window.scrollTo(null, option.top - _offsetTop);
-          //     setTimeout(function (){
-          //       handler.doFix(option.index);
-          //     });
-          //     return false;
-          //   }
-          //   return true;
-          // })
-        }
-
-      });
-
-      // 点击图标收起outline
-      fitBody.find("." + OUTLINE + "-container").on('click', '.layui-outline-side-close', function(){
-        if(fitBody.find("." + OUTLINE + "-container").hasClass(RETRACT)){
-          fitBody.find("." + OUTLINE + "-container").removeClass(RETRACT);
-        }else{
-          fitBody.find("." + OUTLINE + "-container").addClass(RETRACT);
-        }
-      });
-
-      // 点击按钮展开outline
-      // fitBody.find("." + OUTLINE + "-container").on('click', '.layui-outline-bth', function(){
-      //   if(fitBody.find("." + OUTLINE + "-container").hasClass(RETRACT)){
-      //     fitBody.find("." + OUTLINE + "-container").removeClass(RETRACT);
-      //   }else{
-      //     fitBody.find("." + OUTLINE + "-container").addClass(RETRACT);
-      //   }
-      // });
     },
   };
 
