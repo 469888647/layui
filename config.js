@@ -17,7 +17,7 @@ const LAYER_CONFIG = {
         area: ["750px", "280px"],
     },
     formPlusExp: {
-        name: '表单增强示例',
+        name: '表单扩展',
         url: './html/formPlusExp.html',
     },
     colorthemeExp: {

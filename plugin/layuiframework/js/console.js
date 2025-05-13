@@ -54,6 +54,24 @@ layui.define(["util", "carousel"], function (exports) {
             },
           ],
         },
+        {
+          name: "视频",
+          source: [
+            {
+              id: "video",
+              name: "新版本教程",
+              x: 0,
+              y: 0,
+              w: 3,
+              h: 2,
+              kv:{
+                url:"https://b23.tv/PVL0YGx"
+              },
+              refuseAnimate: true,
+              content: "<div id = 'tilePreviewWindow' style = 'width:100%;height:100%' ><div class='layui-card'><div class='layui-card-header'>视频来源互联网</div><div class='layui-card-body'><video autoplay muted width='240'><source src='../resource/1.mp4' type='video/mp4'></video></div></div></div>",
+            }
+          ]
+        }
       ];
 
       var container = handler.layero.find(".layui-layer-tiles");
@@ -61,7 +79,9 @@ layui.define(["util", "carousel"], function (exports) {
       handler.parentLayui.tileInstance = layui
         .tile(container, { data: data , cacheable: true })
         .on('clickTile', function(option){
-          window.open(option.tile.kv.url, "_target");
+          if(option.tile.kv.url){
+            window.open(option.tile.kv.url, "_target");
+          }
         })
         .setAnimate(
           [

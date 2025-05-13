@@ -3,11 +3,20 @@
 
 <head>
   <meta charset="utf-8">
-  <title>layuiAdmin 控制台主页一</title>
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>主页</title>
+  <!-- 指定当前的MIME是text/html;字符集为UTF8 -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <!-- 指示 IE 使用其可用的最高版本模式（即最标准的模式）来渲染页面; 允许在 IE 上利用 Google Chrome Frame 插件调用Chrome 的渲染引擎。后面这个插件已经过时了。 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+  <!-- 防止MIME类型伪造 -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <!-- 仅在发生跨域访问时，发送只包含host的Referer信息，但在同域下还是完整的，而只有协议、域名和端口都一致时，浏览器才认为是同域 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!--  大致起完美适配的作用,试开发者不管像素比,只需按照css像素编写代码即可     -->
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <!-- 跨站脚本攻击防护（XSS Protection）启用浏览器内置防护 -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
   <link rel="stylesheet" href="../../layui/css/layui.css">
   <link rel="stylesheet" href="../css/frame.css" media="all">
   <link rel="stylesheet" href="../css/console.css" media="all">
@@ -34,73 +43,52 @@
             <div class="layui-card-header">项目说明</div>
             <div class="layui-card-body" style="height: 600px;">
               <h1 style="margin-bottom: 10px;">说明:</h1>
-              <div class = "layui-text">
+              <br/>
+              <div class="layui-text">
                 <ul>
                   <li>
-                    <p>之前的一些layui组件是单独创建的项目,在维护上面比较麻烦还懒得找,在这里重新拉了一个layui的分支出来修改,方便后面的修改</p>
+                    <p>
+                      之前的一些<code>Layui</code>第三方扩展组件为独立项目开发，维护成本较高，查找也不够便捷。为此，这里重新拉取了一个<code>Layui</code>的分支，便于后续统一修改与扩展。
+                    </p>
                   </li>
                   <li>
-                    <p>将新增的内容打包到layui下面,方便后面的使用</p>
+                    <p>新增功能应尽量避免对原有模块造成影响，确保系统的稳定性与兼容性。</p>
+                  </li>
+                  <li>
+                    <p>以组件<code>component</code>为分水岭：在此之前完成的内容将作为一版正式发布；之后的功能将持续迭代开发。 </p>
                   </li>
                 </ul>
               </div>
               <hr class="layui-border-green" />
-              <h1 style="color: rgba(170, 49, 48, 1);margin-bottom: 10px;">请注意:</h1>
+              <h1>地址:</h1>
+              <br/>
               <blockquote class="layui-elem-quote">
-                <p style="text-indent: 28px;">当前web页面的功能是开发在<a href="https://gitee.com/giteetcj/layui/tree/layuiframework/">layuiframework分支下面的</a></p>
+                <div class="addr-list-area">
+                  <div class="layui-water-ripples-container">
+                    <button class="layui-btn"><a href="https://gitee.com/giteetcj/layui/tree/layuiframework-v1/" target="_blank">代码仓库 - 版本1.0</a></button>
+                  </div>
+                  <div class="layui-water-ripples-container">
+                    <button class="layui-btn"><a href="https://gitee.com/giteetcj/layui/releases/download/v2.9.18/layui-v2.9.18--%EF%BC%8A(%5E.%5E)!!.zip">发行版下载</a></button>
+                  </div>
+                  <div class="addr-icon-name">1.0版本是在<code>Layui</code>的2.8和2.9版本上面进行开发的,目前发行版对应的<code>Layui</code>版本为2.9.18。</div>
+                </div>
+                <div class="addr-list-area">
+                  <div class="layui-water-ripples-container">
+                    <button class="layui-btn"><a href="https://gitee.com/giteetcj/layui/tree/layuiframework/" target="_blank">代码仓库 - 最新版本</a></button>
+                  </div>
+                  <div class="addr-icon-name">现在也是在不断的改进当中,部分功能模块将基于组件 <code>component</code> 进行重构。</div>
+                </div>
               </blockquote>
-              <blockquote class="layui-elem-quote">
-                <p style="text-indent: 28px;">由于大部分的新增功能都会影响原有功能的调用,所以会出现一些没有排查出来的bug或者部分功能的使用不能得到满足。对于这些问题只能是发现一个解决一个,一旦出现了bug就去尽力去修复</p>
-              </blockquote>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="layui-col-xs12 layui-col-md12">
-        <div class="grid-demo grid-demo-bg3">
-          <div class="layui-card">
-            <div class="layui-card-header">当前任务<i layui-framework-event="table" title="详细信息"
-                class="layui-icon layui-icon-about"></i></div>
-            <div class="layui-card-body">
-              <table class="layui-hide" id="layui-framework-table" lay-filter="layui-framework-table"></table>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <script type="text/html" id="layui-framework-table-headToolbar">
-    <div class="layui-btn-container">
-      <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-      <button class="layui-btn layui-btn-sm" lay-event="getData">获取当前页数据</button>
-      <button class="layui-btn layui-btn-sm" id="dropdownButton">
-        下拉按钮 
-        <i class="layui-icon layui-icon-down layui-font-12"></i>
-      </button>
-      <button class="layui-btn layui-btn-sm layui-btn-primary" id="rowMode">
-        <span>{{= d.lineStyle ? '多行' : '单行' }}模式</span>
-        <i class="layui-icon layui-icon-down layui-font-12"></i>
-      </button>
-    </div>
-  </script>
-  <script type="text/html" id="layui-framework-table-toolbar">
-    <div class="layui-clear-space">
-      <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-      <a class="layui-btn layui-btn-xs" lay-event="more">
-        更多 
-        <i class="layui-icon layui-icon-down"></i>
-      </a>
-    </div>
-  </script>
-  <script type="text/html" id="layui-framework-table-progress">
-    <div class="layui-progress layuiadmin-order-progress" lay-filter="progress-"+ {{ d.id }} +"">
-        <div class="layui-progress-bar layui-bg-blue" lay-percent= {{ d.progress }}></div>
-    </div>
-   </script>
   <script type="text/javascript" src="../../layui/layui.js"></script>
   <script type="text/javascript" src="../js/console.js"></script>
   <script type="text/javascript">
-    layui.use('colortheme', function(){
+    layui.use('colortheme', function () {
       layui.colortheme.run();
     });
   </script>

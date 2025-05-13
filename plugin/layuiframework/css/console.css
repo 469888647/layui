@@ -7,7 +7,7 @@
 
 .layui-fluid .layui-layer-tiles{
   width: 320px;
-  height: 400px;
+  height: 100%;
   margin: auto;
 }
 
@@ -39,4 +39,43 @@
 
 .layadmin-carousel .layui-carousel-ind li.layui-this {
   background-color: #999;
+}
+
+.addr-list-area {
+  display: inline-block;
+  vertical-align: middle;
+  width: 220px;
+  height: 160px;
+  line-height: 25px;
+  padding: 20px 0;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #e2e2e2;
+  font-size: 14px;
+  text-align: center;
+  color: #777;
+  cursor: pointer;
+  transition: all .3s;
+  -webkit-transition: all .3s;
+}
+
+.addr-list-area .layui-water-ripples-container{
+  margin-bottom: 10px;
+}
+
+.addr-list-area .layui-water-ripples-container a{
+  color: #fff;
+}
+
+.addr-list-area .layui-water-ripples-container a:hover{
+  color: #fff;
+}
+
+.addr-list-area .docs-icon-name{
+  margin-top: 5px;
+}
+
+.addr-list-area:hover {
+  border-color: rgba(22, 183, 119, 1);
+  color: rgba(22, 183, 119, 1);
 }
